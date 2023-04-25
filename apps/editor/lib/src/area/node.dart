@@ -15,10 +15,9 @@ class _AreaNodeEditor extends HookWidget {
   Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
-        final h = resizeHandleSize / 2;
         return Positioned(
-          top: _node.frame.offset.dy - h,
-          left: _node.frame.offset.dx - h,
+          top: _node.frame.offset.dy,
+          left: _node.frame.offset.dx,
           child: _AreaNodeEditorDraggable(
             node: _node,
             onDragEnd: (node) => _area.didMoveNode(node),

@@ -16,6 +16,7 @@ class _AreaNodeEditorDraggable extends HookWidget {
     return Draggable(
       childWhenDragging: Container(),
       feedback: Material(
+        color: Colors.transparent,
         child: child,
       ),
       child: child,
