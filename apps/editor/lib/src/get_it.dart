@@ -1,9 +1,24 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
 
+import '../firebase_options.dart';
 import 'stores/app.dart';
 
 final GetIt it = GetIt.instance;
 
-Future<void> registerGetIt() async {
+Future<void> _registerGetIt() async {
+  final app = await Firebase.initializeApp(
+    name: 'default',
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final firestore = FirebaseFirestore.instanceFor(app: app);
+  firestore.settings = firestore.settings.copyWith(
+    persistenceEnabled: true,
+  );
+  it.registerSingleton(app);
+  it.registerSingleton(firestore);
   it.registerLazySingleton(() => App());
 }
+
+final getItReady = _registerGetIt();
