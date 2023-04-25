@@ -30,4 +30,17 @@ abstract class _ContainerNode with Store {
   void updateColor(Color color) {
     this.color = color;
   }
+
+  Size clampSize(Size size) {
+    var width = size.width;
+    var height = size.height;
+    const step = 10.0;
+    width = (width / step).floorToDouble() * step;
+    height = (height / step).floorToDouble() * step;
+    return Size(width, height);
+  }
+
+  Offset clampOffset(Offset offset) {
+    return offset;
+  }
 }

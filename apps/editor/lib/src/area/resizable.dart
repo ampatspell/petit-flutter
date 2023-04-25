@@ -46,14 +46,13 @@ class _AreaNodeEditorResizable extends HookWidget {
 
   Widget buildHandle(String vertical, String horizontal) {
     final size = node.frame.size;
-    final h = handleSize / 2;
     late final double top;
     late final double left;
 
     if (vertical == 'top') {
       top = 0;
     } else if (vertical == 'middle') {
-      top = size.height / 2 - h;
+      top = (size.height / 2);
     } else if (vertical == 'bottom') {
       top = size.height;
     }
@@ -61,7 +60,7 @@ class _AreaNodeEditorResizable extends HookWidget {
     if (horizontal == 'left') {
       left = 0;
     } else if (horizontal == 'middle') {
-      left = size.width / 2 - h;
+      left = size.width / 2;
     } else if (horizontal == 'right') {
       left = size.width;
     }
