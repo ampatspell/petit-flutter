@@ -23,11 +23,19 @@ class _AreaNodeEditorResizable extends HookWidget {
           child: Stack(
             children: [
               Positioned(
-                top: h,
-                left: h,
-                width: size.width,
-                height: size.height,
-                child: child,
+                top: h - 1,
+                left: h - 1,
+                width: size.width + 2,
+                height: size.height + 2,
+                child: Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      width: 1.0,
+                      color: AppColors.grey200,
+                    ),
+                  ),
+                  child: child,
+                ),
               ),
               buildHandle('top', 'left'),
               buildHandle('top', 'middle'),
@@ -127,50 +135,39 @@ class _AreaNodeEditorResizeDraggable extends HookWidget {
     late final double dx;
     late final double dy;
 
-    if (vertical == 'bottom') {
-      if (horizontal == 'middle') {
-        width = size.width;
-        height = size.height + delta.dy;
-        dx = offset.dx;
+    if (horizontal == 'left') {
+      width = size.width - delta.dx;
+      dx = offset.dx + delta.dx;
+      if (vertical == 'top') {
+        dy = offset.dy + delta.dy;
+      } else if (vertical == 'middle') {
+        height = size.height;
         dy = offset.dy;
-      } else if (horizontal == 'left') {
-        width = size.width - delta.dx;
+      } else if (vertical == 'bottom') {
         height = size.height + delta.dy;
-        dx = offset.dx + delta.dx;
-        dy = offset.dy;
-      } else if (horizontal == 'right') {
-        width = size.width + delta.dx;
-        height = size.height + delta.dy;
-        dx = offset.dx;
         dy = offset.dy;
       }
-    } else if (vertical == 'top') {
-      if (horizontal == 'middle') {
-        width = size.width;
+    } else if (horizontal == 'middle') {
+      width = size.width;
+      dx = offset.dx;
+      if (vertical == 'top') {
         height = size.height - delta.dy;
-        dx = offset.dx;
         dy = offset.dy + delta.dy;
-      } else if (horizontal == 'left') {
-        width = size.width - delta.dx;
-        height = size.height - delta.dy;
-        dx = offset.dx + delta.dx;
-        dy = offset.dy + delta.dy;
-      } else if (horizontal == 'right') {
-        width = size.width + delta.dx;
-        height = size.height - delta.dy;
-        dx = offset.dx;
-        dy = offset.dy + delta.dy;
-      }
-    } else if (vertical == 'middle') {
-      if (horizontal == 'left') {
-        width = size.width - delta.dx;
-        height = size.height;
-        dx = offset.dx + delta.dx;
+      } else if (vertical == 'bottom') {
+        height = size.height + delta.dy;
         dy = offset.dy;
-      } else if (horizontal == 'right') {
-        width = size.width + delta.dx;
+      }
+    } else if (horizontal == 'right') {
+      width = size.width + delta.dx;
+      dx = offset.dx;
+      if (vertical == 'top') {
+        height = size.height - delta.dy;
+        dy = offset.dy + delta.dy;
+      } else if (vertical == 'middle') {
         height = size.height;
-        dx = offset.dx;
+        dy = offset.dy;
+      } else if (vertical == 'bottom') {
+        height = size.height + delta.dy;
         dy = offset.dy;
       }
     }
@@ -198,6 +195,23 @@ class _AreaNodeEditorResizeHandle extends HookWidget {
   @override
   Widget build(BuildContext context) {
     final hover = useState(false);
+
+    final hoverAnimationController = useAnimationController(
+      duration: const Duration(milliseconds: 300),
+    );
+
+    final borderColor = useAnimation(hoverAnimationController.drive(
+      ColorTween(begin: AppColors.grey200, end: AppColors.grey150),
+    ));
+
+    useEffect(() {
+      if (hover.value) {
+        hoverAnimationController.forward();
+      } else {
+        hoverAnimationController.reverse();
+      }
+    });
+
     return MouseRegion(
       onEnter: (event) {
         hover.value = true;
@@ -212,7 +226,7 @@ class _AreaNodeEditorResizeHandle extends HookWidget {
           color: Colors.white,
           borderRadius: const BorderRadius.all(Radius.circular(3)),
           border: Border.all(
-            color: hover.value ? Colors.black.withAlpha(100) : Colors.black.withAlpha(50),
+            color: borderColor!,
           ),
         ),
       ),

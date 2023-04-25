@@ -17,7 +17,7 @@ class _AreaNodeEditorContainer extends HookWidget {
           color: node.color,
           width: node.frame.size.width,
           height: node.frame.size.height,
-          child: Text(node.id),
+          child: Text('${node.id} ${node.frame.size.width}x${node.frame.size.height}'),
         );
       },
     );

@@ -34,7 +34,7 @@ abstract class _ContainerNode with Store {
   Size clampSize(Size size) {
     var width = size.width;
     var height = size.height;
-    const step = 10.0;
+    const step = 15.0;
     width = (width / step).floorToDouble() * step;
     height = (height / step).floorToDouble() * step;
     return Size(width, height);

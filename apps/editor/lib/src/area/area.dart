@@ -5,6 +5,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import '../stores/editor/area.dart';
 import '../stores/editor/node.dart';
 import '../stores/editor/node/container.dart';
+import '../theme.dart';
 
 part 'node.dart';
 

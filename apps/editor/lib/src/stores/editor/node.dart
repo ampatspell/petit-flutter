@@ -8,8 +8,6 @@ abstract class Node {
   NodeFrame get frame;
 
   String get id;
-
-  Size clampSize(Size size);
 }
 
 class NodeFrame extends _NodeFrame with _$NodeFrame {

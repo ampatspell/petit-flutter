@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:petit_editor/src/get_it.dart';
+import 'package:petit_editor/src/theme.dart';
 
 import 'src/area/area.dart';
 import 'src/stores/app.dart';
@@ -18,9 +19,7 @@ class MyApp extends HookWidget {
     return MaterialApp(
       title: 'Petit editor',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.yellow,
-      ),
+      theme: appTheme,
       home: const MyHomePage(),
     );
   }
