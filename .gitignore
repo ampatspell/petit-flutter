@@ -1,0 +1,14 @@
+.DS_Store
+
+.dart_tool/
+.coverage/
+
+pubspec.lock
+pubspec_overrides.yaml
+
+.idea/
+*.iml
+
+*.g.dart
+.flutter-plugins
+.flutter-plugins-dependencies

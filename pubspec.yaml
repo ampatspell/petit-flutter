@@ -1,0 +1,15 @@
+name: petit_workspace
+
+environment:
+  sdk: '>=2.19.4 <3.0.0'
+
+dev_dependencies:
+  melos: ^3.0.1
+  dart_flutter_team_lints: ^1.0.0
+
+scripts:
+  build:
+    apps:
+      editor: (cd apps/editor && rps build)
+      all: rps build apps editor
+    all: rps build apps all

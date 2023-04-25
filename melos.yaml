@@ -1,0 +1,13 @@
+name: petit
+
+packages:
+  - "apps/**"
+  - "packages/**"
+
+command:
+  bootstrap:
+    usePubspecOverrides: true
+
+ide:
+  intellij:
+    moduleNamePrefix: ''
