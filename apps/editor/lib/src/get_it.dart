@@ -7,7 +7,7 @@ import 'stores/app.dart';
 
 final GetIt it = GetIt.instance;
 
-Future<void> _registerGetIt() async {
+Future<bool> _registerGetIt() async {
   final app = await Firebase.initializeApp(
     name: 'default',
     options: DefaultFirebaseOptions.currentPlatform,
@@ -19,6 +19,12 @@ Future<void> _registerGetIt() async {
   it.registerSingleton(app);
   it.registerSingleton(firestore);
   it.registerLazySingleton(() => App());
+  return true;
 }
 
-final getItReady = _registerGetIt();
+Future<bool>? _getItFuture;
+
+Future<bool> get getItReady {
+  _getItFuture ??= _registerGetIt();
+  return _getItFuture!;
+}
