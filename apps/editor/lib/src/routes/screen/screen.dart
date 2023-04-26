@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:petit_editor/src/get_it.dart';
+import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_editor/src/theme.dart';
 
 import '../../blocks/separator.dart';

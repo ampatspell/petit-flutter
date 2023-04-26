@@ -13,7 +13,11 @@ class _Header extends StatelessWidget {
       padding: AppEdgeInsets.symmetric15x7,
       child: Row(
         children: [
-          Text('Petit', style: AppTextStyle.regularBold),
+          InkWell(
+            borderRadius: const BorderRadius.all(Radius.circular(3)),
+            onTap: () => HomeRoute().go(context),
+            child: Text('Petit', style: AppTextStyle.regularBold),
+          ),
           const Spacer(),
           if (accessories != null) ...accessories!
         ],
