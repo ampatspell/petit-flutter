@@ -9,11 +9,13 @@ part 'header.dart';
 class Screen extends StatelessWidget {
   final Widget body;
   final bool expandBody;
+  final List<Widget>? accessories;
 
   const Screen({
     super.key,
     required this.body,
     this.expandBody = false,
+    this.accessories,
   });
 
   @override
@@ -49,7 +51,9 @@ class Screen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.start,
       mainAxisSize: MainAxisSize.max,
       children: [
-        _Header(),
+        _Header(
+          accessories: accessories,
+        ),
         const Separator(),
         Expanded(
           child: child,

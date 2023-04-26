@@ -10,6 +10,12 @@ class ProjectsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Screen(
       expandBody: true,
+      accessories: [
+        IconButton(
+          onPressed: () {},
+          icon: const Icon(Icons.add),
+        ),
+      ],
       body: ProjectsList(
         onSelect: (projectRef) {
           print(projectRef);

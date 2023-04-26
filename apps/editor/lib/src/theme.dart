@@ -33,6 +33,13 @@ final appTheme = ThemeData(
   textTheme: TextTheme(
     bodyMedium: AppTextStyle.regular, // Text() default
   ),
+  iconTheme: const IconThemeData(size: 18),
+  iconButtonTheme: IconButtonThemeData(
+    style: IconButton.styleFrom(
+      padding: const EdgeInsets.all(3),
+      minimumSize: const Size(10, 10),
+    ),
+  ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
       padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
