@@ -32,12 +32,13 @@ final appTheme = ThemeData(
   splashColor: AppColors.grey245,
   textTheme: TextTheme(
     bodyMedium: AppTextStyle.regular, // Text() default
+    bodyLarge: AppTextStyle.regular,
   ),
-  iconTheme: const IconThemeData(size: 18),
+  iconTheme: const IconThemeData(size: 16),
   iconButtonTheme: IconButtonThemeData(
     style: IconButton.styleFrom(
-      padding: const EdgeInsets.all(3),
-      minimumSize: const Size(10, 10),
+      padding: const EdgeInsets.all(2),
+      minimumSize: const Size(24, 24),
     ),
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
@@ -51,5 +52,11 @@ final appTheme = ThemeData(
       ),
       elevation: 1,
     ),
+  ),
+  inputDecorationTheme: InputDecorationTheme(
+    labelStyle: AppTextStyle.regular,
+    isCollapsed: true,
+    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
+    isDense: true,
   ),
 );

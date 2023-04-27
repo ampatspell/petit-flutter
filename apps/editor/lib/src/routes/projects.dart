@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../blocks/projects/list.dart';
+import 'router.dart';
 import 'screen/screen.dart';
 
 class ProjectsScreen extends StatelessWidget {
@@ -12,13 +13,14 @@ class ProjectsScreen extends StatelessWidget {
       expandBody: true,
       accessories: [
         IconButton(
-          onPressed: () {},
+          onPressed: () => NewProjectRoute().go(context),
           icon: const Icon(Icons.add),
         ),
       ],
       body: ProjectsList(
         onSelect: (projectRef) {
-          print(projectRef);
+          print('on select');
+          ProjectRoute(projectId: projectRef.id).go(context);
         },
       ),
     );

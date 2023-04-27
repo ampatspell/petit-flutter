@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_editor/src/theme.dart';
 
 import '../../get_it.dart';
@@ -8,7 +7,7 @@ import '../../stores/firestore/project.dart';
 import '../stream_list_view.dart';
 
 class ProjectsList extends StatelessWidget {
-  final void Function(DocumentReference<Map<String, dynamic>> projectRef) onSelect;
+  final void Function(DocumentReference<Project> ref) onSelect;
 
   const ProjectsList({
     super.key,
@@ -23,7 +22,7 @@ class ProjectsList extends StatelessWidget {
     return StreamListView(
       stream: ref.snapshots(),
       toList: (data) => data.docs,
-      onSelect: (item) => ProjectRoute(projectId: item.id).go(context),
+      onSelect: (item) => onSelect(item.reference),
       itemBuilder: (item) {
         final data = item.data();
         return Padding(

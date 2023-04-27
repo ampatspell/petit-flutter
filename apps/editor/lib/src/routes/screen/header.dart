@@ -10,13 +10,17 @@ class _Header extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: AppEdgeInsets.symmetric15x7,
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       child: Row(
         children: [
           InkWell(
+            hoverColor: Colors.transparent,
             borderRadius: const BorderRadius.all(Radius.circular(3)),
             onTap: () => HomeRoute().go(context),
-            child: Text('Petit', style: AppTextStyle.regularBold),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 5),
+              child: Text('Petit', style: AppTextStyle.regularBold),
+            ),
           ),
           const Spacer(),
           if (accessories != null) ...accessories!

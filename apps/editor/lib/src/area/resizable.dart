@@ -210,6 +210,7 @@ class _AreaNodeEditorResizeHandle extends HookWidget {
       } else {
         hoverAnimationController.reverse();
       }
+      return null;
     });
 
     return MouseRegion(
