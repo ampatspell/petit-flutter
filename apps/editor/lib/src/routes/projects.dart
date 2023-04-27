@@ -1,28 +1,38 @@
 import 'package:flutter/material.dart';
+import 'package:macos_ui/macos_ui.dart';
 
-import '../blocks/projects/list.dart';
 import 'router.dart';
-import 'screen/screen.dart';
 
 class ProjectsScreen extends StatelessWidget {
   const ProjectsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Screen(
-      expandBody: true,
-      accessories: [
-        IconButton(
-          onPressed: () => NewProjectRoute().go(context),
-          icon: const Icon(Icons.add),
-        ),
-      ],
-      body: ProjectsList(
-        onSelect: (projectRef) {
-          print('on select');
-          ProjectRoute(projectId: projectRef.id).go(context);
-        },
+    return MacosScaffold(
+      toolBar: ToolBar(
+        title: const Text("Projects"),
+        actions: [
+          ToolBarIconButton(
+            label: 'Add project',
+            icon: const MacosIcon(Icons.add),
+            showLabel: false,
+            onPressed: () => NewProjectRoute().go(context),
+          ),
+        ],
       ),
+      children: [
+        ContentArea(builder: (context, scrollController) {
+          return Text("Hello");
+        }),
+      ],
     );
+
+    //   body: ProjectsList(
+    //     onSelect: (projectRef) {
+    //       print('on select');
+    //       ProjectRoute(projectId: projectRef.id).go(context);
+    //     },
+    //   ),
+    // );
   }
 }
