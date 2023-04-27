@@ -1,43 +1,45 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:petit_editor/src/stores/firestore/utils.dart';
 
 import '../../get_it.dart';
 
-class Project {
+class ProjectData {
   String? name;
+  FirestoreDateTime createdAt;
 
-  Project({
-    required this.name,
-  });
+  ProjectData({required this.name, required this.createdAt});
 
-  static CollectionReference<Project> collection() {
+  static CollectionReference<ProjectData> collection() {
     final FirebaseFirestore firestore = it.get();
-    return Project.wrapCollection(firestore.collection('projects'));
+    return ProjectData.wrapCollection(firestore.collection('projects'));
   }
 
-  static CollectionReference<Project> wrapCollection(CollectionReference<Map<String, dynamic>> ref) {
+  static CollectionReference<ProjectData> wrapCollection(CollectionReference<Map<String, dynamic>> ref) {
     return ref.withConverter(
-      fromFirestore: (snapshot, options) => Project.fromFirestore(snapshot, options),
+      fromFirestore: (snapshot, options) => ProjectData.fromFirestore(snapshot, options),
       toFirestore: (value, options) => value.toFirestore(options),
     );
   }
 
-  static DocumentReference<Project> wrapReference(DocumentReference<Map<String, dynamic>> reference) {
+  static DocumentReference<ProjectData> wrapReference(DocumentReference<Map<String, dynamic>> reference) {
     return reference.withConverter(
-      fromFirestore: (snapshot, options) => Project.fromFirestore(snapshot, options),
+      fromFirestore: (snapshot, options) => ProjectData.fromFirestore(snapshot, options),
       toFirestore: (value, options) => value.toFirestore(options),
     );
   }
 
-  factory Project.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
+  factory ProjectData.fromFirestore(DocumentSnapshot<Map<String, dynamic>> snapshot, SnapshotOptions? options) {
     final data = snapshot.data()!;
-    return Project(
+    return ProjectData(
       name: data['name'] as String,
+      createdAt: FirestoreDateTime.fromFirestore(data['createdAt']),
     );
   }
 
   Map<String, Object?> toFirestore(SetOptions? options) {
     return {
       'name': name,
+      'createdAt': createdAt.toFirestore(),
     };
   }
 }
