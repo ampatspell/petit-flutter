@@ -1,16 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
-import '../screen/fluent.dart';
-
 class ProjectScreen extends StatelessWidget {
   final String projectId;
 
-  ProjectScreen({
+  const ProjectScreen({
     super.key,
     required this.projectId,
-  }) {
-    FluentScreenContext.instance.buildAppBarActions = null;
-  }
+  });
 
   @override
   Widget build(BuildContext context) {

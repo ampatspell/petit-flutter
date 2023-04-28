@@ -53,7 +53,7 @@ class DevelopmentRoute extends GoRouteData {
 class ProjectsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProjectsScreen();
+    return const ProjectsScreen();
   }
 }
 

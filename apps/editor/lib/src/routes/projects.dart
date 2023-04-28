@@ -6,9 +6,7 @@ import 'package:petit_editor/src/routes/screen/fluent.dart';
 import '../blocks/projects/list.dart';
 
 class ProjectsScreen extends HookWidget {
-  ProjectsScreen({super.key}) {
-    FluentScreenContext.instance.buildAppBarActions = buildAppBarActions;
-  }
+  const ProjectsScreen({super.key});
 
   Widget buildAppBarActions(BuildContext context) {
     return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
@@ -25,11 +23,13 @@ class ProjectsScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldPage(
-      header: PageHeader(
-        title: Text('Projects'),
+    return const FluentTools(
+      child: ScaffoldPage(
+        header: PageHeader(
+          title: Text('Projects'),
+        ),
+        content: ProjectsScreenContent(),
       ),
-      content: ProjectsScreenContent(),
     );
   }
 }

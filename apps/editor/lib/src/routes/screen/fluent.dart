@@ -3,12 +3,21 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../router.dart';
 
-class FluentScreenContext {
-  static FluentScreenContext instance = FluentScreenContext();
-  Widget Function(BuildContext context)? buildAppBarActions;
+class FluentTools extends HookWidget {
+  final Widget child;
+
+  const FluentTools({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return child;
+  }
 }
 
-class FluentScreen extends HookWidget {
+class FluentScreen extends StatelessWidget {
   final Widget content;
   final BuildContext? shellContext;
 
@@ -37,12 +46,10 @@ class FluentScreen extends HookWidget {
       return location.startsWith(key.value);
     });
 
-    final ctx = FluentScreenContext.instance;
-
     return NavigationView(
       appBar: NavigationAppBar(
         title: (selected.value as PaneItem).title,
-        actions: ctx.buildAppBarActions != null ? ctx.buildAppBarActions!(context) : null,
+        // actions: ctx.buildAppBarActions != null ? ctx.buildAppBarActions!(context) : null,
       ),
       paneBodyBuilder: (item, body) => content,
       pane: NavigationPane(
