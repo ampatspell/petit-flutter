@@ -1,3 +1,4 @@
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:petit_editor/src/get_it.dart';
@@ -18,14 +19,20 @@ class MyApp extends StatelessWidget {
       future: getItReady,
       builder: (context, snapshot) {
         if (snapshot.hasData) {
-          return MacosApp.router(
-            routerDelegate: router.routerDelegate,
-            routeInformationParser: router.routeInformationParser,
-            routeInformationProvider: router.routeInformationProvider,
-            theme: MacosThemeData.light(),
-            themeMode: ThemeMode.light,
+          return FluentApp.router(
             debugShowCheckedModeBanner: false,
+            routerConfig: router,
+            theme: FluentThemeData.light(),
           );
+
+          // return MacosApp.router(
+          //   routerDelegate: router.routerDelegate,
+          //   routeInformationParser: router.routeInformationParser,
+          //   routeInformationProvider: router.routeInformationProvider,
+          //   theme: MacosThemeData.light(),
+          //   themeMode: ThemeMode.light,
+          //   debugShowCheckedModeBanner: false,
+          // );
         } else {
           return Container();
         }
