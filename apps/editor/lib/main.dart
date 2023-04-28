@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:petit_editor/src/get_it.dart';
-import 'package:petit_editor/src/theme.dart';
 
 import 'src/routes/router.dart';
 
