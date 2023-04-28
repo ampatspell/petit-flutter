@@ -1,8 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/material.dart';
-import 'package:macos_ui/macos_ui.dart';
 import 'package:petit_editor/src/get_it.dart';
-import 'package:petit_editor/src/theme.dart';
 
 import 'src/routes/router.dart';
 
@@ -24,15 +21,6 @@ class MyApp extends StatelessWidget {
             routerConfig: router,
             theme: FluentThemeData.light(),
           );
-
-          // return MacosApp.router(
-          //   routerDelegate: router.routerDelegate,
-          //   routeInformationParser: router.routeInformationParser,
-          //   routeInformationProvider: router.routeInformationProvider,
-          //   theme: MacosThemeData.light(),
-          //   themeMode: ThemeMode.light,
-          //   debugShowCheckedModeBanner: false,
-          // );
         } else {
           return Container();
         }

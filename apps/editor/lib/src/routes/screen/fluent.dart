@@ -1,38 +1,55 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
 import '../router.dart';
 
-class FluentScreen extends StatelessWidget {
-  final int selected;
-  final Widget body;
+class FluentScreenContext {
+  static FluentScreenContext instance = FluentScreenContext();
+  Widget Function(BuildContext context)? buildAppBarActions;
+}
+
+class FluentScreen extends HookWidget {
+  final Widget content;
+  final BuildContext? shellContext;
 
   const FluentScreen({
     super.key,
-    required this.selected,
-    required this.body,
+    required this.content,
+    required this.shellContext,
   });
 
   @override
   Widget build(BuildContext context) {
+    final location = router.location;
+    final items = routes
+        .map((route) => PaneItem(
+              key: ValueKey(route.location),
+              icon: Icon(route.icon),
+              title: Text(route.title),
+              body: const SizedBox.shrink(),
+              onTap: () => route.go(context),
+            ))
+        .toList(growable: false)
+        .cast<NavigationPaneItem>();
+
+    final selected = items.asMap().entries.firstWhere((element) {
+      final key = element.value.key as ValueKey<String>;
+      return location.startsWith(key.value);
+    });
+
+    final ctx = FluentScreenContext.instance;
+
     return NavigationView(
-      appBar: const NavigationAppBar(
-        title: Text('Projects'),
+      appBar: NavigationAppBar(
+        title: (selected.value as PaneItem).title,
+        actions: ctx.buildAppBarActions != null ? ctx.buildAppBarActions!(context) : null,
       ),
-      paneBodyBuilder: (item, body) {
-        return this.body;
-      },
+      paneBodyBuilder: (item, body) => content,
       pane: NavigationPane(
         header: const Text('Petit'),
-        displayMode: PaneDisplayMode.compact,
-        selected: selected,
-        items: [
-          PaneItem(
-            icon: const Icon(FluentIcons.project_collection),
-            title: const Text("Projects"),
-            body: const SizedBox.shrink(),
-            onTap: () => ProjectsRoute().go(context),
-          ),
-        ],
+        displayMode: PaneDisplayMode.open,
+        items: items,
+        selected: selected.key,
       ),
     );
   }

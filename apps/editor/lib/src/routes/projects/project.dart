@@ -1,20 +1,24 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 import '../screen/fluent.dart';
 
 class ProjectScreen extends StatelessWidget {
   final String projectId;
 
-  const ProjectScreen({
+  ProjectScreen({
     super.key,
     required this.projectId,
-  });
+  }) {
+    FluentScreenContext.instance.buildAppBarActions = null;
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const FluentScreen(
-      selected: 0,
-      body: Center(child: Text("Project")),
+    return ScaffoldPage(
+      header: PageHeader(
+        title: Text('Project $projectId'),
+      ),
+      content: const Center(child: Text("Project")),
     );
   }
 }

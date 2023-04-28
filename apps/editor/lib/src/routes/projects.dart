@@ -6,13 +6,30 @@ import 'package:petit_editor/src/routes/screen/fluent.dart';
 import '../blocks/projects/list.dart';
 
 class ProjectsScreen extends HookWidget {
-  const ProjectsScreen({super.key});
+  ProjectsScreen({super.key}) {
+    FluentScreenContext.instance.buildAppBarActions = buildAppBarActions;
+  }
+
+  Widget buildAppBarActions(BuildContext context) {
+    return Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+      Padding(
+        padding: const EdgeInsetsDirectional.only(end: 8.0),
+        child: ToggleSwitch(
+          content: const Text('Dark Mode'),
+          checked: FluentTheme.of(context).brightness.isDark,
+          onChanged: (v) {},
+        ),
+      ),
+    ]);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return const FluentScreen(
-      selected: 0,
-      body: const ProjectsScreenContent(),
+    return const ScaffoldPage(
+      header: PageHeader(
+        title: Text('Projects'),
+      ),
+      content: ProjectsScreenContent(),
     );
   }
 }
