@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:petit_editor/src/get_it.dart';
+import 'package:petit_editor/src/theme.dart';
 
 import 'src/routes/router.dart';
 
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
           return FluentApp.router(
             debugShowCheckedModeBanner: false,
             routerConfig: router,
-            theme: FluentThemeData.light(),
+            theme: theme,
           );
         } else {
           return Container();

@@ -1,8 +1,9 @@
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class AppColors {
+  static const Color grey255 = Color.fromARGB(255, 255, 255, 255);
   static const Color grey249 = Color.fromARGB(255, 249, 249, 249);
   static const Color grey245 = Color.fromARGB(255, 245, 245, 245);
   static const Color grey230 = Color.fromARGB(255, 230, 230, 230);
@@ -10,11 +11,6 @@ abstract class AppColors {
   static const Color grey150 = Color.fromARGB(255, 150, 150, 150);
   static const Color grey020 = Color.fromARGB(255, 20, 20, 20);
   static const Color grey000 = Color.fromARGB(255, 0, 0, 0);
-}
-
-abstract class AppTextStyle {
-  static final TextStyle regular = GoogleFonts.ubuntuMono(fontSize: 15);
-  static final TextStyle regularBold = GoogleFonts.ubuntuMono(fontSize: 15, fontWeight: FontWeight.bold);
 }
 
 abstract class AppEdgeInsets {
@@ -26,37 +22,32 @@ abstract class AppGaps {
   static const Gap gap10 = Gap(10);
 }
 
-final appTheme = ThemeData(
-  useMaterial3: true,
-  hoverColor: AppColors.grey249,
-  splashColor: AppColors.grey245,
-  textTheme: TextTheme(
-    bodyMedium: AppTextStyle.regular, // Text() default
-    bodyLarge: AppTextStyle.regular,
+final fontFamily = GoogleFonts.ubuntuMono().fontFamily;
+final lightTheme = FluentThemeData.light();
+
+final typography = Typography.raw(
+  body: lightTheme.typography.body!.copyWith(fontFamily: fontFamily),
+  title: lightTheme.typography.title!.copyWith(fontFamily: fontFamily),
+  bodyLarge: lightTheme.typography.bodyLarge!.copyWith(fontFamily: fontFamily),
+  titleLarge: lightTheme.typography.titleLarge!.copyWith(fontFamily: fontFamily),
+  caption: lightTheme.typography.caption!.copyWith(fontFamily: fontFamily),
+  bodyStrong: lightTheme.typography.bodyStrong!.copyWith(fontFamily: fontFamily),
+  display: lightTheme.typography.display!.copyWith(fontFamily: fontFamily),
+  subtitle: lightTheme.typography.subtitle!.copyWith(fontFamily: fontFamily),
+);
+
+final theme = lightTheme.copyWith(
+  typography: typography,
+  navigationPaneTheme: NavigationPaneThemeData(
+    itemHeaderTextStyle: typography.bodyStrong,
+    selectedTextStyle: ButtonState.all(typography.body),
+    unselectedTextStyle: ButtonState.all(typography.body),
+    selectedTopTextStyle: ButtonState.all(typography.body),
+    unselectedTopTextStyle: ButtonState.all(typography.body),
   ),
-  iconTheme: const IconThemeData(size: 16),
-  iconButtonTheme: IconButtonThemeData(
-    style: IconButton.styleFrom(
-      padding: const EdgeInsets.all(2),
-      minimumSize: const Size(24, 24),
+  buttonTheme: ButtonThemeData(
+    filledButtonStyle: ButtonStyle(
+      padding: ButtonState.all(const EdgeInsets.fromLTRB(10, 7, 10, 8)),
     ),
-  ),
-  elevatedButtonTheme: ElevatedButtonThemeData(
-    style: ElevatedButton.styleFrom(
-      padding: const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-      foregroundColor: AppColors.grey020,
-      backgroundColor: AppColors.grey245,
-      textStyle: AppTextStyle.regular,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.all(Radius.circular(3)),
-      ),
-      elevation: 1,
-    ),
-  ),
-  inputDecorationTheme: InputDecorationTheme(
-    labelStyle: AppTextStyle.regular,
-    isCollapsed: true,
-    contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-    isDense: true,
   ),
 );

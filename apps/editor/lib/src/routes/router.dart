@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/projects/project.dart';
-import 'package:petit_editor/src/routes/screen/fluent.dart';
 
+import '../blocks/fluent_screen.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 
@@ -84,7 +84,7 @@ class Route {
   final String title;
   final void Function(BuildContext context) go;
 
-  Route({
+  const Route({
     required this.location,
     required this.icon,
     required this.title,

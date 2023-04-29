@@ -8,11 +8,11 @@ class NewProjectScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ScaffoldPage(
-      header: PageHeader(
+    return ScaffoldPage.withPadding(
+      header: const PageHeader(
         title: Text('New project'),
       ),
-      content: NewProjectForm(),
+      content: const NewProjectForm(),
     );
   }
 }
