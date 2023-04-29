@@ -10,16 +10,6 @@ import '../get_it.dart';
 
 part 'development.g.dart';
 
-DateTime? timestampToDateTime(dynamic value) {
-  if (value is FieldValue) {
-    return DateTime.now();
-  }
-  if (value is Timestamp) {
-    return value.toDate();
-  }
-  return null;
-}
-
 class Project extends _Project with _$Project {
   Project(super.reference);
 
@@ -80,7 +70,8 @@ class DevelopmentScreen extends HookWidget {
     );
   }
 
-  Widget buildModelsContent(BuildContext context, FirestoreModels<Project> snapshot) {
+  Widget buildModelsContent(
+      BuildContext context, FirestoreModels<Project> snapshot) {
     return Observer(
       builder: (context) {
         return Column(
@@ -117,7 +108,8 @@ class DevelopmentScreen extends HookWidget {
     );
   }
 
-  buildAddNew(BuildContext context, CollectionReference<Map<String, dynamic>> reference) {
+  buildAddNew(BuildContext context,
+      CollectionReference<Map<String, dynamic>> reference) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
