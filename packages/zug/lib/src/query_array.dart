@@ -3,19 +3,26 @@ import 'package:mobx/mobx.dart';
 
 import 'base.dart';
 import 'entity.dart';
+import 'hook.dart';
 
 part 'query_array.g.dart';
 
-class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M> with _$FirestoreModels {
+class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M>
+    with _$FirestoreModels {
   FirestoreModels({
     required super.reference,
     required super.model,
     required super.canUpdate,
   });
+
+  @override
+  String toString() {
+    return 'FirestoreModels{isLoading: $isLoading, content: $content';
+  }
 }
 
-abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreModelsBase<M, QuerySnapshot<FirestoreData>>
-    with Store {
+abstract class _FirestoreModels<M extends FirestoreEntity>
+    extends FirestoreModelsBase<M, QuerySnapshot<FirestoreData>> with Store {
   final Query<Map<String, dynamic>> reference;
   final ObservableList<M> content = ObservableList();
 
@@ -28,6 +35,11 @@ abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreMode
           model: model,
           canUpdate: canUpdate,
         );
+
+  @computed
+  String get asString {
+    return toString();
+  }
 
   @override
   @action
@@ -69,4 +81,15 @@ abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreMode
     hasPendingWrites = querySnapshot.metadata.hasPendingWrites;
     isLoading = false;
   }
+}
+
+FirestoreModels<M> useModels<M extends FirestoreEntity>(
+    {required Query<FirestoreData> query,
+    required FirestoreEntityFactory<M> model,
+    CanUpdateFirestoreEntity<M>? canUpdate}) {
+  return useSubscribable(FirestoreModels(
+    reference: query,
+    model: model,
+    canUpdate: canUpdate,
+  ));
 }

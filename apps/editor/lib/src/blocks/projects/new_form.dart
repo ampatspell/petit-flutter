@@ -14,9 +14,9 @@ class NewProjectForm extends HookWidget {
     return Observer(
       builder: (context) {
         void commit() async {
-          await store.value.commit();
-          if (context.mounted) {
-            ProjectsRoute().go(context);
+          final ref = await store.value.commit();
+          if (context.mounted && ref != null) {
+            ProjectRoute(projectId: ref.id).go(context);
           }
         }
 

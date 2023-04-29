@@ -1,9 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
-import 'package:petit_editor/src/stores/firestore/utils.dart';
+import 'package:petit_zug/petit_zug.dart';
 
 import '../get_it.dart';
-import 'firestore/project.dart';
 
 part 'projects.g.dart';
 
@@ -30,17 +29,17 @@ abstract class _NewProjectStore with Store {
   FirebaseFirestore get firestore => it.get();
 
   @action
-  Future<DocumentReference<ProjectData>?> commit() async {
+  Future<DocumentReference<FirestoreData>?> commit() async {
     if (!canCommit) {
       return null;
     }
     isBusy = true;
     try {
-      var reference = ProjectData.collection().doc();
-      await reference.set(ProjectData(
-        name: name,
-        createdAt: FirestoreDateTime.serverTimestamp(),
-      ));
+      var reference = firestore.collection('projects').doc();
+      await reference.set({
+        'name': name,
+        'createdAt': FieldValue.serverTimestamp(),
+      });
       isCreated = true;
       return reference;
     } finally {

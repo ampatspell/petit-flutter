@@ -18,7 +18,8 @@ typedef CanUpdateFirestoreEntity<M extends FirestoreEntity> = bool Function(
   FirestoreData? data,
 );
 
-abstract class FirestoreModelsBase<M extends FirestoreEntity, S> extends _FirestoreModelsBase<M, S> {
+abstract class FirestoreModelsBase<M extends FirestoreEntity, S>
+    extends _FirestoreModelsBase<M, S> {
   FirestoreModelsBase({
     required super.subscribe,
     required super.model,
@@ -26,7 +27,9 @@ abstract class FirestoreModelsBase<M extends FirestoreEntity, S> extends _Firest
   });
 }
 
-abstract class _FirestoreModelsBase<M extends FirestoreEntity, S> with Store implements Subscribable {
+abstract class _FirestoreModelsBase<M extends FirestoreEntity, S>
+    with Store
+    implements Subscribable {
   late final StreamSubscriptions<S> _subscriptions;
   final FirestoreEntityFactory<M> model;
   final CanUpdateFirestoreEntity<M>? canUpdate;
@@ -39,7 +42,13 @@ abstract class _FirestoreModelsBase<M extends FirestoreEntity, S> with Store imp
     _subscriptions = StreamSubscriptions(
       subscribe: () => subscribe(),
       onEvent: onSnapshot,
+      onSubscribed: () => _onLoading(),
     );
+  }
+
+  @action
+  void _onLoading() {
+    isLoading = true;
   }
 
   void onSnapshot(S querySnapshot);

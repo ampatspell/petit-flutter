@@ -34,12 +34,14 @@ class StreamSubscriptions<T> extends _StreamSubscriptions<T> {
   StreamSubscriptions({
     required super.subscribe,
     required super.onEvent,
+    required super.onSubscribed,
   });
 }
 
 abstract class _StreamSubscriptions<T> with Store implements Subscribable {
   final Stream<T> Function() _subscribe;
   final void Function(T event) _onEvent;
+  final VoidCallback _onSubscribed;
   Stream<T>? _stream;
   StreamSubscription<T>? _subscription;
   int _subscriptions = 0;
@@ -51,8 +53,10 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
   _StreamSubscriptions({
     required Stream<T> Function() subscribe,
     required void Function(T event) onEvent,
+    required VoidCallback onSubscribed,
   })  : _subscribe = subscribe,
-        _onEvent = onEvent;
+        _onEvent = onEvent,
+        _onSubscribed = onSubscribed;
 
   @override
   @action
@@ -61,6 +65,7 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
       _stream = _subscribe();
       _subscription = _stream!.listen(_onEvent);
       isSubscribed = true;
+      _onSubscribed();
     }
     _subscriptions++;
     return CallbackSubscription(() => _unsubscribe());
