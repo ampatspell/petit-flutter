@@ -6,6 +6,7 @@ import 'package:petit_editor/src/routes/projects/project.dart';
 import 'package:petit_editor/src/stores/firestore/project.dart';
 
 import '../blocks/fluent_screen.dart';
+import 'development.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 
@@ -47,7 +48,7 @@ class FluentRoute extends ShellRouteData {
 class DevelopmentRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return Container();
+    return const DevelopmentScreen();
   }
 }
 

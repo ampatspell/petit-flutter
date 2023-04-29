@@ -7,6 +7,11 @@ class ProjectData {
   String? name;
   FirestoreDateTime createdAt;
 
+  @override
+  String toString() {
+    return 'ProjectData{name: $name}';
+  }
+
   ProjectData({required this.name, required this.createdAt});
 
   static CollectionReference<ProjectData> collection() {
