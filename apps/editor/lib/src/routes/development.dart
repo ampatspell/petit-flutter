@@ -10,6 +10,16 @@ import '../get_it.dart';
 
 part 'development.g.dart';
 
+DateTime? timestampToDateTime(dynamic value) {
+  if (value is FieldValue) {
+    return DateTime.now();
+  }
+  if (value is Timestamp) {
+    return value.toDate();
+  }
+  return null;
+}
+
 class Project extends _Project with _$Project {
   Project(super.reference);
 
@@ -19,11 +29,15 @@ class Project extends _Project with _$Project {
   @computed
   int? get index => data['index'];
 
+  @computed
+  DateTime? get createdAt => timestampToDateTime(data['createdAt']);
+
   @action
   void incIndex() {
     var index = this.index ?? 0;
     index++;
     data['index'] = index;
+    data['createdAt'] = FieldValue.serverTimestamp();
   }
 
   @override
@@ -58,6 +72,7 @@ class DevelopmentScreen extends HookWidget {
       content: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          buildListView(context, models),
           buildModelsContent(context, models),
           buildAddNew(context, collection),
         ],
@@ -75,10 +90,6 @@ class DevelopmentScreen extends HookWidget {
               padding: const EdgeInsets.all(10.0),
               child: Row(
                 children: [
-                  Text('${e.name} ${e.index}'),
-                  const Gap(10),
-                  Text(e.isSaving ? 'Saving' : 'Idle'),
-                  const Gap(10),
                   FilledButton(
                     child: const Text('+'),
                     onPressed: () {
@@ -93,6 +104,10 @@ class DevelopmentScreen extends HookWidget {
                       e.delete();
                     },
                   ),
+                  const Gap(10),
+                  Text('${e.name} ${e.index} ${e.createdAt}'),
+                  const Gap(10),
+                  Text(e.isSaving ? 'Saving' : 'Idle'),
                 ],
               ),
             );
@@ -110,11 +125,39 @@ class DevelopmentScreen extends HookWidget {
           child: const Text('Add new'),
           onPressed: () {
             Project(reference.doc())
-              ..set({'name': 'New', 'index': 0})
+              ..set({
+                'name': 'New',
+                'index': 0,
+                'createdAt': FieldValue.serverTimestamp(),
+              })
               ..save();
           },
         ),
       ],
+    );
+  }
+
+  Widget buildListView(BuildContext context, FirestoreModels<Project> models) {
+    return Observer(
+      builder: (context) {
+        print('list');
+        return SizedBox(
+          width: 300,
+          child: ListView.builder(
+            itemBuilder: (context, index) {
+              return Observer(builder: (context) {
+                print('item $index');
+                final model = models.content[index];
+                return ListTile.selectable(
+                  title: Text('${model.name} ${model.index}'),
+                  onSelectionChange: (selected) {},
+                );
+              });
+            },
+            itemCount: models.content.length,
+          ),
+        );
+      },
     );
   }
 }
