@@ -15,18 +15,12 @@ class ProjectsScreen extends HookWidget {
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
-            CommandBarBuilderItem(
-              builder: (context, mode, w) => Tooltip(
-                message: "Create new project",
-                child: w,
-              ),
-              wrappedItem: CommandBarButton(
-                icon: const Icon(FluentIcons.add),
-                label: const Text('New'),
-                onPressed: () {
-                  NewProjectRoute().go(context);
-                },
-              ),
+            CommandBarButton(
+              icon: const Icon(FluentIcons.add),
+              label: const Text('New'),
+              onPressed: () {
+                NewProjectRoute().go(context);
+              },
             ),
           ],
         ),

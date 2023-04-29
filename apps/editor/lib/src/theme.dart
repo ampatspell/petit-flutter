@@ -49,5 +49,8 @@ final theme = lightTheme.copyWith(
     filledButtonStyle: ButtonStyle(
       padding: ButtonState.all(const EdgeInsets.fromLTRB(10, 7, 10, 8)),
     ),
+    defaultButtonStyle: ButtonStyle(
+      padding: ButtonState.all(const EdgeInsets.fromLTRB(10, 7, 10, 8)),
+    ),
   ),
 );

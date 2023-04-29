@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/projects/project.dart';
+import 'package:petit_editor/src/stores/firestore/project.dart';
 
 import '../blocks/fluent_screen.dart';
 import 'projects.dart';
@@ -71,7 +72,9 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProjectScreen(projectId: projectId);
+    return ProjectScreen(
+      reference: ProjectData.doc(projectId),
+    );
   }
 }
 

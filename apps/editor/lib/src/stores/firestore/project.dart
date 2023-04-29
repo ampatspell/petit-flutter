@@ -14,6 +14,10 @@ class ProjectData {
     return ProjectData.wrapCollection(firestore.collection('projects'));
   }
 
+  static DocumentReference<ProjectData> doc(String id) {
+    return collection().doc(id);
+  }
+
   static CollectionReference<ProjectData> wrapCollection(CollectionReference<Map<String, dynamic>> ref) {
     return ref.withConverter(
       fromFirestore: (snapshot, options) => ProjectData.fromFirestore(snapshot, options),

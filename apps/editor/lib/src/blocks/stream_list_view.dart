@@ -71,7 +71,7 @@ class _StreamListViewItem<I> extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final controller = useAnimationController(duration: const Duration(milliseconds: 300));
+    final controller = useAnimationController(duration: const Duration(milliseconds: 200));
     final background = useAnimation(ColorTween(begin: AppColors.grey255, end: AppColors.grey245).animate(controller));
 
     return MouseRegion(
