@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-import '../screen/screen.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 
 class ProjectScreen extends StatelessWidget {
   final String projectId;
@@ -12,11 +10,11 @@ class ProjectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Screen(
-      expandBody: true,
-      body: Center(
-        child: Text(projectId),
+    return ScaffoldPage(
+      header: PageHeader(
+        title: Text('Project $projectId'),
       ),
+      content: const Center(child: Text("Project")),
     );
   }
 }

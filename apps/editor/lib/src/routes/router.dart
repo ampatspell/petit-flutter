@@ -1,33 +1,55 @@
 import 'dart:async';
 
-import 'package:flutter/material.dart';
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/projects/project.dart';
 
+import '../blocks/fluent_screen.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 
 part 'router.g.dart';
 
-@TypedGoRoute<HomeRoute>(path: '/')
-class HomeRoute extends GoRouteData {
+final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
+
+@TypedShellRoute<FluentRoute>(
+  routes: <TypedRoute<RouteData>>[
+    TypedGoRoute<ProjectsRoute>(
+      path: '/projects',
+      routes: <TypedGoRoute<GoRouteData>>[
+        TypedGoRoute<NewProjectRoute>(
+          path: 'new',
+        ),
+        TypedGoRoute<ProjectRoute>(
+          path: ':projectId',
+        ),
+      ],
+    ),
+    TypedGoRoute<DevelopmentRoute>(path: '/dev'),
+  ],
+)
+class FluentRoute extends ShellRouteData {
+  const FluentRoute();
+
+  static final GlobalKey<NavigatorState> $navigatorKey = _shellKey;
+
   @override
-  FutureOr<String> redirect(BuildContext context, GoRouterState state) {
-    return '/projects';
+  Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
+    return FluentScreen(
+      content: navigator,
+      shellContext: _shellKey.currentContext,
+    );
   }
 }
 
-@TypedGoRoute<ProjectsRoute>(
-  path: '/projects',
-  routes: <TypedGoRoute<GoRouteData>>[
-    TypedGoRoute<NewProjectRoute>(
-      path: 'new',
-    ),
-    TypedGoRoute<ProjectRoute>(
-      path: ':projectId',
-    ),
-  ],
-)
+class DevelopmentRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return Container();
+  }
+}
+
 class ProjectsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -53,7 +75,41 @@ class ProjectRoute extends GoRouteData {
   }
 }
 
+// // Without this static key, the dialog will not cover the navigation rail.
+// static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
+
+class Route {
+  final String location;
+  final IconData icon;
+  final String title;
+  final void Function(BuildContext context) go;
+
+  const Route({
+    required this.location,
+    required this.icon,
+    required this.title,
+    required this.go,
+  });
+}
+
+final routes = [
+  Route(
+    location: ProjectsRoute().location,
+    icon: FluentIcons.project_collection,
+    title: 'Projects',
+    go: (context) => ProjectsRoute().go(context),
+  ),
+  Route(
+    location: DevelopmentRoute().location,
+    icon: FluentIcons.deploy,
+    title: 'Development',
+    go: (context) => DevelopmentRoute().go(context),
+  ),
+];
+
 final router = GoRouter(
   debugLogDiagnostics: true,
+  initialLocation: '/projects',
   routes: $appRoutes,
+  navigatorKey: _rootKey,
 );
