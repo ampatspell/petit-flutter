@@ -12,4 +12,7 @@ scripts:
     apps:
       editor: (cd apps/editor && rps build)
       all: rps build apps editor
-    all: rps build apps all
+    packages:
+      zug: (cd packages/zug && rps build)
+      all: rps build packages zug
+    all: rps build packages all && rps build apps all

@@ -1,7 +1,10 @@
-export 'package:cloud_firestore/cloud_firestore.dart';
-export 'hook.dart';
-export 'query_array.dart';
-export 'entity.dart';
+library petit_zug;
+
+export './src/base.dart';
+export './src/entity.dart';
+export './src/hook.dart';
+export './src/query_array.dart';
+export './src/stream.dart';
 
 /*
 

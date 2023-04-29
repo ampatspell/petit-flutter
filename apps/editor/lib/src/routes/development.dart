@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart' hide Store;
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:mobx/mobx.dart';
+import 'package:petit_zug/petit_zug.dart';
 
 import '../get_it.dart';
-import '../stores/entities/entities.dart';
 
 part 'development.g.dart';
 
