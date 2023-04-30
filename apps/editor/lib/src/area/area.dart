@@ -7,13 +7,13 @@ import '../stores/editor/node.dart';
 import '../stores/editor/node/container.dart';
 import '../theme.dart';
 
-part 'node.dart';
-
 part 'draggable.dart';
 
-part 'resizable.dart';
+part 'node.dart';
 
 part 'node/container.dart';
+
+part 'resizable.dart';
 
 class AreaEditor extends HookWidget {
   final EditorArea area;

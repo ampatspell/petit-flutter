@@ -47,13 +47,10 @@ class DevelopmentScreen extends HookWidget {
   Widget build(BuildContext context) {
     var collection = it.get<FirebaseFirestore>().collection('projects');
     var reference = collection.orderBy('index');
-    final models = useSubscribable(FirestoreModels<Project>(
-      reference: reference,
-      model: (reference) {
-        return Project(reference);
-      },
-      canUpdate: null,
-    ));
+    final models = useModels(
+      query: reference,
+      model: (reference) => Project(reference),
+    );
 
     return ScaffoldPage.withPadding(
       header: const PageHeader(
@@ -70,8 +67,7 @@ class DevelopmentScreen extends HookWidget {
     );
   }
 
-  Widget buildModelsContent(
-      BuildContext context, FirestoreModels<Project> snapshot) {
+  Widget buildModelsContent(BuildContext context, FirestoreModels<Project> snapshot) {
     return Observer(
       builder: (context) {
         return Column(
@@ -108,8 +104,7 @@ class DevelopmentScreen extends HookWidget {
     );
   }
 
-  buildAddNew(BuildContext context,
-      CollectionReference<Map<String, dynamic>> reference) {
+  buildAddNew(BuildContext context, CollectionReference<Map<String, dynamic>> reference) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

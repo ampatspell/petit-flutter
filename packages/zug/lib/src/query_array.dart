@@ -7,8 +7,7 @@ import 'hook.dart';
 
 part 'query_array.g.dart';
 
-class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M>
-    with _$FirestoreModels {
+class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M> with _$FirestoreModels {
   FirestoreModels({
     required super.reference,
     required super.model,
@@ -21,8 +20,8 @@ class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M>
   }
 }
 
-abstract class _FirestoreModels<M extends FirestoreEntity>
-    extends FirestoreModelsBase<M, QuerySnapshot<FirestoreData>> with Store {
+abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreModelsBase<M, QuerySnapshot<FirestoreData>>
+    with Store {
   final Query<Map<String, dynamic>> reference;
   final ObservableList<M> content = ObservableList();
 
@@ -42,7 +41,11 @@ abstract class _FirestoreModels<M extends FirestoreEntity>
   }
 
   @override
-  @action
+  void onRefresh() {
+    content.clear();
+  }
+
+  @override
   void onSnapshot(QuerySnapshot<FirestoreData> querySnapshot) {
     for (var change in querySnapshot.docChanges) {
       final snapshot = change.doc;
@@ -81,15 +84,24 @@ abstract class _FirestoreModels<M extends FirestoreEntity>
     hasPendingWrites = querySnapshot.metadata.hasPendingWrites;
     isLoading = false;
   }
+
+  void updateReference(Query<Map<String, dynamic>> reference) {
+    replaceStream(() => reference.snapshots(includeMetadataChanges: true));
+  }
 }
 
 FirestoreModels<M> useModels<M extends FirestoreEntity>(
     {required Query<FirestoreData> query,
     required FirestoreEntityFactory<M> model,
     CanUpdateFirestoreEntity<M>? canUpdate}) {
-  return useSubscribable(FirestoreModels(
-    reference: query,
-    model: model,
-    canUpdate: canUpdate,
-  ));
+  return useSubscribable(
+    model: FirestoreModels(
+      reference: query,
+      model: model,
+      canUpdate: canUpdate,
+    ),
+    update: (FirestoreModels state, FirestoreModels created) {
+      state.updateReference(created.reference);
+    },
+  );
 }

@@ -18,8 +18,8 @@ typedef CanUpdateFirestoreEntity<M extends FirestoreEntity> = bool Function(
   FirestoreData? data,
 );
 
-abstract class FirestoreModelsBase<M extends FirestoreEntity, S>
-    extends _FirestoreModelsBase<M, S> {
+abstract class FirestoreModelsBase<M extends FirestoreEntity, S> extends _FirestoreModelsBase<M, S>
+    with _$FirestoreModelsBase {
   FirestoreModelsBase({
     required super.subscribe,
     required super.model,
@@ -27,12 +27,11 @@ abstract class FirestoreModelsBase<M extends FirestoreEntity, S>
   });
 }
 
-abstract class _FirestoreModelsBase<M extends FirestoreEntity, S>
-    with Store
-    implements Subscribable {
+abstract class _FirestoreModelsBase<M extends FirestoreEntity, S> with Store implements Subscribable {
   late final StreamSubscriptions<S> _subscriptions;
   final FirestoreEntityFactory<M> model;
   final CanUpdateFirestoreEntity<M>? canUpdate;
+  bool isRefreshing = false;
 
   _FirestoreModelsBase({
     required Stream<S> Function() subscribe,
@@ -40,16 +39,31 @@ abstract class _FirestoreModelsBase<M extends FirestoreEntity, S>
     required this.canUpdate,
   }) {
     _subscriptions = StreamSubscriptions(
-      subscribe: () => subscribe(),
-      onEvent: onSnapshot,
-      onSubscribed: () => _onLoading(),
-    );
+        subscribe: () => subscribe(),
+        onEvent: (snapshot) => _onSnapshot(snapshot),
+        onSubscribed: () => _onLoading(),
+        onWillRefresh: () => isRefreshing = true);
+  }
+
+  void replaceStream(Stream<S> Function() subscribe) {
+    _subscriptions.replaceStream(subscribe);
   }
 
   @action
   void _onLoading() {
     isLoading = true;
   }
+
+  @action
+  void _onSnapshot(S querySnapshot) {
+    if (isRefreshing) {
+      isRefreshing = false;
+      onRefresh();
+    }
+    onSnapshot(querySnapshot);
+  }
+
+  void onRefresh();
 
   void onSnapshot(S querySnapshot);
 

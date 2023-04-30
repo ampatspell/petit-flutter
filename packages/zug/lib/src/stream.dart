@@ -30,18 +30,20 @@ class CallbackSubscription implements Subscription {
   }
 }
 
-class StreamSubscriptions<T> extends _StreamSubscriptions<T> {
+class StreamSubscriptions<T> extends _StreamSubscriptions<T> with _$StreamSubscriptions {
   StreamSubscriptions({
     required super.subscribe,
     required super.onEvent,
     required super.onSubscribed,
+    required super.onWillRefresh,
   });
 }
 
 abstract class _StreamSubscriptions<T> with Store implements Subscribable {
-  final Stream<T> Function() _subscribe;
+  Stream<T> Function() _subscribe;
   final void Function(T event) _onEvent;
   final VoidCallback _onSubscribed;
+  final VoidCallback _onWillRefresh;
   Stream<T>? _stream;
   StreamSubscription<T>? _subscription;
   int _subscriptions = 0;
@@ -54,9 +56,11 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
     required Stream<T> Function() subscribe,
     required void Function(T event) onEvent,
     required VoidCallback onSubscribed,
+    required VoidCallback onWillRefresh,
   })  : _subscribe = subscribe,
         _onEvent = onEvent,
-        _onSubscribed = onSubscribed;
+        _onSubscribed = onSubscribed,
+        _onWillRefresh = onWillRefresh;
 
   @override
   @action
@@ -66,6 +70,7 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
       _subscription = _stream!.listen(_onEvent);
       isSubscribed = true;
       _onSubscribed();
+      print('subscribe');
     }
     _subscriptions++;
     return CallbackSubscription(() => _unsubscribe());
@@ -79,6 +84,20 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
       _subscription = null;
       _stream = null;
       isSubscribed = false;
+      print('unsubscribe');
+    }
+  }
+
+  @action
+  void replaceStream(Stream<T> Function() subscribe) {
+    _subscribe = subscribe;
+    if (isSubscribed) {
+      _subscription!.cancel();
+      _onWillRefresh();
+      _subscription = subscribe().listen(_onEvent);
+      print('resubscribe');
+    } else {
+      _onWillRefresh();
     }
   }
 }

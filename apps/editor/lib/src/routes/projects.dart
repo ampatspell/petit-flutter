@@ -9,12 +9,19 @@ class ProjectsScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
+    final order = useState(OrderDirection.asc);
     return ScaffoldPage(
       header: PageHeader(
         title: const Text('Projects'),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
+            CommandBarButton(
+              icon: Icon(order.value.icon),
+              onPressed: () {
+                order.value = order.value.next;
+              },
+            ),
             CommandBarButton(
               icon: const Icon(FluentIcons.add),
               label: const Text('New'),
@@ -26,6 +33,7 @@ class ProjectsScreen extends HookWidget {
         ),
       ),
       content: ProjectsList(
+        order: order.value,
         onSelect: (ref) {
           ProjectRoute(projectId: ref.id).go(context);
         },
