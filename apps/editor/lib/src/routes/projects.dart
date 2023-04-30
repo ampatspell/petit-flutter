@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:petit_editor/src/routes/router.dart';
 
+import '../blocks/order.dart';
 import '../blocks/projects/list.dart';
 
 class ProjectsScreen extends HookWidget {
@@ -9,19 +10,14 @@ class ProjectsScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final order = useState(OrderDirection.asc);
+    final order = useOrderState();
     return ScaffoldPage(
       header: PageHeader(
         title: const Text('Projects'),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
-            CommandBarButton(
-              icon: Icon(order.value.icon),
-              onPressed: () {
-                order.value = order.value.next;
-              },
-            ),
+            buildOrderCommandBarButton(order),
             CommandBarButton(
               icon: const Icon(FluentIcons.add),
               label: const Text('New'),

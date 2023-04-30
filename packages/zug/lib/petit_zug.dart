@@ -6,6 +6,7 @@ export './src/hook.dart';
 export './src/query_array.dart';
 export './src/stream.dart';
 export './src/utils.dart';
+export './src/document.dart';
 
 /*
 

@@ -1,41 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/router.dart';
-import 'package:petit_editor/src/stores/firestore/project.dart';
+import 'package:petit_zug/petit_zug.dart';
+
+import '../../get_it.dart';
+import '../development.dart';
 
 class ProjectScreen extends HookWidget {
-  final DocumentReference<ProjectData> reference;
+  final DocumentReference<FirestoreData> reference;
 
   const ProjectScreen({
     super.key,
     required this.reference,
   });
 
+  FirebaseFirestore get firestore => it.get();
+
   @override
   Widget build(BuildContext context) {
-    final stream = useStream(reference.snapshots());
-    final snapshot = stream.data;
-    final data = snapshot?.data();
+    final model = useModel(
+      reference: reference,
+      model: (reference) => Project(reference),
+    );
 
-    return ScaffoldPage(
-      header: PageHeader(
-        title: Text(data?.name ?? 'Loading…'),
-        commandBar: CommandBar(
-          mainAxisAlignment: MainAxisAlignment.end,
-          primaryItems: [
-            CommandBarButton(
-              icon: const Icon(FluentIcons.remove),
-              label: const Text('Delete'),
-              onPressed: () {
-                deleteWithConfirmation(context);
-              },
-            )
-          ],
-        ),
-      ),
-      content: const Center(child: Text("Project")),
+    return Observer(
+      builder: (context) {
+        final project = model.content;
+        return ScaffoldPage.withPadding(
+          header: PageHeader(
+            title: Text(project?.name ?? 'Project'),
+            commandBar: CommandBar(
+              mainAxisAlignment: MainAxisAlignment.end,
+              primaryItems: [
+                CommandBarButton(
+                  icon: const Icon(FluentIcons.remove),
+                  label: const Text('Delete'),
+                  onPressed: () {
+                    deleteWithConfirmation(context);
+                  },
+                )
+              ],
+            ),
+          ),
+          content: Observer(
+            builder: (context) {
+              return Text(model.asString);
+            },
+          ),
+        );
+      },
     );
   }
 

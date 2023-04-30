@@ -1,11 +1,13 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/projects/project.dart';
 import 'package:petit_editor/src/stores/firestore/project.dart';
 
 import '../blocks/fluent_screen.dart';
+import '../get_it.dart';
 import 'development.dart';
 import 'projects.dart';
 import 'projects/new.dart';
@@ -71,10 +73,12 @@ class ProjectRoute extends GoRouteData {
 
   ProjectRoute({required this.projectId});
 
+  FirebaseFirestore get firestore => it.get();
+
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProjectScreen(
-      reference: ProjectData.doc(projectId),
+      reference: firestore.collection('projects').doc(projectId),
     );
   }
 }

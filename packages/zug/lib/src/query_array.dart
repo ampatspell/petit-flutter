@@ -90,10 +90,11 @@ abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreMode
   }
 }
 
-FirestoreModels<M> useModels<M extends FirestoreEntity>(
-    {required Query<FirestoreData> query,
-    required FirestoreEntityFactory<M> model,
-    CanUpdateFirestoreEntity<M>? canUpdate}) {
+FirestoreModels<M> useModels<M extends FirestoreEntity>({
+  required Query<FirestoreData> query,
+  required FirestoreEntityFactory<M> model,
+  CanUpdateFirestoreEntity<M>? canUpdate,
+}) {
   return useSubscribable(
     model: FirestoreModels(
       reference: query,
