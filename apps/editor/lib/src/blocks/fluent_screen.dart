@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:gap/gap.dart';
 
 import '../get_it.dart';
 import '../routes/router.dart';
@@ -93,7 +94,9 @@ class FluentScreen extends HookWidget {
       ];
     } else {
       return [
-        button(icon: FluentIcons.sign_out, onPressed: signOut),
+        Text(user.email ?? 'Anonymous'),
+        const Gap(10),
+        button(icon: FluentIcons.power_button, onPressed: signOut),
       ];
     }
   }
