@@ -3,9 +3,11 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
+import 'package:petit_editor/src/blocks/delete_confirmation.dart';
 import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_zug/petit_zug.dart';
 
+import '../../blocks/with_model.dart';
 import '../../get_it.dart';
 import '../../stores/project.dart';
 
@@ -26,62 +28,37 @@ class ProjectScreen extends HookWidget {
       model: (reference) => Project(reference),
     );
 
-    return Observer(
-      builder: (context) {
-        final project = model.content;
+    return WithLoadedModel(
+      model: model,
+      builder: (context, project) => Observer(builder: (context) {
         return ScaffoldPage.withPadding(
           header: PageHeader(
-            title: Text(project?.name ?? 'Project'),
+            title: Text(project.name ?? 'Untitled project'),
             commandBar: CommandBar(
               mainAxisAlignment: MainAxisAlignment.end,
               primaryItems: [
                 CommandBarButton(
                   icon: const Icon(FluentIcons.remove),
                   label: const Text('Delete'),
-                  onPressed: () {
-                    deleteWithConfirmation(context);
-                  },
+                  onPressed: () => delete(context),
                 )
               ],
             ),
           ),
-          content: Observer(
-            builder: (context) {
-              return Text(model.asString);
-            },
-          ),
+          content: Text(model.asString),
         );
-      },
-    );
-  }
-
-  void deleteWithConfirmation(BuildContext context) async {
-    await showDialog<String>(
-      context: context,
-      barrierDismissible: true,
-      builder: (context) => ContentDialog(
-        title: const Text('Delete this project?'),
-        actions: [
-          Button(
-            child: const Text('Delete'),
-            onPressed: () {
-              context.pop();
-              delete(context);
-            },
-          ),
-          FilledButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              context.pop();
-            },
-          ),
-        ],
-      ),
+      }),
     );
   }
 
   void delete(BuildContext context) async {
-    ProjectsRoute().go(context);
-    await reference.delete();
+    await deleteWithConfirmation(
+      context,
+      message: 'Are you sure you want to delete this project?',
+      onDelete: (context) async {
+        ProjectsRoute().go(context);
+        await reference.delete();
+      },
+    );
   }
 }

@@ -23,7 +23,8 @@ class ModelsListView<T extends FirestoreEntity> extends StatelessWidget {
         return const SizedBox.shrink();
       } else {
         if (length == 0) {
-          return Center(
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(25.0, 0, 0, 0),
             child: placeholder,
           );
         } else {
