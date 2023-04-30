@@ -12,33 +12,33 @@ T useSubscribable<T extends Subscribable>({
   required T model,
   required SubscribableUpdate<T> update,
 }) {
-  return use(SubscribableHook<T>(
+  return use(_SubscribableHook<T>(
     model: model,
     update: update,
   ));
 }
 
-class SubscribableHook<T extends Subscribable> extends Hook<T> {
+class _SubscribableHook<T extends Subscribable> extends Hook<T> {
   final T model;
   final SubscribableUpdate<T> update;
 
-  const SubscribableHook({
+  const _SubscribableHook({
     required this.model,
     required this.update,
   });
 
   @override
   HookState<T, Hook<T>> createState() {
-    return SubscribableHookState(model: model, update: update);
+    return _SubscribableHookState(model: model, update: update);
   }
 }
 
-class SubscribableHookState<T extends Subscribable> extends HookState<T, SubscribableHook<T>> {
+class _SubscribableHookState<T extends Subscribable> extends HookState<T, _SubscribableHook<T>> {
   final T model;
   final SubscribableUpdate<T> update;
   late final Subscription subscription;
 
-  SubscribableHookState({
+  _SubscribableHookState({
     required this.model,
     required this.update,
   }) {
@@ -46,7 +46,7 @@ class SubscribableHookState<T extends Subscribable> extends HookState<T, Subscri
   }
 
   @override
-  void didUpdateHook(SubscribableHook oldHook) {
+  void didUpdateHook(_SubscribableHook oldHook) {
     update(model, hook.model);
   }
 
