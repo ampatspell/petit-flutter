@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/projects/project.dart';
-import 'package:petit_editor/src/stores/firestore/project.dart';
+import 'package:petit_editor/src/stores/project.dart';
 
 import '../blocks/fluent_screen.dart';
 import '../get_it.dart';

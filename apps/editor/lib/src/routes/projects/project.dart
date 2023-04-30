@@ -7,7 +7,7 @@ import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_zug/petit_zug.dart';
 
 import '../../get_it.dart';
-import '../development.dart';
+import '../../stores/project.dart';
 
 class ProjectScreen extends HookWidget {
   final DocumentReference<FirestoreData> reference;

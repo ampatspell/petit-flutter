@@ -1,17 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:petit_editor/src/routes/development.dart';
 import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_zug/petit_zug.dart';
 
 import '../../get_it.dart';
-import '../../stores/firestore/project.dart';
+import '../../stores/project.dart';
 import '../models_list_view.dart';
 import '../order.dart';
 
 class ProjectsList extends HookWidget {
-  final void Function(DocumentReference<ProjectData> ref) onSelect;
+  final void Function(DocumentReference<FirestoreData> ref) onSelect;
   final OrderDirection order;
 
   const ProjectsList({
