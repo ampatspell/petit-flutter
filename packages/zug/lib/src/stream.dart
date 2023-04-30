@@ -30,7 +30,8 @@ class CallbackSubscription implements Subscription {
   }
 }
 
-class StreamSubscriptions<T> extends _StreamSubscriptions<T> with _$StreamSubscriptions {
+class StreamSubscriptions<T> extends _StreamSubscriptions<T>
+    with _$StreamSubscriptions {
   StreamSubscriptions({
     required super.subscribe,
     required super.onEvent,
@@ -38,6 +39,8 @@ class StreamSubscriptions<T> extends _StreamSubscriptions<T> with _$StreamSubscr
     required super.onWillRefresh,
   });
 }
+
+var _streams = 0;
 
 abstract class _StreamSubscriptions<T> with Store implements Subscribable {
   Stream<T> Function() _subscribe;
@@ -70,7 +73,8 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
       _subscription = _stream!.listen(_onEvent);
       isSubscribed = true;
       _onSubscribed();
-      print('subscribe');
+      _streams++;
+      print('subscribe (total $_streams)');
     }
     _subscriptions++;
     return CallbackSubscription(() => _unsubscribe());
@@ -84,7 +88,8 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
       _subscription = null;
       _stream = null;
       isSubscribed = false;
-      print('unsubscribe');
+      _streams--;
+      print('unsubscribe (total $_streams)');
     }
   }
 
@@ -95,7 +100,7 @@ abstract class _StreamSubscriptions<T> with Store implements Subscribable {
       _subscription!.cancel();
       _onWillRefresh();
       _subscription = subscribe().listen(_onEvent);
-      print('resubscribe');
+      print('resubscribe (total $_streams)');
     } else {
       _onWillRefresh();
     }
