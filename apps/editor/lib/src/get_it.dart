@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
 
@@ -16,8 +17,10 @@ Future<bool> _registerGetIt() async {
   firestore.settings = firestore.settings.copyWith(
     persistenceEnabled: true,
   );
+  final auth = FirebaseAuth.instanceFor(app: app);
   it.registerSingleton(app);
   it.registerSingleton(firestore);
+  it.registerSingleton(auth);
   it.registerLazySingleton(() => App());
   return true;
 }

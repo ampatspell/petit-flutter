@@ -1,7 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
+import '../get_it.dart';
 import '../routes/router.dart';
 
 class FluentScreen extends HookWidget {
@@ -13,6 +15,8 @@ class FluentScreen extends HookWidget {
     required this.content,
     required this.shellContext,
   });
+
+  FirebaseAuth get auth => it.get();
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +37,24 @@ class FluentScreen extends HookWidget {
       return location.startsWith(key.value);
     });
 
+    final authStateChanges = useState(auth.authStateChanges());
+    final userSnapshot = useStream(authStateChanges.value);
+
     return NavigationView(
       appBar: NavigationAppBar(
         title: (selected.value as PaneItem).title,
         automaticallyImplyLeading: false,
         leading: shellContext != null ? const _Leading() : null,
+        actions: SizedBox(
+          height: 50,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: buildActions(context, userSnapshot),
+            ),
+          ),
+        ),
       ),
       paneBodyBuilder: (item, body) => content,
       pane: NavigationPane(
@@ -47,6 +64,38 @@ class FluentScreen extends HookWidget {
         selected: selected.key,
       ),
     );
+  }
+
+  List<Widget> buildActions(BuildContext context, AsyncSnapshot<User?> userSnapshot) {
+    final user = userSnapshot.data;
+
+    void signIn() async {
+      await auth.signInWithEmailAndPassword(email: 'ampatspell@gmail.com', password: 'heythere');
+    }
+
+    void signOut() async {
+      await auth.signOut();
+    }
+
+    Widget button({required IconData icon, required VoidCallback onPressed}) {
+      return CommandBarButton(
+        icon: Icon(icon),
+        onPressed: () => onPressed(),
+      ).build(
+        context,
+        CommandBarItemDisplayMode.inPrimary,
+      );
+    }
+
+    if (user == null) {
+      return [
+        button(icon: FluentIcons.signin, onPressed: signIn),
+      ];
+    } else {
+      return [
+        button(icon: FluentIcons.sign_out, onPressed: signOut),
+      ];
+    }
   }
 }
 
