@@ -79,68 +79,68 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
         title: Text('Sprite editor'),
       ),
       content: WithLoadedModel(
-          model: entity,
-          onMissing: (context) {
-            return Padding(
-              padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  FilledButton(
-                    onPressed: create,
-                    child: const Text('Create $id'),
+        model: entity,
+        onMissing: (context) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FilledButton(
+                  onPressed: create,
+                  child: const Text('Create $id'),
+                ),
+              ],
+            ),
+          );
+        },
+        builder: (context, sprite) {
+          return Container(
+            color: Colors.white,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FilledButton(child: const Text('Random'), onPressed: () => sprite.randomize()),
+                      const Gap(10),
+                      FilledButton(child: const Text('Black'), onPressed: () => sprite.fill(0)),
+                      const Gap(10),
+                      FilledButton(child: const Text('White'), onPressed: () => sprite.fill(255)),
+                    ],
                   ),
-                ],
-              ),
-            );
-          },
-          builder: (context, sprite) {
-            return Container(
-              color: Colors.white,
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(10),
-                    width: 100,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        GestureDetector(
-                          child: Container(
-                            color: Colors.red,
-                            width: 50,
-                            height: 50,
-                          ),
-                          onTap: () => sprite.randomize(),
+                ),
+                Expanded(
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Positioned(
+                        top: 10,
+                        left: 10,
+                        child: SpriteEditor(
+                          sprite: sprite,
+                          pixel: 20,
                         ),
-                        const Gap(10),
-                        FilledButton(child: const Text('Random'), onPressed: () => sprite.randomize()),
-                        const Gap(10),
-                        FilledButton(child: const Text('Black'), onPressed: () => sprite.fill(0)),
-                        const Gap(10),
-                        FilledButton(child: const Text('White'), onPressed: () => sprite.fill(255)),
-                      ],
-                    ),
-                  ),
-                  Expanded(
-                    child: Stack(
-                      fit: StackFit.expand,
-                      children: [
-                        Positioned(
-                          top: 10,
-                          left: 10,
-                          child: SpriteEditor(
-                            sprite: sprite,
-                            pixel: 20,
-                          ),
+                      ),
+                      Positioned(
+                        top: 10,
+                        left: 670,
+                        child: SpriteEditor(
+                          sprite: sprite,
+                          pixel: 2,
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            );
-          }),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 }

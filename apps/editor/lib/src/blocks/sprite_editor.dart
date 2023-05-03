@@ -18,7 +18,9 @@ class SpriteEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      final rendered = Size((sprite.width * pixel) + 1.0, (sprite.height * pixel) + 1.0);
+      final grid = pixel > 8;
+      final addition = grid ? 1.0 : 0.0;
+      final rendered = Size((sprite.width * pixel) + addition, (sprite.height * pixel) + addition);
       final bytes = sprite.blob.bytes;
       return CustomPaint(
         size: rendered,
@@ -28,6 +30,7 @@ class SpriteEditor extends StatelessWidget {
           height: sprite.height,
           bytes: bytes,
           pixel: pixel,
+          grid: grid,
         ),
       );
     });
@@ -39,19 +42,23 @@ class SpritePainter extends CustomPainter {
   final int height;
   final Uint8List bytes;
   final int pixel;
+  final bool grid;
 
   SpritePainter({
     required this.width,
     required this.height,
     required this.pixel,
     required this.bytes,
+    required this.grid,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     paintBackground(canvas, size);
     paintPixels(canvas, size);
-    paintWireframe(canvas, size);
+    if (grid) {
+      paintWireframe(canvas, size);
+    }
   }
 
   void paintBackground(Canvas canvas, Size size) {
