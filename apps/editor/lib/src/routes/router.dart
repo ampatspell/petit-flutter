@@ -4,7 +4,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:petit_editor/src/routes/projects/project.dart';
-import 'package:petit_editor/src/stores/project.dart';
 
 import '../blocks/fluent_screen.dart';
 import '../get_it.dart';
@@ -22,15 +21,16 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
     TypedGoRoute<ProjectsRoute>(
       path: '/projects',
       routes: <TypedGoRoute<GoRouteData>>[
-        TypedGoRoute<NewProjectRoute>(
-          path: 'new',
-        ),
-        TypedGoRoute<ProjectRoute>(
-          path: ':projectId',
-        ),
+        TypedGoRoute<NewProjectRoute>(path: 'new'),
+        TypedGoRoute<ProjectRoute>(path: ':projectId'),
       ],
     ),
-    TypedGoRoute<DevelopmentRoute>(path: '/dev'),
+    TypedGoRoute<DevelopmentRoute>(
+      path: '/dev',
+      routes: [
+        TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
+      ],
+    ),
   ],
 )
 class FluentRoute extends ShellRouteData {
@@ -51,6 +51,13 @@ class DevelopmentRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const DevelopmentScreen();
+  }
+}
+
+class DevelopmentSpriteEditorRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DevelopmentSpriteEditorScreen();
   }
 }
 
@@ -109,7 +116,7 @@ final routes = [
   ),
   Route(
     location: DevelopmentRoute().location,
-    icon: FluentIcons.deploy,
+    icon: FluentIcons.code,
     title: 'Development',
     go: (context) => DevelopmentRoute().go(context),
   ),
@@ -117,7 +124,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/projects',
+  initialLocation: '/dev/sprite-editor',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

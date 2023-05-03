@@ -5,11 +5,13 @@ import 'package:petit_zug/petit_zug.dart';
 class WithLoadedModel<T extends FirestoreEntity> extends StatelessWidget {
   final FirestoreModel<T> model;
   final Widget Function(BuildContext context, T entity) builder;
+  final Widget Function(BuildContext context)? onMissing;
 
   const WithLoadedModel({
     super.key,
     required this.model,
     required this.builder,
+    this.onMissing,
   });
 
   @override
@@ -20,6 +22,9 @@ class WithLoadedModel<T extends FirestoreEntity> extends StatelessWidget {
       }
       final content = model.content;
       if (content == null) {
+        if (onMissing != null) {
+          return onMissing!(context);
+        }
         return buildPlaceholder('Not found');
       }
       if (content.isDeleted) {

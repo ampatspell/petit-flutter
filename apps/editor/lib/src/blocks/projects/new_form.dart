@@ -20,19 +20,22 @@ class NewProjectForm extends HookWidget {
           }
         }
 
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextBox(
-              placeholder: 'Project name',
-              onChanged: (value) => store.value.name = value,
-            ),
-            AppGaps.gap10,
-            FilledButton(
-              onPressed: store.value.canCommit ? () => commit() : null,
-              child: const Text('Create'),
-            ),
-          ],
+        return SizedBox(
+          width: 320,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextBox(
+                placeholder: 'Project name',
+                onChanged: (value) => store.value.name = value,
+              ),
+              AppGaps.gap10,
+              FilledButton(
+                onPressed: store.value.canCommit ? () => commit() : null,
+                child: const Text('Create'),
+              ),
+            ],
+          ),
         );
       },
     );

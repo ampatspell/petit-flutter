@@ -27,7 +27,7 @@ final lightTheme = FluentThemeData.light();
 
 final typography = Typography.raw(
   body: lightTheme.typography.body!.copyWith(fontFamily: fontFamily),
-  title: lightTheme.typography.title!.copyWith(fontFamily: fontFamily),
+  title: lightTheme.typography.title!.copyWith(fontFamily: fontFamily, fontSize: 18),
   bodyLarge: lightTheme.typography.bodyLarge!.copyWith(fontFamily: fontFamily),
   titleLarge: lightTheme.typography.titleLarge!.copyWith(fontFamily: fontFamily),
   caption: lightTheme.typography.caption!.copyWith(fontFamily: fontFamily),

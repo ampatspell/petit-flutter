@@ -94,6 +94,12 @@ FirestoreModel<M> useModel<M extends FirestoreEntity>({
       canUpdate: canUpdate,
     ),
     update: (FirestoreModel state, FirestoreModel created) {
+      if (state.reference.path == created.reference.path) {
+        // print('same ${state.reference.path}');
+        return;
+      } else {
+        // print('changed ${state.reference.path} -> ${created.reference.path}');
+      }
       state.updateReference(created.reference);
     },
   );

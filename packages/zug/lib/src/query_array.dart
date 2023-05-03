@@ -102,7 +102,66 @@ FirestoreModels<M> useModels<M extends FirestoreEntity>({
       canUpdate: canUpdate,
     ),
     update: (FirestoreModels state, FirestoreModels created) {
+      if (_areEqual(state.reference, created.reference)) {
+        // print('same ${state.reference.parameters}');
+        return;
+      }
+      // print('changed ${state.reference.parameters} -> ${created.reference.parameters}');
       state.updateReference(created.reference);
     },
   );
+}
+
+bool _areListsEqual(List<dynamic> a, List<dynamic> b) {
+  if (a.length != b.length) {
+    return false;
+  }
+  for (int i = 0; i < a.length; i++) {
+    final av = a[i];
+    final bv = b[i];
+    if (!_areDynamicEqual(av, bv)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool _areDynamicEqual(dynamic a, dynamic b) {
+  if (a is List<dynamic> && b is List<dynamic>) {
+    if (!_areListsEqual(a, b)) {
+      return false;
+    }
+  } else if (a != b) {
+    // print('fallback $a $b');
+    return false;
+  }
+  // print('equal $a $b');
+  return true;
+}
+
+bool _areMapsEqual(Map<String, dynamic> a, Map<String, dynamic> b) {
+  if (a.length != b.length) {
+    // print('length');
+    return false;
+  }
+
+  for (var ae in a.entries) {
+    final key = ae.key;
+    final av = ae.value;
+    final bv = b[key];
+    if (av.runtimeType != bv.runtimeType) {
+      // print('runtimeType ${av.runtimeType} ${bv.runtimeType}');
+      return false;
+    }
+    if (!_areDynamicEqual(av, bv)) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool _areEqual(Query<dynamic> a, Query<dynamic> b) {
+  final ap = a.parameters;
+  final bp = b.parameters;
+  return _areMapsEqual(ap, bp);
 }
