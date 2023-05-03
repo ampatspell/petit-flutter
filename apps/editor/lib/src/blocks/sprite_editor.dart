@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:petit_editor/src/stores/sprite.dart';
@@ -16,13 +18,15 @@ class SpriteEditor extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      print('build');
       final rendered = Size((sprite.width * pixel) + 1.0, (sprite.height * pixel) + 1.0);
+      final bytes = sprite.blob.bytes;
       return CustomPaint(
         size: rendered,
-        isComplex: false,
+        isComplex: true,
         painter: SpritePainter(
-          sprite: sprite,
+          width: sprite.width,
+          height: sprite.height,
+          bytes: bytes,
           pixel: pixel,
         ),
       );
@@ -31,12 +35,16 @@ class SpriteEditor extends StatelessWidget {
 }
 
 class SpritePainter extends CustomPainter {
-  final SpriteEntity sprite;
+  final int width;
+  final int height;
+  final Uint8List bytes;
   final int pixel;
 
   SpritePainter({
-    required this.sprite,
+    required this.width,
+    required this.height,
     required this.pixel,
+    required this.bytes,
   });
 
   @override
@@ -52,9 +60,6 @@ class SpritePainter extends CustomPainter {
   }
 
   void paintWireframe(Canvas canvas, Size size) {
-    final width = sprite.width;
-    final height = sprite.height;
-
     final lines = Paint()..color = Colors.black.withAlpha(20);
 
     for (int i = 0; i < width + 1; i++) {
@@ -69,13 +74,11 @@ class SpritePainter extends CustomPainter {
   }
 
   void paintPixels(Canvas canvas, Size size) {
-    for (var x = 0; x < sprite.width; x++) {
-      for (var y = 0; y < sprite.height; y++) {
-        final index = toIndex(x, y, sprite.width);
-        final value = sprite.blob.bytes[index];
-
+    for (var x = 0; x < width; x++) {
+      for (var y = 0; y < height; y++) {
+        final index = toIndex(x, y, width);
+        final value = bytes[index];
         final paint = Paint()..color = Color.fromRGBO(value, value, value, 1);
-
         canvas.drawRect(
           Rect.fromLTWH(
             (x * pixel).toDouble(),
@@ -91,6 +94,6 @@ class SpritePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant SpritePainter oldDelegate) {
-    return false;
+    return true;
   }
 }

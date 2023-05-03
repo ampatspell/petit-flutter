@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
@@ -37,30 +38,6 @@ Position fromIndex(int index, int width) {
 class SpriteEntity extends _SpriteEntity with _$SpriteEntity {
   SpriteEntity(super.reference);
 
-  int get width => data['width'];
-
-  int get height => data['height'];
-
-  Blob get blob => data['bytes'];
-
-  @action
-  void fill(int value) {
-    final bytes = blob.bytes;
-    for (int i = 0; i < bytes.length; i++) {
-      bytes[i] = value;
-    }
-  }
-
-  void randomize() {
-    final random = Random();
-    final bytes = blob.bytes;
-    for (int i = 0; i < bytes.length; i++) {
-      bytes[i] = random.nextInt(255);
-    }
-  }
-
-  void clear() => fill(0);
-
   @override
   String toString() {
     return 'Sprite{path: ${reference.path}, data: $data}';
@@ -69,6 +46,42 @@ class SpriteEntity extends _SpriteEntity with _$SpriteEntity {
 
 abstract class _SpriteEntity extends FirestoreEntity with Store {
   _SpriteEntity(super.reference);
+
+  @computed
+  int get width => data['width'];
+
+  @computed
+  int get height => data['height'];
+
+  @computed
+  Blob get blob => data['bytes'];
+
+  _withBytes(void Function(List<int> bytes) cb) {
+    final bytes = blob.bytes.toList(growable: false);
+    cb(bytes);
+    data['bytes'] = Blob(Uint8List.fromList(bytes));
+  }
+
+  @action
+  void fill(int value) {
+    _withBytes((bytes) {
+      for (int i = 0; i < bytes.length; i++) {
+        bytes[i] = value;
+      }
+    });
+  }
+
+  @action
+  void randomize() {
+    _withBytes((bytes) {
+      final random = Random();
+      for (int i = 0; i < bytes.length; i++) {
+        bytes[i] = random.nextInt(255);
+      }
+    });
+  }
+
+  void clear() => fill(0);
 }
 
 class Sprite extends _Sprite with _$Sprite {

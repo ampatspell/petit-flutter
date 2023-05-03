@@ -97,14 +97,23 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
           builder: (context, sprite) {
             return Container(
               color: Colors.white,
-              child: Stack(
-                fit: StackFit.expand,
+              child: Row(
                 children: [
-                  Positioned(
-                    top: 10,
-                    left: 10,
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    width: 100,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        GestureDetector(
+                          child: Container(
+                            color: Colors.red,
+                            width: 50,
+                            height: 50,
+                          ),
+                          onTap: () => sprite.randomize(),
+                        ),
+                        const Gap(10),
                         FilledButton(child: const Text('Random'), onPressed: () => sprite.randomize()),
                         const Gap(10),
                         FilledButton(child: const Text('Black'), onPressed: () => sprite.fill(0)),
@@ -113,12 +122,19 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                       ],
                     ),
                   ),
-                  Positioned(
-                    top: 10,
-                    left: 75,
-                    child: SpriteEditor(
-                      sprite: sprite,
-                      pixel: 20,
+                  Expanded(
+                    child: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Positioned(
+                          top: 10,
+                          left: 10,
+                          child: SpriteEditor(
+                            sprite: sprite,
+                            pixel: 20,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
