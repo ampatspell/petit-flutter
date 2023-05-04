@@ -29,6 +29,10 @@ class DevelopmentScreen extends HookWidget {
 
     return [
       item(
+        label: 'Activatable',
+        onPressed: () => DevelopmentActivatableRoute().go(context),
+      ),
+      item(
         label: 'Sprite editor',
         onPressed: () => DevelopmentSpriteEditorRoute().go(context),
       ),

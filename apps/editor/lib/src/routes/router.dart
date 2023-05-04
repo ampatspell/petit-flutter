@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import '../blocks/fluent_screen.dart';
 import '../get_it.dart';
 import 'development.dart';
+import 'development/activatable.dart';
 import 'development/workspace.dart';
 import 'development/resizable.dart';
 import 'development/sprite_editor.dart';
@@ -31,6 +32,7 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
     TypedGoRoute<DevelopmentRoute>(
       path: '/dev',
       routes: [
+        TypedGoRoute<DevelopmentActivatableRoute>(path: 'activatable'),
         TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
         TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
         TypedGoRoute<DevelopmentWorkspaceRoute>(path: 'workspace'),
@@ -56,6 +58,13 @@ class DevelopmentRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const DevelopmentScreen();
+  }
+}
+
+class DevelopmentActivatableRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DevelopmentActivatableScreen();
   }
 }
 
@@ -143,7 +152,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/workspace',
+  initialLocation: '/dev/activatable',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );
