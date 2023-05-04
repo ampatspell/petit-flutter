@@ -93,10 +93,10 @@ abstract class _FirestoreEntity with Store {
     }
   }
 
-  Future<void> save() async {
+  Future<void> save([SetOptions? options]) async {
     await _withSaving(() async {
       final data = toFirestore();
-      await reference.set(data);
+      await reference.set(data, options);
     });
   }
 

@@ -5,14 +5,16 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:petit_editor/src/stores/sprite.dart';
 import 'package:petit_editor/src/theme.dart';
 
-class SpriteEditor extends StatelessWidget {
+class SpriteRenderer extends StatelessWidget {
   final SpriteEntity sprite;
   final int pixel;
+  final Widget? child;
 
-  const SpriteEditor({
+  const SpriteRenderer({
     super.key,
     required this.sprite,
     required this.pixel,
+    this.child,
   });
 
   @override
@@ -25,6 +27,7 @@ class SpriteEditor extends StatelessWidget {
       return CustomPaint(
         size: rendered,
         isComplex: true,
+        child: child,
         painter: SpritePainter(
           width: sprite.width,
           height: sprite.height,

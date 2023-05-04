@@ -7,8 +7,9 @@ import 'hook.dart';
 
 part 'document.g.dart';
 
-class FirestoreModel<M extends FirestoreEntity> extends _FirestoreModel<M> with _$FirestoreModel {
-  FirestoreModel({
+class FirestoreDocumentLoader<M extends FirestoreEntity> extends _FirestoreDocumentLoader<M>
+    with _$FirestoreDocumentLoader {
+  FirestoreDocumentLoader({
     required super.reference,
     required super.model,
     required super.canUpdate,
@@ -16,15 +17,15 @@ class FirestoreModel<M extends FirestoreEntity> extends _FirestoreModel<M> with 
 
   @override
   String toString() {
-    return 'FirestoreModel{isLoading: $isLoading, content: $content}';
+    return 'FirestoreDocumentLoader{isLoading: $isLoading, content: $content}';
   }
 }
 
-abstract class _FirestoreModel<M extends FirestoreEntity>
+abstract class _FirestoreDocumentLoader<M extends FirestoreEntity>
     extends FirestoreModelsBase<M, DocumentSnapshot<FirestoreData>> with Store {
   final DocumentReference<FirestoreData> reference;
 
-  _FirestoreModel({
+  _FirestoreDocumentLoader({
     required this.reference,
     required FirestoreEntityFactory<M> model,
     required CanUpdateFirestoreEntity<M>? canUpdate,
@@ -82,18 +83,18 @@ abstract class _FirestoreModel<M extends FirestoreEntity>
   }
 }
 
-FirestoreModel<M> useModel<M extends FirestoreEntity>({
+FirestoreDocumentLoader<M> useEntity<M extends FirestoreEntity>({
   required DocumentReference<FirestoreData> reference,
   required FirestoreEntityFactory<M> model,
   CanUpdateFirestoreEntity<M>? canUpdate,
 }) {
   return useSubscribable(
-    model: FirestoreModel(
+    model: FirestoreDocumentLoader(
       reference: reference,
       model: model,
       canUpdate: canUpdate,
     ),
-    update: (FirestoreModel state, FirestoreModel created) {
+    update: (FirestoreDocumentLoader state, FirestoreDocumentLoader created) {
       if (state.reference.path == created.reference.path) {
         // print('same ${state.reference.path}');
         return;

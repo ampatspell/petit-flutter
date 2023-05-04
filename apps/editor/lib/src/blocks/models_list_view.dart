@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:petit_zug/petit_zug.dart';
 
 class ModelsListView<T extends FirestoreEntity> extends StatelessWidget {
-  final FirestoreModels<T> models;
+  final FirestoreQueryLoader<T> models;
   final ListTile Function(BuildContext context, T model) itemBuilder;
   final Widget placeholder;
 

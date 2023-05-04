@@ -4,8 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart' hide Store;
 import 'package:gap/gap.dart';
-import 'package:mobx/mobx.dart';
-import 'package:petit_editor/src/blocks/sprite_editor.dart';
+import 'package:petit_editor/src/blocks/sprite_renderer.dart';
 import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_editor/src/stores/sprite.dart';
 import 'package:petit_zug/petit_zug.dart';
@@ -38,7 +37,10 @@ class DevelopmentScreen extends HookWidget {
     }
 
     return [
-      item(label: 'Sprite editor', onPressed: () => DevelopmentSpriteEditorRoute().go(context)),
+      item(
+        label: 'Sprite editor',
+        onPressed: () => DevelopmentSpriteEditorRoute().go(context),
+      ),
     ];
   }
 
@@ -61,7 +63,7 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
     const id = 'sprite-1';
-    final entity = useModel(
+    final entity = useEntity(
       reference: firestore.doc('development/$id'),
       model: (reference) => SpriteEntity(reference),
     );
@@ -105,11 +107,17 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FilledButton(child: const Text('Random'), onPressed: () => sprite.randomize()),
+                      FilledButton(
+                          child: const Text('Random'),
+                          onPressed: () => sprite.randomize()),
                       const Gap(10),
-                      FilledButton(child: const Text('Black'), onPressed: () => sprite.fill(0)),
+                      FilledButton(
+                          child: const Text('Black'),
+                          onPressed: () => sprite.fill(0)),
                       const Gap(10),
-                      FilledButton(child: const Text('White'), onPressed: () => sprite.fill(255)),
+                      FilledButton(
+                          child: const Text('White'),
+                          onPressed: () => sprite.fill(255)),
                     ],
                   ),
                 ),
@@ -120,15 +128,20 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                       Positioned(
                         top: 10,
                         left: 10,
-                        child: SpriteEditor(
+                        child: SpriteRenderer(
                           sprite: sprite,
                           pixel: 20,
+                          child: PixelGestureRecognizer(
+                            pixel: 20,
+                            width: sprite.width,
+                            height: sprite.height,
+                          ),
                         ),
                       ),
                       Positioned(
                         top: 10,
                         left: 670,
-                        child: SpriteEditor(
+                        child: SpriteRenderer(
                           sprite: sprite,
                           pixel: 2,
                         ),
@@ -141,6 +154,27 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
           );
         },
       ),
+    );
+  }
+}
+
+class PixelGestureRecognizer extends StatelessWidget {
+  final int pixel;
+  final int width;
+  final int height;
+
+  const PixelGestureRecognizer({
+    super.key,
+    required this.pixel,
+    required this.width,
+    required this.height,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: (width * pixel).toDouble(),
+      height: (height * pixel).toDouble(),
     );
   }
 }

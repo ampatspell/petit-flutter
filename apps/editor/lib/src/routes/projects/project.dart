@@ -22,7 +22,7 @@ class ProjectScreen extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final model = useModel(
+    final model = useEntity(
       reference: reference,
       model: (reference) => Project(reference),
     );

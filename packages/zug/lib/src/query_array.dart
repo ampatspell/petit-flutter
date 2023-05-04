@@ -7,8 +7,8 @@ import 'hook.dart';
 
 part 'query_array.g.dart';
 
-class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M> with _$FirestoreModels {
-  FirestoreModels({
+class FirestoreQueryLoader<M extends FirestoreEntity> extends _FirestoreQueryLoader<M> with _$FirestoreQueryLoader {
+  FirestoreQueryLoader({
     required super.reference,
     required super.model,
     required super.canUpdate,
@@ -16,16 +16,16 @@ class FirestoreModels<M extends FirestoreEntity> extends _FirestoreModels<M> wit
 
   @override
   String toString() {
-    return 'FirestoreModels{isLoading: $isLoading, content: $content';
+    return 'FirestoreQueryLoader{isLoading: $isLoading, content: $content';
   }
 }
 
-abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreModelsBase<M, QuerySnapshot<FirestoreData>>
-    with Store {
+abstract class _FirestoreQueryLoader<M extends FirestoreEntity>
+    extends FirestoreModelsBase<M, QuerySnapshot<FirestoreData>> with Store {
   final Query<Map<String, dynamic>> reference;
   final ObservableList<M> content = ObservableList();
 
-  _FirestoreModels({
+  _FirestoreQueryLoader({
     required this.reference,
     required FirestoreEntityFactory<M> model,
     required CanUpdateFirestoreEntity<M>? canUpdate,
@@ -90,18 +90,18 @@ abstract class _FirestoreModels<M extends FirestoreEntity> extends FirestoreMode
   }
 }
 
-FirestoreModels<M> useModels<M extends FirestoreEntity>({
+FirestoreQueryLoader<M> userEntities<M extends FirestoreEntity>({
   required Query<FirestoreData> query,
   required FirestoreEntityFactory<M> model,
   CanUpdateFirestoreEntity<M>? canUpdate,
 }) {
   return useSubscribable(
-    model: FirestoreModels(
+    model: FirestoreQueryLoader(
       reference: query,
       model: model,
       canUpdate: canUpdate,
     ),
-    update: (FirestoreModels state, FirestoreModels created) {
+    update: (FirestoreQueryLoader state, FirestoreQueryLoader created) {
       if (_areEqual(state.reference, created.reference)) {
         // print('same ${state.reference.parameters}');
         return;

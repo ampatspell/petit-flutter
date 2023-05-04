@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:petit_zug/petit_zug.dart';
 
 class WithLoadedModel<T extends FirestoreEntity> extends StatelessWidget {
-  final FirestoreModel<T> model;
+  final FirestoreDocumentLoader<T> model;
   final Widget Function(BuildContext context, T entity) builder;
   final Widget Function(BuildContext context)? onMissing;
 
