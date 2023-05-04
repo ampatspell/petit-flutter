@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -111,11 +110,11 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      FilledButton(child: const Text('Clear'), onPressed: () => sprite.fill(255)),
+                      const Gap(10),
                       FilledButton(child: const Text('Random'), onPressed: () => sprite.randomize()),
                       const Gap(10),
-                      FilledButton(child: const Text('Black'), onPressed: () => sprite.fill(0)),
-                      const Gap(10),
-                      FilledButton(child: const Text('White'), onPressed: () => sprite.fill(255)),
+                      FilledButton(child: const Text('Save'), onPressed: () => sprite.save()),
                     ],
                   ),
                 ),
