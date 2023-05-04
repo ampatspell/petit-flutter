@@ -130,10 +130,10 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                           pixel: 20,
                           onStart: (offset) {
                             ink = sprite.valueAtOffset(offset) > 0 ? 0 : 255;
-                            sprite.draw(offset, ink);
+                            sprite.draw([offset], ink);
                           },
-                          onUpdate: (offset) {
-                            sprite.draw(offset, ink);
+                          onUpdate: (offsets) {
+                            sprite.draw(offsets, ink);
                           },
                           onEnd: () {},
                           child: SpriteRenderer(

@@ -60,14 +60,17 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
   }
 
   @action
-  void draw(Offset offset, int value) {
+  void draw(Iterable<Offset> offsets, int value) {
     _withBytes((bytes) {
-      final index = offsetToByteIndex(offset, size);
-      if (bytes[index] == value) {
-        return false;
+      var updated = false;
+      for (final offset in offsets) {
+        final index = offsetToByteIndex(offset, size);
+        if (bytes[index] != value) {
+          bytes[index] = value;
+          updated = true;
+        }
       }
-      bytes[index] = value;
-      return true;
+      return updated;
     });
   }
 

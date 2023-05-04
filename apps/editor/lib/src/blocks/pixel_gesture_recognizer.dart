@@ -1,10 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 
-class PixelGestureDetector extends StatelessWidget {
+class PixelGestureDetector extends HookWidget {
   final double pixel;
   final Widget? child;
   final void Function(Offset offset) onStart;
-  final void Function(Offset offset) onUpdate;
+  final void Function(Iterable<Offset> offset) onUpdate;
   final VoidCallback onEnd;
 
   const PixelGestureDetector({
@@ -18,11 +19,12 @@ class PixelGestureDetector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final previous = useRef<Offset?>(null);
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
-      onPanStart: _onPanStart,
-      onPanEnd: _onPanEnd,
-      onPanUpdate: _onPanUpdate,
+      onPanStart: (e) => _onPanStart(previous, e),
+      onPanEnd: (e) => _onPanEnd(previous, e),
+      onPanUpdate: (e) => _onPanUpdate(previous, e),
       child: child,
     );
   }
@@ -33,15 +35,37 @@ class PixelGestureDetector extends StatelessWidget {
     return Offset(x, y);
   }
 
-  void _onPanStart(DragStartDetails details) {
-    onStart(_toPixelOffset(details.localPosition));
+  Iterable<Offset> _calculateOffsets(Offset previous, Offset current) {
+    final set = <Offset>{};
+    for (double p = 0.0; p < 1; p += 0.1) {
+      final x = previous.dx + (current.dx - previous.dx) * p;
+      final y = previous.dy + (current.dy - previous.dy) * p;
+      final offset = Offset(x.floorToDouble(), y.floorToDouble());
+      set.add(offset);
+    }
+    return set;
   }
 
-  void _onPanEnd(DragEndDetails details) {
+  void _onPanStart(ObjectRef<Offset?> ref, DragStartDetails details) {
+    final offset = _toPixelOffset(details.localPosition);
+    onStart(offset);
+    ref.value = offset;
+  }
+
+  void _onPanUpdate(ObjectRef<Offset?> ref, DragUpdateDetails details) {
+    final offset = _toPixelOffset(details.localPosition);
+    final previous = ref.value;
+    if (previous != null) {
+      final offsets = _calculateOffsets(previous, offset);
+      onUpdate(offsets);
+    } else {
+      onUpdate([offset]);
+    }
+    ref.value = offset;
+  }
+
+  void _onPanEnd(ObjectRef<Offset?> ref, DragEndDetails details) {
     onEnd();
-  }
-
-  void _onPanUpdate(DragUpdateDetails details) {
-    onUpdate(_toPixelOffset(details.localPosition));
+    ref.value = null;
   }
 }
