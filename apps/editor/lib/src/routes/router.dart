@@ -29,6 +29,7 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
       path: '/dev',
       routes: [
         TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
+        TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
       ],
     ),
   ],
@@ -58,6 +59,13 @@ class DevelopmentSpriteEditorRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const DevelopmentSpriteEditorScreen();
+  }
+}
+
+class DevelopmentResizableRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DevelopmentResizableScreen();
   }
 }
 

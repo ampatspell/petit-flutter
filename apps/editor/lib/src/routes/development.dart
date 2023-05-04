@@ -42,6 +42,10 @@ class DevelopmentScreen extends HookWidget {
         label: 'Sprite editor',
         onPressed: () => DevelopmentSpriteEditorRoute().go(context),
       ),
+      item(
+        label: 'Resizable',
+        onPressed: () => DevelopmentResizableRoute().go(context),
+      ),
     ];
   }
 
@@ -69,6 +73,8 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
       model: (reference) => SpriteEntity(reference),
     );
 
+    final ink = useRef(0);
+
     void create() async {
       await entity.reference.set({
         'width': 32,
@@ -76,8 +82,6 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
         'bytes': Blob(Uint8List(32 * 16)),
       });
     }
-
-    var ink = 0;
 
     return ScaffoldPage(
       header: const PageHeader(
@@ -128,11 +132,11 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                         child: PixelGestureDetector(
                           pixel: 20,
                           onStart: (offset) {
-                            ink = sprite.valueAtOffset(offset) > 0 ? 0 : 255;
-                            sprite.draw([offset], ink);
+                            ink.value = sprite.valueAtOffset(offset) > 0 ? 0 : 255;
+                            sprite.draw([offset], ink.value);
                           },
                           onUpdate: (offsets) {
-                            sprite.draw(offsets, ink);
+                            sprite.draw(offsets, ink.value);
                           },
                           onEnd: () {},
                           child: SpriteRenderer(
@@ -156,6 +160,168 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
             ),
           );
         },
+      ),
+    );
+  }
+}
+
+class DevelopmentResizableScreen extends HookWidget {
+  const DevelopmentResizableScreen({super.key});
+
+  FirebaseFirestore get firestore => it.get();
+
+  @override
+  Widget build(BuildContext context) {
+    const id = 'box';
+    final entity = useEntity(
+      reference: firestore.doc('development/$id'),
+      model: (reference) => SpriteEntity(reference),
+    );
+
+    void create() async {
+      await entity.reference.set({
+        'width': 32,
+        'height': 16,
+        'bytes': Blob(Uint8List(32 * 16)),
+      });
+    }
+
+    return ScaffoldPage(
+      header: const PageHeader(
+        title: Text('Resizable'),
+      ),
+      content: WithLoadedModel(
+        model: entity,
+        onMissing: (context) {
+          return Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                FilledButton(
+                  onPressed: create,
+                  child: const Text('Create $id'),
+                ),
+              ],
+            ),
+          );
+        },
+        builder: (context, sprite) {
+          return Container(
+            color: Colors.white,
+            child: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  width: 100,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      FilledButton(child: const Text('Reset'), onPressed: () {}),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Positioned(
+                        top: 100,
+                        left: 100,
+                        child: Resizable(
+                          size: const Size(201, 201),
+                          child: Container(
+                            color: Colors.red.withAlpha(20),
+                            width: 201,
+                            height: 201,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class Resizable extends HookWidget {
+  final Widget child;
+  final Size size;
+
+  const Resizable({
+    super.key,
+    required this.child,
+    required this.size,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    const handleSize = 10.0;
+    return SizedBox(
+      width: size.width + handleSize,
+      height: size.height + handleSize,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ...buildHandles(context, handleSize),
+          Positioned(
+            top: handleSize / 2,
+            left: handleSize / 2,
+            child: child,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Iterable<Widget> buildHandles(BuildContext context, double size) {
+    final handles = [
+      Alignment.topLeft,
+      Alignment.topCenter,
+      Alignment.topRight,
+      Alignment.centerLeft,
+      Alignment.centerRight,
+      Alignment.bottomLeft,
+      Alignment.bottomCenter,
+      Alignment.bottomRight
+    ];
+    return handles.map(
+      (alignment) => ResizableHandle(size: size, alignment: alignment),
+    );
+  }
+}
+
+class ResizableHandle extends StatelessWidget {
+  final double size;
+  final AlignmentGeometry alignment;
+
+  const ResizableHandle({
+    super.key,
+    required this.size,
+    required this.alignment,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Positioned.fill(
+      child: Align(
+        alignment: alignment,
+        child: Container(
+          width: size,
+          height: size,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: Colors.black.withAlpha(30),
+            ),
+            color: Colors.black.withAlpha(30),
+            borderRadius: BorderRadius.circular(2),
+          ),
+        ),
       ),
     );
   }

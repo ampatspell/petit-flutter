@@ -97,17 +97,3 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
 
   void clear() => fill(0);
 }
-
-class Sprite extends _Sprite with _$Sprite {
-  Sprite({
-    required super.entity,
-  });
-}
-
-abstract class _Sprite with Store {
-  final SpriteEntity entity;
-
-  _Sprite({
-    required this.entity,
-  });
-}

@@ -20,9 +20,9 @@ class SpriteRenderer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      final grid = pixel > 8;
-      final addition = grid ? 1.0 : 0.0;
-      final rendered = (sprite.size * pixel) + Offset(addition, addition);
+      final drawGrid = pixel > 8;
+      final add = drawGrid ? 1.0 : 0.0;
+      final rendered = (sprite.size * pixel) + Offset(add, add);
       final bytes = sprite.blob.bytes;
       return CustomPaint(
         size: rendered,
@@ -31,7 +31,7 @@ class SpriteRenderer extends StatelessWidget {
           size: sprite.size,
           bytes: bytes,
           pixel: pixel,
-          grid: grid,
+          drawGrid: drawGrid,
         ),
         child: child,
       );
@@ -43,20 +43,20 @@ class SpritePainter extends CustomPainter {
   final Size size;
   final Uint8List bytes;
   final double pixel;
-  final bool grid;
+  final bool drawGrid;
 
   SpritePainter({
     required this.size,
     required this.pixel,
     required this.bytes,
-    required this.grid,
+    required this.drawGrid,
   });
 
   @override
   void paint(Canvas canvas, Size size) {
     paintBackground(canvas, size);
     paintPixels(canvas, size);
-    if (grid) {
+    if (drawGrid) {
       paintWireframe(canvas, size);
     }
   }
