@@ -1,5 +1,6 @@
 import 'package:mobx/mobx.dart';
 import 'activatable.dart';
+import 'query_array.dart';
 
 part 'thing.g.dart';
 
@@ -27,27 +28,6 @@ class ThingArgs {
   @override
   int get hashCode => ok.hashCode;
 }
-
-class QueryArray<T> extends _QueryArray<T> with _$Query {
-  @override
-  void activate() {
-    super.activate();
-    print('activate $this');
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    print('dispose $this');
-  }
-
-  @override
-  String toString() {
-    return 'Query{hash: ${identityHashCode(this)}, isActivated: $isActivated}';
-  }
-}
-
-abstract class _QueryArray<T> extends Activatable with Store {}
 
 class Thing extends _Thing with _$Thing {
   final ThingArgs args;
