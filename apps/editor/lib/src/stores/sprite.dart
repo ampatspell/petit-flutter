@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:mobx/mobx.dart';
@@ -7,32 +8,19 @@ import 'package:petit_zug/petit_zug.dart';
 
 part 'sprite.g.dart';
 
-// export const toIndex = (x, y, size) => (y * size.width) + x;
-//
-// export const fromIndex = (index, size) => {
-// let y = Math.floor(index / size.width);
-// let x = index - (y * size.width);
-// return { x, y };
-// }
-
-class Position {
-  final int x;
-  final int y;
-
-  const Position(this.x, this.y);
-
-  @override
-  String toString() {
-    return 'Position{x: $x, y: $y}';
-  }
-}
-
-int toIndex(int x, int y, int width) => (y * width) + x;
-
-Position fromIndex(int index, int width) {
+Offset offsetFromIndex(int index, Size size) {
+  final width = size.width.toInt();
   final y = (index / width).floor();
   final x = index - (y * width);
-  return Position(x, y);
+  return Offset(x.toDouble(), y.toDouble());
+}
+
+int offsetToIndex(Offset offset, Size size) {
+  final width = size.width.toInt();
+  final height = size.height.toInt();
+  final x = max(min(offset.dx.toInt(), width - 1), 0);
+  final y = max(min(offset.dy.toInt(), height - 1), 0);
+  return (y * width) + x;
 }
 
 class SpriteEntity extends _SpriteEntity with _$SpriteEntity {
@@ -56,10 +44,31 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
   @computed
   Blob get blob => data['bytes'];
 
-  _withBytes(void Function(List<int> bytes) cb) {
+  @computed
+  Size get size => Size(width.toDouble(), height.toDouble());
+
+  _withBytes(bool Function(List<int> bytes) cb) {
     final bytes = blob.bytes.toList(growable: false);
-    cb(bytes);
-    data['bytes'] = Blob(Uint8List.fromList(bytes));
+    if (cb(bytes)) {
+      data['bytes'] = Blob(Uint8List.fromList(bytes));
+    }
+  }
+
+  int valueAtOffset(Offset offset) {
+    final index = offsetToIndex(offset, size);
+    return blob.bytes[index];
+  }
+
+  @action
+  void draw(Offset offset, int value) {
+    _withBytes((bytes) {
+      final index = offsetToIndex(offset, size);
+      if (bytes[index] == value) {
+        return false;
+      }
+      bytes[index] = value;
+      return true;
+    });
   }
 
   @action
@@ -68,6 +77,7 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
       for (int i = 0; i < bytes.length; i++) {
         bytes[i] = value;
       }
+      return true;
     });
   }
 
@@ -78,6 +88,7 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
       for (int i = 0; i < bytes.length; i++) {
         bytes[i] = random.nextInt(255);
       }
+      return true;
     });
   }
 

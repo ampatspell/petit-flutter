@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -9,6 +10,7 @@ import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_editor/src/stores/sprite.dart';
 import 'package:petit_zug/petit_zug.dart';
 
+import '../blocks/pixel_gesture_recognizer.dart';
 import '../blocks/with_model.dart';
 import '../get_it.dart';
 
@@ -76,6 +78,8 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
       });
     }
 
+    var ink = 0;
+
     return ScaffoldPage(
       header: const PageHeader(
         title: Text('Sprite editor'),
@@ -107,17 +111,11 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      FilledButton(
-                          child: const Text('Random'),
-                          onPressed: () => sprite.randomize()),
+                      FilledButton(child: const Text('Random'), onPressed: () => sprite.randomize()),
                       const Gap(10),
-                      FilledButton(
-                          child: const Text('Black'),
-                          onPressed: () => sprite.fill(0)),
+                      FilledButton(child: const Text('Black'), onPressed: () => sprite.fill(0)),
                       const Gap(10),
-                      FilledButton(
-                          child: const Text('White'),
-                          onPressed: () => sprite.fill(255)),
+                      FilledButton(child: const Text('White'), onPressed: () => sprite.fill(255)),
                     ],
                   ),
                 ),
@@ -128,13 +126,19 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
                       Positioned(
                         top: 10,
                         left: 10,
-                        child: SpriteRenderer(
-                          sprite: sprite,
+                        child: PixelGestureDetector(
                           pixel: 20,
-                          child: PixelGestureRecognizer(
+                          onStart: (offset) {
+                            ink = sprite.valueAtOffset(offset) > 0 ? 0 : 255;
+                            sprite.draw(offset, ink);
+                          },
+                          onUpdate: (offset) {
+                            sprite.draw(offset, ink);
+                          },
+                          onEnd: () {},
+                          child: SpriteRenderer(
+                            sprite: sprite,
                             pixel: 20,
-                            width: sprite.width,
-                            height: sprite.height,
                           ),
                         ),
                       ),
@@ -154,27 +158,6 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
           );
         },
       ),
-    );
-  }
-}
-
-class PixelGestureRecognizer extends StatelessWidget {
-  final int pixel;
-  final int width;
-  final int height;
-
-  const PixelGestureRecognizer({
-    super.key,
-    required this.pixel,
-    required this.width,
-    required this.height,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: (width * pixel).toDouble(),
-      height: (height * pixel).toDouble(),
     );
   }
 }
