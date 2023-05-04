@@ -1,9 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 
-class PixelGestureDetector extends HookWidget {
+import 'resizable.dart';
+
+class PixelGestureDetector extends HookWidget implements WithRenderedSize {
   final double pixel;
-  final Widget? child;
+  final WithRenderedSize? child;
   final void Function(Offset offset) onStart;
   final void Function(Iterable<Offset> offset) onUpdate;
   final VoidCallback onEnd;
@@ -16,6 +18,9 @@ class PixelGestureDetector extends HookWidget {
     required this.onEnd,
     this.child,
   });
+
+  @override
+  Size get renderedSize => child!.renderedSize;
 
   @override
   Widget build(BuildContext context) {

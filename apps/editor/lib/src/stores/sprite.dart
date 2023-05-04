@@ -23,7 +23,13 @@ int offsetToByteIndex(Offset offset, Size size) {
   return (y * width) + x;
 }
 
-class SpriteEntity extends _SpriteEntity with _$SpriteEntity {
+abstract class HasRect {
+  Rect get rect;
+
+  void updateRect(Rect rect);
+}
+
+class SpriteEntity extends _SpriteEntity with _$SpriteEntity implements HasRect {
   SpriteEntity(super.reference);
 
   @override
@@ -36,6 +42,12 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
   _SpriteEntity(super.reference);
 
   @computed
+  int get x => data['x'];
+
+  @computed
+  int get y => data['y'];
+
+  @computed
   int get width => data['width'];
 
   @computed
@@ -46,6 +58,9 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
 
   @computed
   Size get size => Size(width.toDouble(), height.toDouble());
+
+  @computed
+  Rect get rect => Rect.fromLTWH(x.toDouble(), y.toDouble(), width.toDouble(), height.toDouble());
 
   _withBytes(bool Function(List<int> bytes) cb) {
     final bytes = blob.bytes.toList(growable: false);
@@ -96,4 +111,12 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
   }
 
   void clear() => fill(0);
+
+  @action
+  void updateRect(Rect rect) {
+    data['x'] = rect.left.toInt();
+    data['y'] = rect.top.toInt();
+    data['width'] = rect.width.toInt();
+    data['height'] = rect.height.toInt();
+  }
 }

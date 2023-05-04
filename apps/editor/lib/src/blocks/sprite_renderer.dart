@@ -5,7 +5,9 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:petit_editor/src/stores/sprite.dart';
 import 'package:petit_editor/src/theme.dart';
 
-class SpriteRenderer extends StatelessWidget {
+import 'resizable.dart';
+
+class SpriteRenderer extends StatelessWidget implements WithRenderedSize {
   final SpriteEntity sprite;
   final double pixel;
   final Widget? child;
@@ -17,12 +19,18 @@ class SpriteRenderer extends StatelessWidget {
     this.child,
   });
 
+  bool get drawGrid => pixel > 8;
+
+  @override
+  Size get renderedSize {
+    final add = drawGrid ? 1.0 : 0.0;
+    return (sprite.size * pixel) + Offset(add, add);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Observer(builder: (context) {
-      final drawGrid = pixel > 8;
-      final add = drawGrid ? 1.0 : 0.0;
-      final rendered = (sprite.size * pixel) + Offset(add, add);
+      final rendered = renderedSize;
       final bytes = sprite.blob.bytes;
       return CustomPaint(
         size: rendered,

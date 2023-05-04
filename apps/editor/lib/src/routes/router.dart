@@ -8,6 +8,8 @@ import 'package:petit_editor/src/routes/projects/project.dart';
 import '../blocks/fluent_screen.dart';
 import '../get_it.dart';
 import 'development.dart';
+import 'development/resizable.dart';
+import 'development/sprite_editor.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 
@@ -132,7 +134,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/sprite-editor',
+  initialLocation: '/dev/resizable',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );
