@@ -28,12 +28,37 @@ class ThingArgs {
   int get hashCode => ok.hashCode;
 }
 
+class Query extends _Query with _$Query {
+  @override
+  void activate() {
+    super.activate();
+    print('activate $this');
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    print('dispose $this');
+  }
+
+  @override
+  String toString() {
+    return 'Query{hash: ${identityHashCode(this)}, isActivated: $isActivated}';
+  }
+}
+
+abstract class _Query extends Activatable with Store {}
+
 class Thing extends _Thing with _$Thing {
   final ThingArgs args;
 
+  final Query query = Query();
+
   Thing({
     required this.args,
-  });
+  }) {
+    registerActivatable(query);
+  }
 
   @override
   void activate() {
@@ -49,7 +74,7 @@ class Thing extends _Thing with _$Thing {
 
   @override
   String toString() {
-    return 'Thing{hash: ${identityHashCode(this)}, args: $args, activated: $isActivated}';
+    return 'Thing{hash: ${identityHashCode(this)}, args: $args, activated: $isActivated, query: $query}';
   }
 }
 
