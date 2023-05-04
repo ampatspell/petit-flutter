@@ -37,11 +37,10 @@ class PixelGestureDetector extends HookWidget {
 
   Iterable<Offset> _calculateOffsets(Offset previous, Offset current) {
     final set = <Offset>{};
-    for (double p = 0.0; p < 1; p += 0.1) {
-      final x = previous.dx + (current.dx - previous.dx) * p;
-      final y = previous.dy + (current.dy - previous.dy) * p;
-      final offset = Offset(x.floorToDouble(), y.floorToDouble());
-      set.add(offset);
+    for (double p = 0.0; p < 1.0; p += 0.1) {
+      final dx = previous.dx + (current.dx - previous.dx) * p;
+      final dy = previous.dy + (current.dy - previous.dy) * p;
+      set.add(Offset(dx.floorToDouble(), dy.floorToDouble()));
     }
     return set;
   }
