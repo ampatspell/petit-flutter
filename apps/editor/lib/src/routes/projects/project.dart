@@ -24,7 +24,7 @@ class ProjectScreen extends HookWidget {
   Widget build(BuildContext context) {
     final model = useEntity(
       reference: reference,
-      model: (reference) => Project(reference),
+      model: (reference, data) => Project(reference),
     );
 
     return WithLoadedModel(

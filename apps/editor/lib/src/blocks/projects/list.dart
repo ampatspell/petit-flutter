@@ -23,9 +23,9 @@ class ProjectsList extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final models = userEntities(
+    final models = useEntities(
       query: firestore.collection('projects').orderBy('name', descending: order.isDescending),
-      model: (reference) => Project(reference),
+      model: (reference, data) => Project(reference),
     );
     return ModelsListView(
       models: models,

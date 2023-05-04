@@ -55,7 +55,7 @@ abstract class _FirestoreQueryLoader<M extends FirestoreEntity>
       final data = snapshot.data();
       switch (change.type) {
         case DocumentChangeType.added:
-          final model = this.model(reference)..onSnapshot(snapshot, data!);
+          final model = this.model(reference, data!)..onSnapshot(snapshot, data);
           content.insert(newIndex, model);
           break;
         case DocumentChangeType.removed:
@@ -66,7 +66,7 @@ abstract class _FirestoreQueryLoader<M extends FirestoreEntity>
         case DocumentChangeType.modified:
           var model = content[oldIndex];
           if (canUpdate != null && !canUpdate!(model, snapshot, data)) {
-            model = this.model(reference)..onSnapshot(snapshot, data!);
+            model = this.model(reference, data!)..onSnapshot(snapshot, data);
             if (oldIndex == newIndex) {
               content[oldIndex] = model;
             }
@@ -90,7 +90,7 @@ abstract class _FirestoreQueryLoader<M extends FirestoreEntity>
   }
 }
 
-FirestoreQueryLoader<M> userEntities<M extends FirestoreEntity>({
+FirestoreQueryLoader<M> useEntities<M extends FirestoreEntity>({
   required Query<FirestoreData> query,
   required FirestoreEntityFactory<M> model,
   CanUpdateFirestoreEntity<M>? canUpdate,

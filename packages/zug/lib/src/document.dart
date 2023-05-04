@@ -54,10 +54,10 @@ abstract class _FirestoreDocumentLoader<M extends FirestoreEntity>
       if (content != null) {
         M next = content!;
         if (reference.path != reference.path) {
-          next = model(reference)..onSnapshot(snapshot, data);
+          next = model(reference, data)..onSnapshot(snapshot, data);
         } else {
           if (canUpdate != null && !canUpdate!(next, snapshot, data)) {
-            next = model(reference);
+            next = model(reference, data);
           }
           next.onSnapshot(snapshot, data);
         }
@@ -65,7 +65,7 @@ abstract class _FirestoreDocumentLoader<M extends FirestoreEntity>
           content = next;
         }
       } else {
-        content = model(reference)..onSnapshot(snapshot, data);
+        content = model(reference, data)..onSnapshot(snapshot, data);
       }
     } else {
       if (content != null) {

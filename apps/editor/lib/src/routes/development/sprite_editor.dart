@@ -22,7 +22,7 @@ class DevelopmentSpriteEditorScreen extends HookWidget {
     const id = 'sprite-1';
     final entity = useEntity(
       reference: firestore.doc('development/$id'),
-      model: (reference) => SpriteEntity(reference),
+      model: (reference, data) => SpriteEntity(reference),
     );
 
     final ink = useRef(0);

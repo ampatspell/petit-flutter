@@ -10,6 +10,7 @@ typedef FirestoreData = Map<String, dynamic>;
 
 typedef FirestoreEntityFactory<M extends FirestoreEntity> = M Function(
   DocumentReference<FirestoreData> reference,
+  Map<String, dynamic> data,
 );
 
 typedef CanUpdateFirestoreEntity<M extends FirestoreEntity> = bool Function(
@@ -38,7 +39,7 @@ abstract class _FirestoreModelsBase<M extends FirestoreEntity, S> with Store imp
     required this.model,
     required this.canUpdate,
   }) {
-    _subscriptions = StreamSubscriptions(
+    _subscriptions = StreamSubscriptions<S>(
         subscribe: () => subscribe(),
         onEvent: (snapshot) => _onSnapshot(snapshot),
         onSubscribed: () => _onLoading(),

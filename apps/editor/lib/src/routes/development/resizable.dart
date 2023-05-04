@@ -24,7 +24,7 @@ class DevelopmentResizableScreen extends HookWidget {
     const id = 'box';
     final entity = useEntity(
       reference: firestore.doc('development/$id'),
-      model: (reference) => SpriteEntity(reference),
+      model: (reference, data) => SpriteEntity(reference),
     );
 
     final resize = useState(false);

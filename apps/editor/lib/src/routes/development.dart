@@ -36,6 +36,10 @@ class DevelopmentScreen extends HookWidget {
         label: 'Resizable',
         onPressed: () => DevelopmentResizableRoute().go(context),
       ),
+      item(
+        label: 'Workspace',
+        onPressed: () => DevelopmentWorkspaceRoute().go(context),
+      ),
     ];
   }
 
