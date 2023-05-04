@@ -8,14 +8,14 @@ import 'package:petit_zug/petit_zug.dart';
 
 part 'sprite.g.dart';
 
-Offset offsetFromIndex(int index, Size size) {
+Offset offsetFromByteIndex(int index, Size size) {
   final width = size.width.toInt();
   final y = (index / width).floor();
   final x = index - (y * width);
   return Offset(x.toDouble(), y.toDouble());
 }
 
-int offsetToIndex(Offset offset, Size size) {
+int offsetToByteIndex(Offset offset, Size size) {
   final width = size.width.toInt();
   final height = size.height.toInt();
   final x = max(min(offset.dx.toInt(), width - 1), 0);
@@ -55,14 +55,14 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
   }
 
   int valueAtOffset(Offset offset) {
-    final index = offsetToIndex(offset, size);
+    final index = offsetToByteIndex(offset, size);
     return blob.bytes[index];
   }
 
   @action
   void draw(Offset offset, int value) {
     _withBytes((bytes) {
-      final index = offsetToIndex(offset, size);
+      final index = offsetToByteIndex(offset, size);
       if (bytes[index] == value) {
         return false;
       }
@@ -74,7 +74,7 @@ abstract class _SpriteEntity extends FirestoreEntity with Store {
   @action
   void fill(int value) {
     _withBytes((bytes) {
-      for (int i = 0; i < bytes.length; i++) {
+      for (var i = 0; i < bytes.length; i++) {
         bytes[i] = value;
       }
       return true;

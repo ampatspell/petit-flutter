@@ -83,7 +83,7 @@ class SpritePainter extends CustomPainter {
   void paintPixels(Canvas canvas, Size canvasSize) {
     for (var x = 0.0; x < size.width; x++) {
       for (var y = 0.0; y < size.height; y++) {
-        final index = offsetToIndex(Offset(x, y), size);
+        final index = offsetToByteIndex(Offset(x, y), size);
         final value = bytes[index];
         final paint = Paint()..color = Color.fromRGBO(value, value, value, 1);
         canvas.drawRect(
