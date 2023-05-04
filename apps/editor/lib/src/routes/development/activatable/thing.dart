@@ -28,7 +28,7 @@ class ThingArgs {
   int get hashCode => ok.hashCode;
 }
 
-class Query extends _Query with _$Query {
+class QueryArray<T> extends _QueryArray<T> with _$Query {
   @override
   void activate() {
     super.activate();
@@ -47,12 +47,12 @@ class Query extends _Query with _$Query {
   }
 }
 
-abstract class _Query extends Activatable with Store {}
+abstract class _QueryArray<T> extends Activatable with Store {}
 
 class Thing extends _Thing with _$Thing {
   final ThingArgs args;
 
-  final Query query = Query();
+  final QueryArray query = QueryArray();
 
   Thing({
     required this.args,
