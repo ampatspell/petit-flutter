@@ -153,7 +153,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/projects',
+  initialLocation: '/dev/riverpod',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

@@ -1,15 +1,17 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/project.dart';
 import '../../providers/projects.dart';
+
+part 'riverpod.g.dart';
 
 class DevelopmentRiverpodScreen extends HookConsumerWidget {
   const DevelopmentRiverpodScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint('build screen');
     return ScaffoldPage.withPadding(
       header: const PageHeader(
         title: Text('Riverpod'),
@@ -17,47 +19,71 @@ class DevelopmentRiverpodScreen extends HookConsumerWidget {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: const [
-          DevelopmentRiverpodProjectsTable(),
+          ProjectsWidget(),
         ],
       ),
     );
   }
 }
 
-class DevelopmentRiverpodProjectsTable extends HookConsumerWidget {
-  const DevelopmentRiverpodProjectsTable({super.key});
+@riverpod
+Project selectedProject(SelectedProjectRef ref) => throw UnimplementedError();
+
+class ProjectsWidget extends HookConsumerWidget {
+  const ProjectsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint('build table');
-    final allProjects = ref.watch(allProjectsProvider);
-    return allProjects.when(
+    final projects = ref.watch(allProjectsProvider);
+    return AsyncValueWidget(
+      value: projects,
+      builder: (context, value) {
+        final project = value[0];
+        return ProviderScope(
+          overrides: [
+            selectedProjectProvider.overrideWithValue(project),
+          ],
+          child: const ProjectWidget(),
+        );
+      },
+    );
+  }
+}
+
+class AsyncValueWidget<T extends Object> extends ConsumerWidget {
+  final AsyncValue<T> value;
+  final Widget Function(BuildContext context, T value) builder;
+
+  const AsyncValueWidget({
+    super.key,
+    required this.value,
+    required this.builder,
+  });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return value.when(
       data: (data) {
-        debugPrint('data');
-        return Content(data: data);
+        return builder(context, data);
       },
       error: (error, stackTrace) {
-        return Text('$error');
+        debugPrint(error.toString());
+        debugPrintStack(stackTrace: stackTrace);
+        return Text(error.toString());
       },
       loading: () {
-        debugPrint('loading…');
         return const Text('Loading…');
       },
     );
   }
 }
 
-class Content extends HookConsumerWidget {
-  final List<Project> data;
-
-  const Content({super.key, required this.data});
+class ProjectWidget extends HookConsumerWidget {
+  const ProjectWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    debugPrint('build content');
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: data.map((e) => Text(e.toString())).toList(growable: false),
-    );
+    final project = ref.watch(selectedProjectProvider);
+    return Text(project.toString());
   }
 }
