@@ -1,35 +1,39 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/blocks/order.dart';
 
-class ProjectsScreen extends HookWidget {
+import '../providers/projects.dart';
+
+class ProjectsScreen extends ConsumerWidget {
   const ProjectsScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final order = ref.watch(sortedProjectsOrderProvider);
     return ScaffoldPage.withPadding(
-      header: const PageHeader(
-        title: Text('Projects'),
+      header: PageHeader(
+        title: const Text('Projects'),
+        commandBar: CommandBar(
+          mainAxisAlignment: MainAxisAlignment.end,
+          primaryItems: [
+            buildOrderCommandBarButton(order, () => ref.read(sortedProjectsOrderProvider.notifier).toggle()),
+            CommandBarButton(
+              icon: const Icon(FluentIcons.add),
+              label: const Text('New'),
+              onPressed: () {
+                // NewProjectRoute().go(context);
+              },
+            ),
+          ],
+        ),
       ),
       content: const SizedBox.shrink(),
     );
 
-    // final order = useOrderState();
     // return ScaffoldPage(
     //   header: PageHeader(
     //     title: const Text('Projects'),
-    //     commandBar: CommandBar(
-    //       mainAxisAlignment: MainAxisAlignment.end,
-    //       primaryItems: [
-    //         buildOrderCommandBarButton(order),
-    //         CommandBarButton(
-    //           icon: const Icon(FluentIcons.add),
-    //           label: const Text('New'),
-    //           onPressed: () {
-    //             NewProjectRoute().go(context);
-    //           },
-    //         ),
-    //       ],
-    //     ),
     //   ),
     //   content: ProjectsList(
     //     order: order.value,

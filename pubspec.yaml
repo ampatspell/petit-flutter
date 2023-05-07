@@ -11,7 +11,11 @@ scripts:
   build:
     apps:
       editor: (cd apps/editor && rps build)
-      all: rps build apps editor
-    all: rps build apps all
+      all: |
+        rps build apps editor
+    all: |
+      rps build apps all
   watch:
     editor: (cd apps/editor && rps watch)
+    all: |
+      rps watch editor

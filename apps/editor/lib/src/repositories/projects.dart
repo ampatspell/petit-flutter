@@ -1,3 +1,5 @@
+import 'package:petit_editor/src/blocks/order.dart';
+
 import '../models/project.dart';
 import '../typedefs.dart';
 import 'references.dart';
@@ -11,19 +13,17 @@ class ProjectsRepository {
 
   MapCollectionReference get reference => references.projects;
 
-  Stream<Projects> allProjects() {
-    return reference.orderBy('name').snapshots(includeMetadataChanges: false).map((event) {
+  Stream<List<Project>> allProjects(OrderDirection order) {
+    return reference
+        .orderBy('name', descending: order.isDescending)
+        .snapshots(includeMetadataChanges: false)
+        .map((event) {
       return event.docs.map((e) {
         return Project(
           reference: e.reference,
           data: e.data(),
         );
       }).toList(growable: false);
-    }).map((all) {
-      return Projects(
-        reference: reference,
-        all: all,
-      );
     });
   }
 

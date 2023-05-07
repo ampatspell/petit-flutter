@@ -12,11 +12,3 @@ class Project with _$Project {
     required FirestoreMap data,
   }) = _Project;
 }
-
-@freezed
-class Projects with _$Projects {
-  const factory Projects({
-    required MapCollectionReference reference,
-    required List<Project> all,
-  }) = _Projects;
-}
