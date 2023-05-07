@@ -3,11 +3,12 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/providers/app.dart';
 
-import '../get_it.dart';
 import '../routes/router.dart';
 
-class FluentScreen extends HookWidget {
+class FluentScreen extends HookConsumerWidget {
   final Widget content;
   final BuildContext? shellContext;
 
@@ -17,10 +18,8 @@ class FluentScreen extends HookWidget {
     required this.shellContext,
   });
 
-  FirebaseAuth get auth => it.get();
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final location = router.location;
     final items = useMemoized(() => routes
         .map((route) => PaneItem(
@@ -38,22 +37,16 @@ class FluentScreen extends HookWidget {
       return location.startsWith(key.value);
     });
 
-    final authStateChanges = useState(auth.authStateChanges());
-    final userSnapshot = useStream(authStateChanges.value);
-
     return NavigationView(
       appBar: NavigationAppBar(
         title: (selected.value as PaneItem).title,
         automaticallyImplyLeading: false,
         leading: shellContext != null ? const _Leading() : null,
-        actions: SizedBox(
+        actions: const SizedBox(
           height: 50,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: buildActions(context, userSnapshot),
-            ),
+            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+            child: CurrentUser(),
           ),
         ),
       ),
@@ -65,40 +58,6 @@ class FluentScreen extends HookWidget {
         selected: selected.key,
       ),
     );
-  }
-
-  List<Widget> buildActions(BuildContext context, AsyncSnapshot<User?> userSnapshot) {
-    final user = userSnapshot.data;
-
-    void signIn() async {
-      await auth.signInWithEmailAndPassword(email: 'ampatspell@gmail.com', password: 'heythere');
-    }
-
-    void signOut() async {
-      await auth.signOut();
-    }
-
-    Widget button({required IconData icon, required VoidCallback onPressed}) {
-      return CommandBarButton(
-        icon: Icon(icon),
-        onPressed: () => onPressed(),
-      ).build(
-        context,
-        CommandBarItemDisplayMode.inPrimary,
-      );
-    }
-
-    if (user == null) {
-      return [
-        button(icon: FluentIcons.signin, onPressed: signIn),
-      ];
-    } else {
-      return [
-        Text(user.email ?? 'Anonymous'),
-        const Gap(10),
-        button(icon: FluentIcons.power_button, onPressed: signOut),
-      ];
-    }
   }
 }
 
@@ -150,5 +109,75 @@ class _LeadingState extends State<_Leading> {
       onPressed,
       displayMode: PaneDisplayMode.compact,
     );
+  }
+}
+
+class CurrentUser extends HookConsumerWidget {
+  const CurrentUser({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(authStateChangesProvider);
+    final auth = ref.watch(firebaseServicesProvider.select((services) {
+      return services.auth;
+    }));
+
+    return state.when(
+      data: (data) {
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: buildActions(context, auth, data),
+        );
+      },
+      error: (error, stackTrace) {
+        debugPrintStack(
+          label: 'CurrentUser',
+          stackTrace: stackTrace,
+        );
+        return const Text('Error');
+      },
+      loading: () {
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  List<Widget> buildActions(
+    BuildContext context,
+    FirebaseAuth auth,
+    User? user,
+  ) {
+    void signIn() async {
+      await auth.signInWithEmailAndPassword(
+        email: 'ampatspell@gmail.com',
+        password: 'heythere',
+      );
+    }
+
+    void signOut() async {
+      await auth.signOut();
+    }
+
+    Widget button({required IconData icon, required VoidCallback onPressed}) {
+      return CommandBarButton(
+        icon: Icon(icon),
+        onPressed: () => onPressed(),
+      ).build(
+        context,
+        CommandBarItemDisplayMode.inPrimary,
+      );
+    }
+
+    if (user == null) {
+      return [
+        button(icon: FluentIcons.signin, onPressed: signIn),
+      ];
+    } else {
+      return [
+        Text(user.email ?? 'Anonymous'),
+        const Gap(10),
+        button(icon: FluentIcons.power_button, onPressed: signOut),
+      ];
+    }
   }
 }

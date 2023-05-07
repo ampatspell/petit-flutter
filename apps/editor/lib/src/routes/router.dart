@@ -1,16 +1,11 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 
 import '../blocks/fluent_screen.dart';
-import '../get_it.dart';
 import 'development.dart';
-import 'development/activatable.dart';
-import 'development/workspace.dart';
-import 'development/resizable.dart';
-import 'development/sprite_editor.dart';
+import 'development/riverpod.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 import 'projects/project.dart';
@@ -32,10 +27,11 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
     TypedGoRoute<DevelopmentRoute>(
       path: '/dev',
       routes: [
-        TypedGoRoute<DevelopmentActivatableRoute>(path: 'activatable'),
-        TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
-        TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
-        TypedGoRoute<DevelopmentWorkspaceRoute>(path: 'workspace'),
+        TypedGoRoute<DevelopmentRiverpodRoute>(path: 'riverpod'),
+        // TypedGoRoute<DevelopmentActivatableRoute>(path: 'activatable'),
+        // TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
+        // TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
+        // TypedGoRoute<DevelopmentWorkspaceRoute>(path: 'workspace'),
       ],
     ),
   ],
@@ -61,33 +57,40 @@ class DevelopmentRoute extends GoRouteData {
   }
 }
 
-class DevelopmentActivatableRoute extends GoRouteData {
+// class DevelopmentActivatableRoute extends GoRouteData {
+//   @override
+//   Widget build(BuildContext context, GoRouterState state) {
+//     return const DevelopmentActivatableScreen();
+//   }
+// }
+
+class DevelopmentRiverpodRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentActivatableScreen();
+    return const DevelopmentRiverpodScreen();
   }
 }
 
-class DevelopmentSpriteEditorRoute extends GoRouteData {
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentSpriteEditorScreen();
-  }
-}
-
-class DevelopmentWorkspaceRoute extends GoRouteData {
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentWorkspaceScreen();
-  }
-}
-
-class DevelopmentResizableRoute extends GoRouteData {
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentResizableScreen();
-  }
-}
+// class DevelopmentSpriteEditorRoute extends GoRouteData {
+//   @override
+//   Widget build(BuildContext context, GoRouterState state) {
+//     return const DevelopmentSpriteEditorScreen();
+//   }
+// }
+//
+// class DevelopmentWorkspaceRoute extends GoRouteData {
+//   @override
+//   Widget build(BuildContext context, GoRouterState state) {
+//     return const DevelopmentWorkspaceScreen();
+//   }
+// }
+//
+// class DevelopmentResizableRoute extends GoRouteData {
+//   @override
+//   Widget build(BuildContext context, GoRouterState state) {
+//     return const DevelopmentResizableScreen();
+//   }
+// }
 
 class ProjectsRoute extends GoRouteData {
   @override
@@ -108,13 +111,11 @@ class ProjectRoute extends GoRouteData {
 
   ProjectRoute({required this.projectId});
 
-  FirebaseFirestore get firestore => it.get();
-
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProjectScreen(
-      reference: firestore.collection('projects').doc(projectId),
-    );
+    return const ProjectScreen(
+        // reference: firestore.collection('projects').doc(projectId),
+        );
   }
 }
 
@@ -152,7 +153,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/activatable',
+  initialLocation: '/projects',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );
