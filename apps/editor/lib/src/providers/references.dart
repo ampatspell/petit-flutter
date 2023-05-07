@@ -1,32 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:petit_editor/src/models/app.dart';
 import 'package:petit_editor/src/providers/app.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../typedefs.dart';
+import '../repositories/references.dart';
 
 part 'references.g.dart';
-
-class FirestoreReferences {
-  final FirebaseServicesData _services;
-
-  FirestoreReferences(FirebaseServicesData services) : _services = services;
-
-  FirebaseFirestore get _firestore => _services.firestore;
-
-  MapCollectionReference get projects {
-    return _firestore.collection('projects');
-  }
-
-  MapQuery get sortedProjects {
-    return projects.orderBy('name');
-  }
-
-  @override
-  String toString() {
-    return 'FirestoreReferences{}';
-  }
-}
 
 @Riverpod(keepAlive: true, dependencies: [firebaseServices])
 FirestoreReferences firestoreReferences(FirestoreReferencesRef ref) {
