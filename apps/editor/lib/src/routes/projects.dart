@@ -35,12 +35,5 @@ class ProjectsScreen extends ConsumerWidget {
         },
       ),
     );
-
-    //   content: ProjectsList(
-    //     order: order.value,
-    //     onSelect: (ref) {
-    //       ProjectRoute(projectId: ref.id).go(context);
-    //     },
-    //   ),
   }
 }

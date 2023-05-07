@@ -17,7 +17,6 @@ class ProjectsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final projects = ref.watch(sortedProjectsProvider);
-
     return AsyncValueWidget(
       value: projects,
       builder: (context, projects) {
