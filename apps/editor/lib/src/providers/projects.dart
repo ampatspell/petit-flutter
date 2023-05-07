@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../blocks/order.dart';
+import '../blocks/riverpod/order.dart';
 import '../models/project.dart';
 import '../repositories/projects.dart';
 import 'app.dart';

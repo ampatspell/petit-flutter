@@ -1,4 +1,4 @@
-import 'package:petit_editor/src/blocks/order.dart';
+import 'package:petit_editor/src/blocks/riverpod/order.dart';
 
 import '../models/project.dart';
 import '../typedefs.dart';

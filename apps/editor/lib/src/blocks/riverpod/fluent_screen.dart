@@ -6,7 +6,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/providers/app.dart';
 
-import '../routes/router.dart';
+import '../../routes/router.dart';
 
 class FluentScreen extends HookConsumerWidget {
   final Widget content;

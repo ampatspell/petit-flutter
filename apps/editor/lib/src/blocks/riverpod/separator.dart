@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
-import '../theme.dart';
+import '../../theme.dart';
 
 class Separator extends StatelessWidget {
   const Separator({super.key});
