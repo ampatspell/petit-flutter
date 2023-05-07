@@ -3,7 +3,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/project.dart';
+import '../../providers/app.dart';
 import '../../providers/projects.dart';
+import '../../providers/references.dart';
 
 part 'riverpod.g.dart';
 
@@ -26,7 +28,7 @@ class DevelopmentRiverpodScreen extends HookConsumerWidget {
   }
 }
 
-@riverpod
+@Riverpod(dependencies: [])
 Project selectedProject(SelectedProjectRef ref) => throw UnimplementedError();
 
 class ProjectsWidget extends HookConsumerWidget {

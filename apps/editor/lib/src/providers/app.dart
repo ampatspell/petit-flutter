@@ -8,7 +8,7 @@ import '../models/app.dart';
 
 part 'app.g.dart';
 
-Future<FirebaseServices> initializeFirebase() async {
+Future<FirebaseServicesData> initializeFirebase() async {
   final app = await Firebase.initializeApp(
     name: 'default',
     options: DefaultFirebaseOptions.currentPlatform,
@@ -19,7 +19,7 @@ Future<FirebaseServices> initializeFirebase() async {
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
   final auth = FirebaseAuth.instanceFor(app: app);
-  return FirebaseServices(
+  return FirebaseServicesData(
     app: app,
     firestore: firestore,
     auth: auth,
@@ -27,12 +27,13 @@ Future<FirebaseServices> initializeFirebase() async {
 }
 
 @Riverpod(keepAlive: true, dependencies: [])
-FirebaseServices firebaseServices(FirebaseServicesRef ref) {
-  throw UnsupportedError('override');
-}
+FirebaseServicesData firebaseServices(FirebaseServicesRef ref) => throw UnimplementedError('override');
 
 @Riverpod(keepAlive: true, dependencies: [firebaseServices])
-Stream<User?> authStateChanges(AuthStateChangesRef ref) {
-  final services = ref.watch(firebaseServicesProvider);
-  return services.auth.authStateChanges();
+class AuthStateChanges extends _$AuthStateChanges {
+  @override
+  Stream<User?> build() {
+    final services = ref.watch(firebaseServicesProvider);
+    return services.auth.authStateChanges();
+  }
 }

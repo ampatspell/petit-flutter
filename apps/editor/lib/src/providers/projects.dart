@@ -9,19 +9,22 @@ import 'references.dart';
 part 'projects.g.dart';
 
 @Riverpod(dependencies: [firestoreReferences])
-Raw<Stream<MapQuerySnapshot>> allProjectsQuery(AllProjectsQueryRef ref) {
-  return ref
-      .watch(firestoreReferencesProvider)
-      .sortedProjects
-      .snapshots(includeMetadataChanges: true);
+class AllProjectsQuery extends _$AllProjectsQuery {
+  @override
+  Raw<Stream<MapQuerySnapshot>> build() {
+    return ref.watch(firestoreReferencesProvider).sortedProjects.snapshots(includeMetadataChanges: true);
+  }
 }
 
-@Riverpod(dependencies: [allProjectsQuery])
-Stream<List<Project>> allProjects(AllProjectsRef ref) async* {
-  final stream = ref.watch(allProjectsQueryProvider);
-  await for (var event in stream) {
-    yield event.docs
-        .map((e) => Project(reference: e.reference, data: e.data()))
-        .toList(growable: false);
+@Riverpod(dependencies: [AllProjectsQuery])
+class AllProjects extends _$AllProjects {
+  @override
+  Stream<List<Project>> build() async* {
+    final stream = ref.watch(allProjectsQueryProvider);
+    await for (var event in stream) {
+      yield event.docs.map((e) {
+        return Project(reference: e.reference, data: e.data());
+      }).toList(growable: false);
+    }
   }
 }

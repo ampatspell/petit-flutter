@@ -15,29 +15,30 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
 /// @nodoc
-mixin _$FirebaseServices {
+mixin _$FirebaseServicesData {
   FirebaseApp get app => throw _privateConstructorUsedError;
   FirebaseFirestore get firestore => throw _privateConstructorUsedError;
   FirebaseAuth get auth => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
-  $FirebaseServicesCopyWith<FirebaseServices> get copyWith =>
+  $FirebaseServicesDataCopyWith<FirebaseServicesData> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $FirebaseServicesCopyWith<$Res> {
-  factory $FirebaseServicesCopyWith(
-          FirebaseServices value, $Res Function(FirebaseServices) then) =
-      _$FirebaseServicesCopyWithImpl<$Res, FirebaseServices>;
+abstract class $FirebaseServicesDataCopyWith<$Res> {
+  factory $FirebaseServicesDataCopyWith(FirebaseServicesData value,
+          $Res Function(FirebaseServicesData) then) =
+      _$FirebaseServicesDataCopyWithImpl<$Res, FirebaseServicesData>;
   @useResult
   $Res call({FirebaseApp app, FirebaseFirestore firestore, FirebaseAuth auth});
 }
 
 /// @nodoc
-class _$FirebaseServicesCopyWithImpl<$Res, $Val extends FirebaseServices>
-    implements $FirebaseServicesCopyWith<$Res> {
-  _$FirebaseServicesCopyWithImpl(this._value, this._then);
+class _$FirebaseServicesDataCopyWithImpl<$Res,
+        $Val extends FirebaseServicesData>
+    implements $FirebaseServicesDataCopyWith<$Res> {
+  _$FirebaseServicesDataCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -70,7 +71,7 @@ class _$FirebaseServicesCopyWithImpl<$Res, $Val extends FirebaseServices>
 
 /// @nodoc
 abstract class _$$_FirebaseServicesCopyWith<$Res>
-    implements $FirebaseServicesCopyWith<$Res> {
+    implements $FirebaseServicesDataCopyWith<$Res> {
   factory _$$_FirebaseServicesCopyWith(
           _$_FirebaseServices value, $Res Function(_$_FirebaseServices) then) =
       __$$_FirebaseServicesCopyWithImpl<$Res>;
@@ -81,7 +82,7 @@ abstract class _$$_FirebaseServicesCopyWith<$Res>
 
 /// @nodoc
 class __$$_FirebaseServicesCopyWithImpl<$Res>
-    extends _$FirebaseServicesCopyWithImpl<$Res, _$_FirebaseServices>
+    extends _$FirebaseServicesDataCopyWithImpl<$Res, _$_FirebaseServices>
     implements _$$_FirebaseServicesCopyWith<$Res> {
   __$$_FirebaseServicesCopyWithImpl(
       _$_FirebaseServices _value, $Res Function(_$_FirebaseServices) _then)
@@ -126,7 +127,7 @@ class _$_FirebaseServices implements _FirebaseServices {
 
   @override
   String toString() {
-    return 'FirebaseServices(app: $app, firestore: $firestore, auth: $auth)';
+    return 'FirebaseServicesData(app: $app, firestore: $firestore, auth: $auth)';
   }
 
   @override
@@ -150,7 +151,7 @@ class _$_FirebaseServices implements _FirebaseServices {
       __$$_FirebaseServicesCopyWithImpl<_$_FirebaseServices>(this, _$identity);
 }
 
-abstract class _FirebaseServices implements FirebaseServices {
+abstract class _FirebaseServices implements FirebaseServicesData {
   const factory _FirebaseServices(
       {required final FirebaseApp app,
       required final FirebaseFirestore firestore,

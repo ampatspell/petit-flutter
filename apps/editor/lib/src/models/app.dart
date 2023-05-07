@@ -6,8 +6,8 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'app.freezed.dart';
 
 @freezed
-class FirebaseServices with _$FirebaseServices {
-  const factory FirebaseServices({
+class FirebaseServicesData with _$FirebaseServicesData {
+  const factory FirebaseServicesData({
     required FirebaseApp app,
     required FirebaseFirestore firestore,
     required FirebaseAuth auth,

@@ -8,9 +8,9 @@ import '../typedefs.dart';
 part 'references.g.dart';
 
 class FirestoreReferences {
-  final FirebaseServices _services;
+  final FirebaseServicesData _services;
 
-  FirestoreReferences(FirebaseServices services) : _services = services;
+  FirestoreReferences(FirebaseServicesData services) : _services = services;
 
   FirebaseFirestore get _firestore => _services.firestore;
 
