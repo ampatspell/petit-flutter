@@ -14,6 +14,6 @@ ProjectsRepository projectsRepository(ProjectsRepositoryRef ref) {
 }
 
 @Riverpod(dependencies: [projectsRepository])
-Stream<List<Project>> allProjects(AllProjectsRef ref) {
+Stream<Projects> allProjects(AllProjectsRef ref) {
   return ref.watch(projectsRepositoryProvider).allProjects();
 }

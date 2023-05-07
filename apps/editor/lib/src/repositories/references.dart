@@ -14,10 +14,6 @@ class FirestoreReferences {
     return _firestore.collection('projects');
   }
 
-  MapQuery get sortedProjects {
-    return projects.orderBy('name');
-  }
-
   @override
   String toString() {
     return 'FirestoreReferences{}';

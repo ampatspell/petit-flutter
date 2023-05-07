@@ -39,8 +39,8 @@ class ProjectsWidget extends HookConsumerWidget {
     final projects = ref.watch(allProjectsProvider);
     return AsyncValueWidget(
       value: projects,
-      builder: (context, value) {
-        final project = value[0];
+      builder: (context, projects) {
+        final project = projects.all[0];
         return ProviderScope(
           overrides: [
             selectedProjectProvider.overrideWithValue(project),
