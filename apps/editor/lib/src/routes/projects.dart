@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/blocks/riverpod/order.dart';
 
+import '../blocks/riverpod/projects/list.dart';
 import '../providers/projects.dart';
 
 class ProjectsScreen extends ConsumerWidget {
@@ -11,7 +12,7 @@ class ProjectsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final order = ref.watch(sortedProjectsOrderProvider);
-    return ScaffoldPage.withPadding(
+    return ScaffoldPage(
       header: PageHeader(
         title: const Text('Projects'),
         commandBar: CommandBar(
@@ -28,7 +29,11 @@ class ProjectsScreen extends ConsumerWidget {
           ],
         ),
       ),
-      content: const SizedBox.shrink(),
+      content: ProjectsList(
+        onSelect: (project) {
+          print('$project');
+        },
+      ),
     );
 
     //   content: ProjectsList(

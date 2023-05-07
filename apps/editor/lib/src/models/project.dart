@@ -7,8 +7,12 @@ part 'project.freezed.dart';
 
 @freezed
 class Project with _$Project {
+  const Project._();
+
   const factory Project({
     required MapDocumentReference reference,
     required FirestoreMap data,
   }) = _Project;
+
+  String get name => data['name'] as String;
 }

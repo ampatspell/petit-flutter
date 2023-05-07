@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 
-import '../blocks/fluent_screen.dart';
+import '../blocks/riverpod/fluent_screen.dart';
 import 'development.dart';
 import 'development/riverpod.dart';
 import 'projects.dart';
