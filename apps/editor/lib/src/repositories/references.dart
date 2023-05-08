@@ -1,12 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../models/app.dart';
+import '../models/firebase.dart';
 import '../typedefs.dart';
 
 class FirestoreReferences {
-  final FirebaseServicesData _services;
+  final FirebaseServices _services;
 
-  FirestoreReferences(FirebaseServicesData services) : _services = services;
+  FirestoreReferences(FirebaseServices services) : _services = services;
 
   FirebaseFirestore get _firestore => _services.firestore;
 

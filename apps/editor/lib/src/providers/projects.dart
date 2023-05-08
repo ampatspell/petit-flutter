@@ -30,5 +30,5 @@ class SortedProjectsOrder extends _$SortedProjectsOrder {
 @Riverpod(dependencies: [projectsRepository, SortedProjectsOrder])
 Stream<List<Project>> sortedProjects(SortedProjectsRef ref) {
   final order = ref.watch(sortedProjectsOrderProvider);
-  return ref.watch(projectsRepositoryProvider).allProjects(order);
+  return ref.watch(projectsRepositoryProvider).all(order);
 }

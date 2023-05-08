@@ -154,7 +154,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/measurable',
+  initialLocation: '/dev/riverpod',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:petit_editor/src/blocks/riverpod/order.dart';
 
@@ -12,19 +13,29 @@ class ProjectsRepository {
     required this.references,
   });
 
-  MapCollectionReference get projectsReference => references.projects();
+  MapCollectionReference get collection => references.projects();
 
-  Stream<List<Project>> allProjects(OrderDirection order) {
-    return projectsReference
+  Project _asProject(MapDocumentSnapshot e) {
+    return Project(
+      reference: e.reference,
+      data: e.data()!,
+    );
+  }
+
+  List<Project> _asProjects(QuerySnapshot<FirestoreMap> event) {
+    return event.docs.map((e) => _asProject(e)).toList(growable: false);
+  }
+
+  Stream<List<Project>> all(OrderDirection order) {
+    return collection
         .orderBy('name', descending: order.isDescending)
         .snapshots(includeMetadataChanges: false)
-        .map((event) {
-      return event.docs.map((e) {
-        return Project(
-          reference: e.reference,
-          data: e.data(),
-        );
-      }).toList(growable: false);
+        .map((event) => _asProjects(event));
+  }
+
+  Stream<Project> byReference(MapDocumentReference projectRef) {
+    return projectRef.snapshots(includeMetadataChanges: false).map((event) {
+      return _asProject(event);
     });
   }
 
@@ -67,6 +78,7 @@ class ProjectsRepository {
         }
       ],
     );
+    await _createProject(name: 'Petit', nodes: [], items: []);
   }
 
   Future<void> _createProject({
@@ -74,7 +86,7 @@ class ProjectsRepository {
     required List<Map<String, dynamic>> nodes,
     required List<Map<String, dynamic>> items,
   }) async {
-    final projectRef = projectsReference.doc();
+    final projectRef = collection.doc();
     final nodesRef = references.projectNodesCollection(projectRef);
     final workspacesRef = references.projectWorkspacesCollection(projectRef);
     final workspaceRef = workspacesRef.doc();
@@ -121,7 +133,7 @@ class ProjectsRepository {
   }
 
   Future<void> _deleteProjects() async {
-    final projects = await projectsReference.get();
+    final projects = await collection.get();
     await Future.wait(projects.docs.map((projectSnap) async {
       final projectRef = projectSnap.reference;
 
@@ -154,13 +166,18 @@ class ProjectsRepository {
     }));
   }
 
-  Future<MapDocumentReference> addProject({
+  Future<MapDocumentReference> add({
     required String name,
   }) async {
-    final ref = projectsReference.doc();
+    final ref = collection.doc();
     await ref.set({
       'name': name,
     });
     return ref;
+  }
+
+  @override
+  String toString() {
+    return 'ProjectsRepository{collection: ${collection.path}}';
   }
 }
