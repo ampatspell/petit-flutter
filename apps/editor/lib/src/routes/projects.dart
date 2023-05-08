@@ -6,12 +6,29 @@ import 'package:petit_editor/src/blocks/riverpod/order.dart';
 import '../blocks/riverpod/projects/list.dart';
 import '../providers/projects.dart';
 
-class ProjectsScreen extends ConsumerWidget {
+class ProjectsScreen extends HookConsumerWidget {
   const ProjectsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final order = ref.watch(sortedProjectsOrderProvider);
+    final isResetting = useState(false);
+
+    VoidCallback? reset;
+    if (!isResetting.value) {
+      reset = () async {
+        final repository = ref.read(projectsRepositoryProvider);
+        try {
+          isResetting.value = true;
+          await repository.reset();
+        } finally {
+          if (context.mounted) {
+            isResetting.value = false;
+          }
+        }
+      };
+    }
+
     return ScaffoldPage(
       header: PageHeader(
         title: const Text('Projects'),
@@ -25,6 +42,11 @@ class ProjectsScreen extends ConsumerWidget {
               onPressed: () {
                 // NewProjectRoute().go(context);
               },
+            ),
+            CommandBarButton(
+              icon: const Icon(FluentIcons.reset),
+              label: const Text('Reset'),
+              onPressed: reset,
             ),
           ],
         ),

@@ -10,8 +10,20 @@ class FirestoreReferences {
 
   FirebaseFirestore get _firestore => _services.firestore;
 
-  MapCollectionReference get projects {
+  MapCollectionReference projects() {
     return _firestore.collection('projects');
+  }
+
+  MapCollectionReference projectNodesCollection(MapDocumentReference projectRef) {
+    return projectRef.collection('nodes');
+  }
+
+  MapCollectionReference projectWorkspacesCollection(MapDocumentReference projectRef) {
+    return projectRef.collection('workspaces');
+  }
+
+  MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {
+    return workspaceRef.collection('items');
   }
 
   @override
