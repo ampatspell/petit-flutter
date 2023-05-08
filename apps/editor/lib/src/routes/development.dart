@@ -32,6 +32,10 @@ class DevelopmentScreen extends HookWidget {
         label: 'Riverpod',
         onPressed: () => DevelopmentRiverpodRoute().go(context),
       ),
+      item(
+        label: 'Measurable',
+        onPressed: () => DevelopmentMeasurableRoute().go(context),
+      ),
       // item(
       //   label: 'Activatable',
       //   onPressed: () => DevelopmentActivatableRoute().go(context),

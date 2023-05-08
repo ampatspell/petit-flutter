@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 
 import '../blocks/riverpod/fluent_screen.dart';
 import 'development.dart';
+import 'development/measurable.dart';
 import 'development/riverpod.dart';
 import 'projects.dart';
 import 'projects/new.dart';
@@ -28,7 +29,7 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
       path: '/dev',
       routes: [
         TypedGoRoute<DevelopmentRiverpodRoute>(path: 'riverpod'),
-        // TypedGoRoute<DevelopmentActivatableRoute>(path: 'activatable'),
+        TypedGoRoute<DevelopmentMeasurableRoute>(path: 'measurable'),
         // TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
         // TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
         // TypedGoRoute<DevelopmentWorkspaceRoute>(path: 'workspace'),
@@ -54,6 +55,13 @@ class DevelopmentRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return const DevelopmentScreen();
+  }
+}
+
+class DevelopmentMeasurableRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return DevelopmentMeasurableScreen();
   }
 }
 
@@ -153,7 +161,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/projects',
+  initialLocation: '/dev/measurable',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );
