@@ -61,16 +61,9 @@ class DevelopmentRoute extends GoRouteData {
 class DevelopmentMeasurableRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return DevelopmentMeasurableScreen();
+    return const DevelopmentMeasurableScreen();
   }
 }
-
-// class DevelopmentActivatableRoute extends GoRouteData {
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) {
-//     return const DevelopmentActivatableScreen();
-//   }
-// }
 
 class DevelopmentRiverpodRoute extends GoRouteData {
   @override
