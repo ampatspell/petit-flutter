@@ -1,33 +1,18 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/blocks/riverpod/order.dart';
 
 import '../blocks/riverpod/projects/list.dart';
 import '../providers/projects.dart';
+import 'router.dart';
 
-class ProjectsScreen extends HookConsumerWidget {
+class ProjectsScreen extends ConsumerWidget {
   const ProjectsScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final order = ref.watch(sortedProjectsOrderProvider);
-    final isResetting = useState(false);
-
-    VoidCallback? reset;
-    if (!isResetting.value) {
-      reset = () async {
-        final repository = ref.read(projectsRepositoryProvider);
-        try {
-          isResetting.value = true;
-          await repository.reset();
-        } finally {
-          if (context.mounted) {
-            isResetting.value = false;
-          }
-        }
-      };
-    }
+    final reset = ref.watch(resetProjectsProvider);
 
     return ScaffoldPage(
       header: PageHeader(
@@ -40,7 +25,7 @@ class ProjectsScreen extends HookConsumerWidget {
               icon: const Icon(FluentIcons.add),
               label: const Text('New'),
               onPressed: () {
-                // NewProjectRoute().go(context);
+                NewProjectRoute().go(context);
               },
             ),
             CommandBarButton(

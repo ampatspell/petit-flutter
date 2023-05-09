@@ -166,12 +166,10 @@ class ProjectsRepository {
     }));
   }
 
-  Future<MapDocumentReference> add({
-    required String name,
-  }) async {
+  Future<MapDocumentReference> add(NewProjectData data) async {
     final ref = collection.doc();
     await ref.set({
-      'name': name,
+      'name': data.name,
     });
     return ref;
   }

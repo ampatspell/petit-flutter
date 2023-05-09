@@ -6,7 +6,6 @@ import 'package:petit_editor/src/providers/projects.dart';
 import 'package:petit_editor/src/repositories/project_workspaces.dart';
 import 'package:petit_editor/src/typedefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:rxdart/rxdart.dart';
 
 import '../models/project.dart';
 import '../models/project_node.dart';
@@ -46,16 +45,4 @@ ProjectWorkspacesRepository selectedProjectWorkspacesRepository(SelectedProjectW
 @Riverpod(dependencies: [selectedProjectWorkspacesRepository])
 Stream<List<ProjectWorkspace>> selectProjectWorkspaces(SelectProjectWorkspacesRef ref) {
   return ref.watch(selectedProjectWorkspacesRepositoryProvider).all();
-}
-
-class SelectedProjectData {
-  final Project project;
-  final List<ProjectNode> nodes;
-
-  SelectedProjectData({required this.project, required this.nodes});
-
-  @override
-  String toString() {
-    return 'SelectedProjectData{project: $project, nodes: $nodes}';
-  }
 }
