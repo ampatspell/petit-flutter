@@ -20,11 +20,6 @@ class ProjectScreen extends HookWidget {
       content: const SizedBox.shrink(),
     );
 
-    // final model = useEntity(
-    //   reference: reference,
-    //   model: (reference, data) => Project(reference),
-    // );
-    //
     // return WithLoadedModel(
     //   model: model,
     //   builder: (context, project) => Observer(builder: (context) {
