@@ -1,56 +1,57 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/providers/selected_project.dart';
 
-class ProjectScreen extends HookWidget {
-  // final DocumentReference<FirestoreData> reference;
+import '../../blocks/riverpod/async_value.dart';
+import '../../blocks/riverpod/delete_confirmation.dart';
+import '../router.dart';
 
+class ProjectScreen extends ConsumerWidget {
   const ProjectScreen({
     super.key,
-    // required this.reference,
   });
 
-  // FirebaseFirestore get firestore => it.get();
-
   @override
-  Widget build(BuildContext context) {
-    return ScaffoldPage.withPadding(
-      header: const PageHeader(
-        title: Text('Project'),
-      ),
-      content: const SizedBox.shrink(),
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final project = ref.watch(selectedProjectProvider);
+    final delete = ref.watch(selectedProjectDeleteProvider);
 
-    // return WithLoadedModel(
-    //   model: model,
-    //   builder: (context, project) => Observer(builder: (context) {
-    //     return ScaffoldPage.withPadding(
-    //       header: PageHeader(
-    //         title: Text(project.name ?? 'Untitled project'),
-    //         commandBar: CommandBar(
-    //           mainAxisAlignment: MainAxisAlignment.end,
-    //           primaryItems: [
-    //             CommandBarButton(
-    //               icon: const Icon(FluentIcons.remove),
-    //               label: const Text('Delete'),
-    //               onPressed: () => delete(context, project),
-    //             )
-    //           ],
-    //         ),
-    //       ),
-    //       content: Text(model.asString),
-    //     );
-    //   }),
-    // );
+    return ScaffoldPage.withPadding(
+      header: PageHeader(
+        title: const Text('Project'),
+        commandBar: CommandBar(
+          mainAxisAlignment: MainAxisAlignment.end,
+          primaryItems: [
+            CommandBarButton(
+              icon: const Icon(FluentIcons.remove),
+              label: const Text('Delete'),
+              onPressed: withConfirmation(context, delete),
+            )
+          ],
+        ),
+      ),
+      content: AsyncValueWidget(
+        value: project,
+        builder: (context, value) {
+          return Text(value.toString());
+        },
+      ),
+    );
   }
 
-// void delete(BuildContext context, Project project) async {
-//   await deleteWithConfirmation(
-//     context,
-//     message: 'Are you sure you want to delete this project?',
-//     onDelete: (context) async {
-//       ProjectsRoute().go(context);
-//       await project.delete();
-//     },
-//   );
-// }
+  VoidCallback? withConfirmation(BuildContext context, VoidCallback? delete) {
+    if (delete == null) {
+      return null;
+    }
+    return () async {
+      await deleteWithConfirmation(
+        context,
+        message: 'Are you sure you want to delete this project?',
+        onDelete: (context) {
+          ProjectsRoute().go(context);
+          delete();
+        },
+      );
+    };
+  }
 }

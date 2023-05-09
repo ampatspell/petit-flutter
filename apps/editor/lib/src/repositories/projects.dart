@@ -15,10 +15,11 @@ class ProjectsRepository {
 
   MapCollectionReference get collection => references.projects();
 
+  // FIXME: this will cause data[..] getters to blow up after doc is deleted but Stream<Project> still alive
   Project _asProject(MapDocumentSnapshot e) {
     return Project(
       reference: e.reference,
-      data: e.data()!,
+      data: e.data() ?? {},
     );
   }
 

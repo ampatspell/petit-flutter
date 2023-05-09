@@ -38,7 +38,7 @@ class ProjectsScreen extends ConsumerWidget {
       ),
       content: ProjectsList(
         onSelect: (project) {
-          print('$project');
+          ProjectRoute(projectId: project.reference.id).go(context);
         },
       ),
     );

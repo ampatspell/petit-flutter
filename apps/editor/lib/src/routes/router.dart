@@ -2,6 +2,9 @@ import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/providers/references.dart';
+import 'package:petit_editor/src/providers/selected_project.dart';
 
 import '../blocks/riverpod/fluent_screen.dart';
 import 'development.dart';
@@ -114,9 +117,18 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const ProjectScreen(
-        // reference: firestore.collection('projects').doc(projectId),
+    return Consumer(
+      builder: (context, ref, child) {
+        final reference = ref.watch(firestoreReferencesProvider).projects().doc(projectId);
+        return ProviderScope(
+          overrides: [
+            selectedProjectReferenceProvider.overrideWithValue(reference),
+          ],
+          child: child!,
         );
+      },
+      child: const ProjectScreen(),
+    );
   }
 }
 
@@ -154,7 +166,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/riverpod',
+  initialLocation: '/projects',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

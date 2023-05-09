@@ -10,14 +10,3 @@ FirestoreReferences firestoreReferences(FirestoreReferencesRef ref) {
   final services = ref.watch(firebaseServicesProvider);
   return FirestoreReferences(services);
 }
-
-// return Rx.combineLatest2(
-//   database.accountStream(),
-//   database.connectionsStream(),
-//   (Account account, List<Connections> connections) {
-//     connections.forEach((connection) {
-//       account.connections.add(connection.documentId);
-//     });
-//     return account;
-//   },
-// );
