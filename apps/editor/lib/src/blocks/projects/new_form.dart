@@ -30,7 +30,7 @@ class NewProjectForm extends ConsumerWidget {
           ),
           AppGaps.gap10,
           FilledButton(
-            onPressed: ref.read(newProjectProvider.notifier).create(didCreate),
+            onPressed: ref.read(newProjectProvider.notifier).createCallback(didCreate),
             child: const Text('Create'),
           ),
         ],

@@ -21,7 +21,7 @@ class NewProject extends _$NewProject {
     state = state.copyWith(name: name);
   }
 
-  VoidCallback? create(void Function(MapDocumentReference) cb) {
+  VoidCallback? createCallback(void Function(MapDocumentReference) cb) {
     if (!state.isValid || state.isBusy) {
       return null;
     }
