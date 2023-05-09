@@ -4,7 +4,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/providers/app.dart';
+import 'package:petit_editor/src/providers/firebase.dart';
 
 import '../../routes/router.dart';
 

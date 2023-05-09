@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../blocks/riverpod/order.dart';
 import '../models/project.dart';
 import '../repositories/projects.dart';
-import 'app.dart';
+import 'firebase.dart';
 import 'references.dart';
 
 part 'projects.g.dart';

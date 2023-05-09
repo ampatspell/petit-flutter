@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../firebase_options.dart';
 import '../models/firebase.dart';
 
-part 'app.g.dart';
+part 'firebase.g.dart';
 
 Future<FirebaseServices> initializeFirebase() async {
   final app = await Firebase.initializeApp(

@@ -5,7 +5,7 @@ import 'package:petit_editor/src/typedefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/project.dart';
-import 'app.dart';
+import 'firebase.dart';
 import 'references.dart';
 
 part 'new_project.g.dart';

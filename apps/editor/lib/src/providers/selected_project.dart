@@ -10,7 +10,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../models/project.dart';
 import '../models/project_node.dart';
 import '../repositories/project_nodes.dart';
-import 'app.dart';
+import 'firebase.dart';
 import 'references.dart';
 
 part 'selected_project.g.dart';

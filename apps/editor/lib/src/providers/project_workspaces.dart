@@ -3,7 +3,7 @@ import 'package:petit_editor/src/repositories/project_workspaces.dart';
 import 'package:petit_editor/src/typedefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import 'app.dart';
+import 'firebase.dart';
 import 'references.dart';
 
 part 'project_workspaces.g.dart';
