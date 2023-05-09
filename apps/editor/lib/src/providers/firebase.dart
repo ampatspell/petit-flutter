@@ -13,12 +13,16 @@ Future<FirebaseServices> initializeFirebase() async {
     name: 'default',
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  final firestore = FirebaseFirestore.instanceFor(app: app);
+  final firestore = FirebaseFirestore.instanceFor(
+    app: app,
+  );
   firestore.settings = firestore.settings.copyWith(
     persistenceEnabled: true,
     cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
   );
-  final auth = FirebaseAuth.instanceFor(app: app);
+  final auth = FirebaseAuth.instanceFor(
+    app: app,
+  );
   return FirebaseServices(
     app: app,
     firestore: firestore,
