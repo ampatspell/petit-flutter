@@ -1,12 +1,18 @@
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../models/base.dart';
+
 abstract class ScopeOverride<T> {
+  AutoDisposeProvider<T> get provider;
+
   bool get hasError;
 
   Object? get error;
 
   bool get isLoading;
+
+  T? get value;
 
   Override asOverride();
 }
@@ -22,6 +28,9 @@ class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
         _provider = provider;
 
   @override
+  AutoDisposeProvider<T> get provider => _provider;
+
+  @override
   bool get isLoading => _value.isLoading;
 
   @override
@@ -31,14 +40,47 @@ class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
   bool get hasError => _value.hasError;
 
   @override
+  T? get value => _value.value;
+
+  @override
   Override asOverride() {
-    return _provider.overrideWithValue(_value.value as T);
+    final value = _value.value as T;
+    return _provider.overrideWithValue(value);
   }
 
   @override
   String toString() {
     return 'AsyncValueScopeOverride{provider: $_provider, value: $_value}';
   }
+}
+
+class ValueScopeOverride<T> implements ScopeOverride<T> {
+  final AutoDisposeProvider<T> _provider;
+  final T _value;
+
+  const ValueScopeOverride({
+    required AutoDisposeProvider<T> provider,
+    required T value,
+  })  : _value = value,
+        _provider = provider;
+
+  @override
+  final Object? error = null;
+
+  @override
+  final bool hasError = false;
+
+  @override
+  final bool isLoading = false;
+
+  @override
+  AutoDisposeProvider<T> get provider => _provider;
+
+  @override
+  T? get value => _value;
+
+  @override
+  Override asOverride() => _provider.overrideWithValue(_value);
 }
 
 class ScopeOverrideBuilder<T> {
@@ -49,11 +91,15 @@ class ScopeOverrideBuilder<T> {
   AsyncValueScopeOverride<T> withAsyncValue(AsyncValue<T> value) {
     return AsyncValueScopeOverride(provider: provider, value: value);
   }
+
+  ValueScopeOverride<T> withValue(T value) {
+    return ValueScopeOverride(provider: provider, value: value);
+  }
 }
 
 ScopeOverrideBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
 
-class ProviderScopeOverrides extends StatelessWidget {
+class ProviderScopeOverrides extends ConsumerWidget {
   final List<ScopeOverride<dynamic>> overrides;
   final Widget child;
 
@@ -64,7 +110,7 @@ class ProviderScopeOverrides extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final hasErrors = overrides.where((element) => element.hasError);
     if (hasErrors.isNotEmpty) {
       return Text('Errors: $hasErrors');
@@ -76,8 +122,20 @@ class ProviderScopeOverrides extends StatelessWidget {
     }
 
     return ProviderScope(
-      overrides: overrides.map((e) => e.asOverride()).toList(growable: false),
-      child: child,
+      overrides: overrides.map((e) {
+        return e.asOverride();
+      }).toList(growable: false),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final container = ProviderScope.containerOf(context);
+          final logging = ref.read(loggingObserverProvider);
+          for (var override in overrides) {
+            logging.didOverrideProvider(override.provider, override.value!, container);
+          }
+          return child!;
+        },
+        child: child,
+      ),
     );
   }
 }

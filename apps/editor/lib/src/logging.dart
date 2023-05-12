@@ -11,13 +11,13 @@ class LoggingObserver implements ProviderObserver {
   void _print(
     String prefix,
     ProviderBase<Object?> provider,
-    ProviderContainer container, [
+    ProviderContainer? container, [
     String? message,
   ]) {
     if (kDebugMode) {
       final components = [
         '[$prefix]',
-        '${container.depth}',
+        '${container?.depth}',
         _name(provider),
         if (message != null) message,
       ];
@@ -59,8 +59,14 @@ class LoggingObserver implements ProviderObserver {
     StackTrace stackTrace,
     ProviderContainer container,
   ) {
-    if (kDebugMode) {
-      print('[fail] ${_name(provider)} $error, $stackTrace');
-    }
+    _print('fail', provider, container, '$error, $stackTrace');
+  }
+
+  void didOverrideProvider(
+    ProviderBase<Object?> provider,
+    Object? value,
+    ProviderContainer container,
+  ) {
+    _print('override', provider, container, value.toString());
   }
 }

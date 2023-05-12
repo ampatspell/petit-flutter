@@ -56,9 +56,9 @@ class ProjectScope extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ProviderScope(
+    return ProviderScopeOverrides(
       overrides: [
-        projectReferenceProvider.overrideWithValue(project.reference),
+        overrideProvider(projectReferenceProvider).withValue(project.reference),
       ],
       child: const ProjectWidget(),
     );
