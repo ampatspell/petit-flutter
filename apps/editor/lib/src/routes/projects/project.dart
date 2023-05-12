@@ -1,7 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../blocks/riverpod/async_value.dart';
 import '../../blocks/riverpod/delete_confirmation.dart';
 import '../../providers/project.dart';
 import '../router.dart';
@@ -13,7 +12,9 @@ class ProjectScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final project = ref.watch(projectProvider);
+    final project = ref.watch(loadedProjectProvider);
+    final nodes = ref.watch(loadedProjectNodesProvider);
+    final workspaces = ref.watch(loadedProjectWorkspacesProvider);
     final delete = ref.watch(projectDeleteProvider);
 
     return ScaffoldPage.withPadding(
@@ -30,12 +31,11 @@ class ProjectScreen extends ConsumerWidget {
           ],
         ),
       ),
-      content: AsyncValueWidget(
-        value: project,
-        builder: (context, value) {
-          return Text(value.toString());
-        },
-      ),
+      content: Text([
+        project,
+        nodes,
+        workspaces,
+      ].join('\n\n')),
     );
   }
 

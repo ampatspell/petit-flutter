@@ -57,7 +57,7 @@ class ProjectScope extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ProviderScopeOverrides(
-      overrides: [
+      overrides: (context, ref) => [
         overrideProvider(projectReferenceProvider).withValue(project.reference),
       ],
       child: const ProjectWidget(),
@@ -73,7 +73,7 @@ class ProjectWidget extends ConsumerWidget {
     print('build top');
 
     return ProviderScopeOverrides(
-      overrides: [
+      overrides: (context, ref) => [
         overrideProvider(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
         overrideProvider(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
         overrideProvider(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),

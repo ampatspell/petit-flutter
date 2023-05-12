@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/blocks/riverpod/provider_scope_overrides.dart';
 
 import '../blocks/riverpod/fluent_screen.dart';
 import '../providers/project.dart';
-import '../providers/references.dart';
 import 'development.dart';
 import 'development/measurable.dart';
 import 'development/riverpod.dart';
@@ -25,7 +25,7 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
       path: '/projects',
       routes: <TypedGoRoute<GoRouteData>>[
         TypedGoRoute<NewProjectRoute>(path: 'new'),
-        TypedGoRoute<ProjectRoute>(path: ':projectId'),
+        TypedGoRoute<ProjectRoute>(path: ':id'),
       ],
     ),
     TypedGoRoute<DevelopmentRoute>(
@@ -111,23 +111,24 @@ class NewProjectRoute extends GoRouteData {
 }
 
 class ProjectRoute extends GoRouteData {
-  final String projectId;
+  final String id;
 
-  ProjectRoute({required this.projectId});
+  ProjectRoute({required this.id});
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return Consumer(
-      builder: (context, ref, child) {
-        final reference = ref.watch(firestoreReferencesProvider).projects().doc(projectId);
-        return ProviderScope(
-          overrides: [
-            projectReferenceProvider.overrideWithValue(reference),
-          ],
-          child: child!,
-        );
-      },
-      child: const ProjectScreen(),
+    return ProviderScopeOverrides(
+      overrides: (context, ref) => [
+        overrideProvider(projectIdProvider).withValue(id),
+      ],
+      child: ProviderScopeOverrides(
+        overrides: (context, ref) => [
+          overrideProvider(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
+          overrideProvider(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
+          overrideProvider(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
+        ],
+        child: const ProjectScreen(),
+      ),
     );
   }
 }

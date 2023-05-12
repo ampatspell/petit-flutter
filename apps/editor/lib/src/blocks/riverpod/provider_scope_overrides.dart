@@ -100,7 +100,7 @@ class ScopeOverrideBuilder<T> {
 ScopeOverrideBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
 
 class ProviderScopeOverrides extends ConsumerWidget {
-  final List<ScopeOverride<dynamic>> overrides;
+  final List<ScopeOverride<dynamic>> Function(BuildContext context, WidgetRef ref) overrides;
   final Widget child;
 
   const ProviderScopeOverrides({
@@ -111,25 +111,25 @@ class ProviderScopeOverrides extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasErrors = overrides.where((element) => element.hasError);
+    final built = overrides(context, ref);
+
+    final hasErrors = built.where((element) => element.hasError);
     if (hasErrors.isNotEmpty) {
       return Text('Errors: $hasErrors');
     }
 
-    final loading = overrides.where((element) => element.isLoading);
+    final loading = built.where((element) => element.isLoading);
     if (loading.isNotEmpty) {
-      return const Text('Loading…');
+      return const SizedBox.shrink();
     }
 
     return ProviderScope(
-      overrides: overrides.map((e) {
-        return e.asOverride();
-      }).toList(growable: false),
+      overrides: built.map((e) => e.asOverride()).toList(growable: false),
       child: Consumer(
         builder: (context, ref, child) {
           final container = ProviderScope.containerOf(context);
           final logging = ref.read(loggingObserverProvider);
-          for (var override in overrides) {
+          for (var override in built) {
             logging.didOverrideProvider(override.provider, override.value!, container);
           }
           return child!;

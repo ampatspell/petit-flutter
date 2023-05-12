@@ -50,3 +50,8 @@ class ResetProjects extends _$ResetProjects {
     }
   }
 }
+
+//
+
+@Riverpod(dependencies: [])
+List<Project> loadedSortedProjects(LoadedSortedProjectsRef ref) => throw UnimplementedError('override');

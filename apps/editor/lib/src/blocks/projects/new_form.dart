@@ -15,7 +15,7 @@ class NewProjectForm extends ConsumerWidget {
 
     void didCreate(MapDocumentReference reference) {
       if (context.mounted) {
-        ProjectRoute(projectId: reference.id).go(context);
+        ProjectRoute(id: reference.id).go(context);
       }
     }
 

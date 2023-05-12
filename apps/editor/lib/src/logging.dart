@@ -67,6 +67,6 @@ class LoggingObserver implements ProviderObserver {
     Object? value,
     ProviderContainer container,
   ) {
-    _print('override', provider, container, value.toString());
+    _print('override', provider, container);
   }
 }

@@ -17,7 +17,13 @@ import 'references.dart';
 part 'project.g.dart';
 
 @Riverpod(dependencies: [])
-MapDocumentReference projectReference(ProjectReferenceRef ref) => throw UnimplementedError('override');
+String projectId(ProjectIdRef ref) => throw UnimplementedError('override');
+
+@Riverpod(dependencies: [projectId, firestoreReferences])
+MapDocumentReference projectReference(ProjectReferenceRef ref) {
+  final id = ref.watch(projectIdProvider);
+  return ref.watch(firestoreReferencesProvider).projects().doc(id);
+}
 
 @Riverpod(dependencies: [projectReference, projectsRepository])
 Stream<Project> project(ProjectRef ref) {
@@ -26,6 +32,7 @@ Stream<Project> project(ProjectRef ref) {
   return repository.byReference(projectRef);
 }
 
+// TODO: this for loaded
 @Riverpod(dependencies: [projectReference, firestoreReferences])
 ProjectRepository projectRepository(ProjectRepositoryRef ref) {
   final projectRef = ref.watch(projectReferenceProvider);
@@ -33,6 +40,7 @@ ProjectRepository projectRepository(ProjectRepositoryRef ref) {
   return ProjectRepository(references: references, projectRef: projectRef);
 }
 
+// TODO: this for loaded
 @Riverpod(dependencies: [projectReference, firestoreReferences])
 ProjectNodesRepository projectNodesRepository(ProjectNodesRepositoryRef ref) {
   final projectRef = ref.watch(projectReferenceProvider);
@@ -46,6 +54,7 @@ Stream<List<ProjectNode>> projectNodes(ProjectNodesRef ref) {
   return repository.all();
 }
 
+// TODO: this for loaded
 @Riverpod(dependencies: [projectReference, firestoreReferences])
 ProjectWorkspacesRepository projectWorkspacesRepository(ProjectWorkspacesRepositoryRef ref) {
   final projectRef = ref.watch(projectReferenceProvider);
@@ -58,6 +67,7 @@ Stream<List<ProjectWorkspace>> projectWorkspaces(ProjectWorkspacesRef ref) {
   return ref.watch(projectWorkspacesRepositoryProvider).all();
 }
 
+// TODO: this for loaded
 @Riverpod(dependencies: [projectRepository])
 class ProjectDelete extends _$ProjectDelete {
   @override

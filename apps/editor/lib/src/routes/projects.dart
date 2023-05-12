@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/blocks/riverpod/order.dart';
+import 'package:petit_editor/src/blocks/riverpod/provider_scope_overrides.dart';
 
 import '../blocks/riverpod/projects/list.dart';
 import '../providers/projects.dart';
@@ -36,10 +37,15 @@ class ProjectsScreen extends ConsumerWidget {
           ],
         ),
       ),
-      content: ProjectsList(
-        onSelect: (project) {
-          ProjectRoute(projectId: project.reference.id).go(context);
-        },
+      content: ProviderScopeOverrides(
+        overrides: (context, ref) => [
+          overrideProvider(loadedSortedProjectsProvider).withAsyncValue(ref.watch(sortedProjectsProvider)),
+        ],
+        child: ProjectsList(
+          onSelect: (project) {
+            ProjectRoute(id: project.reference.id).go(context);
+          },
+        ),
       ),
     );
   }

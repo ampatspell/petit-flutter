@@ -1,6 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+@Deprecated('replaced by ProviderScopeOverrides')
 class AsyncValueWidget<T extends Object> extends ConsumerWidget {
   final AsyncValue<T> value;
   final Widget Function(BuildContext context, T value) builder;
