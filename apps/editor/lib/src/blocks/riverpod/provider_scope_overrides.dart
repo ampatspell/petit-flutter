@@ -1,14 +1,37 @@
 import 'package:flutter/widgets.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-class AsyncValueOverrideProvider<T> {
-  final AutoDisposeProvider<T> provider;
-  final AsyncValue<T> value;
+abstract class ScopeOverride<T> {
+  bool get hasError;
 
-  const AsyncValueOverrideProvider({
-    required this.provider,
-    required this.value,
-  });
+  Object? get error;
+
+  bool get isLoading;
+
+  Override asOverride();
+}
+
+class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
+  final AutoDisposeProvider<T> _provider;
+  final AsyncValue<T> _value;
+
+  const AsyncValueScopeOverride({
+    required AutoDisposeProvider<T> provider,
+    required AsyncValue<T> value,
+  })  : _value = value,
+        _provider = provider;
+
+  @override
+  bool get isLoading => _value.isLoading;
+
+  @override
+  Object? get error => _value.error;
+
+  @override
+  bool get hasError => _value.hasError;
+
+  @override
+  Override asOverride() => _provider.overrideWithValue(_value.value as T);
 }
 
 class ScopeOverrideBuilder<T> {
@@ -16,15 +39,15 @@ class ScopeOverrideBuilder<T> {
 
   ScopeOverrideBuilder(this.provider);
 
-  AsyncValueOverrideProvider<T> withAsyncValue(AsyncValue<T> value) {
-    return AsyncValueOverrideProvider(provider: provider, value: value);
+  AsyncValueScopeOverride<T> withAsyncValue(AsyncValue<T> value) {
+    return AsyncValueScopeOverride(provider: provider, value: value);
   }
 }
 
 ScopeOverrideBuilder<T> scopeOverride<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
 
 class ProviderScopeOverrides extends StatelessWidget {
-  final List<AsyncValueOverrideProvider<dynamic>> overrides;
+  final List<ScopeOverride<dynamic>> overrides;
   final Widget child;
 
   const ProviderScopeOverrides({
@@ -35,20 +58,18 @@ class ProviderScopeOverrides extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final hasErrors = overrides.where((element) => element.value.hasError);
+    final hasErrors = overrides.where((element) => element.hasError);
     if (hasErrors.isNotEmpty) {
       return Text('Errors: $hasErrors');
     }
 
-    final loading = overrides.where((element) => element.value.isLoading);
+    final loading = overrides.where((element) => element.isLoading);
     if (loading.isNotEmpty) {
       return const Text('Loading…');
     }
 
     return ProviderScope(
-      overrides: overrides.map((e) {
-        return e.provider.overrideWithValue(e.value.value!);
-      }).toList(growable: false),
+      overrides: overrides.map((e) => e.asOverride()).toList(growable: false),
       child: child,
     );
   }
