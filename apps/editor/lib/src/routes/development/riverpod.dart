@@ -74,9 +74,9 @@ class ProjectWidget extends ConsumerWidget {
 
     return ProviderScopeOverrides(
       overrides: [
-        scopeOverride(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
-        scopeOverride(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
-        scopeOverride(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
+        overrideProvider(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
+        overrideProvider(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
+        overrideProvider(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
       ],
       child: const ScopedWidget(),
     );

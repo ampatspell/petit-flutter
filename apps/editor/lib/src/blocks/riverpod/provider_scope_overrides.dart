@@ -31,7 +31,14 @@ class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
   bool get hasError => _value.hasError;
 
   @override
-  Override asOverride() => _provider.overrideWithValue(_value.value as T);
+  Override asOverride() {
+    return _provider.overrideWithValue(_value.value as T);
+  }
+
+  @override
+  String toString() {
+    return 'AsyncValueScopeOverride{provider: $_provider, value: $_value}';
+  }
 }
 
 class ScopeOverrideBuilder<T> {
@@ -44,7 +51,7 @@ class ScopeOverrideBuilder<T> {
   }
 }
 
-ScopeOverrideBuilder<T> scopeOverride<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
+ScopeOverrideBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
 
 class ProviderScopeOverrides extends StatelessWidget {
   final List<ScopeOverride<dynamic>> overrides;
