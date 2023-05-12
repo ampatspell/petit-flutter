@@ -4,8 +4,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/models/project.dart';
 
 import '../../blocks/riverpod/async_value.dart';
+import '../../blocks/riverpod/provider_scope_overrides.dart';
+import '../../providers/project.dart';
 import '../../providers/projects.dart';
-import '../../providers/selected_project.dart';
 
 class DevelopmentRiverpodScreen extends HookConsumerWidget {
   const DevelopmentRiverpodScreen({super.key});
@@ -16,9 +17,9 @@ class DevelopmentRiverpodScreen extends HookConsumerWidget {
       header: const PageHeader(
         title: Text('Riverpod'),
       ),
-      content: Column(
+      content: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: const [
+        children: [
           ProjectsWidget(),
         ],
       ),
@@ -57,21 +58,40 @@ class ProjectScope extends StatelessWidget {
   Widget build(BuildContext context) {
     return ProviderScope(
       overrides: [
-        selectedProjectReferenceProvider.overrideWithValue(project.reference),
+        projectReferenceProvider.overrideWithValue(project.reference),
       ],
       child: const ProjectWidget(),
     );
   }
 }
 
-class ProjectWidget extends HookConsumerWidget {
+class ProjectWidget extends ConsumerWidget {
   const ProjectWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final project = ref.watch(selectedProjectProvider);
-    final nodes = ref.watch(selectedProjectNodesProvider);
-    final workspaces = ref.watch(selectProjectWorkspacesProvider);
+    print('build top');
+
+    return ProviderScopeOverrides(
+      overrides: [
+        scopeOverride(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
+        scopeOverride(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
+        scopeOverride(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
+      ],
+      child: const ScopedWidget(),
+    );
+  }
+}
+
+class ScopedWidget extends ConsumerWidget {
+  const ScopedWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('build scoped');
+    final project = ref.watch(loadedProjectProvider);
+    final nodes = ref.watch(loadedProjectNodesProvider);
+    final workspaces = ref.watch(loadedProjectWorkspacesProvider);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

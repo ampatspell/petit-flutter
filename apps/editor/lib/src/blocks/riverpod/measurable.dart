@@ -13,14 +13,14 @@ class MeasurableWidget extends SingleChildRenderObjectWidget {
   });
 
   @override
-  RenderObject createRenderObject(BuildContext context) => MeasurableRenderObject(onSize);
+  RenderObject createRenderObject(BuildContext context) => _MeasurableRenderObject(onSize);
 }
 
-class MeasurableRenderObject extends RenderProxyBox {
+class _MeasurableRenderObject extends RenderProxyBox {
   OnSizeCallback onSize;
   Size? _size;
 
-  MeasurableRenderObject(this.onSize);
+  _MeasurableRenderObject(this.onSize);
 
   @override
   void performLayout() {

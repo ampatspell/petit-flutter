@@ -15,10 +15,10 @@ class ProjectsRepository {
 
   MapCollectionReference get collection => references.projects();
 
-  // FIXME: this will cause data[..] getters to blow up after doc is deleted but Stream<Project> still alive
   Project _asProject(MapDocumentSnapshot e) {
     return Project(
       reference: e.reference,
+      isDeleted: !e.exists,
       data: e.data() ?? {},
     );
   }
@@ -100,7 +100,7 @@ class ProjectsRepository {
     }
 
     Future<void> createNode(Map<String, dynamic> map) async {
-      final nodeRef = nodesRef.doc(map['id']);
+      final nodeRef = nodesRef.doc(map['id'] as String);
       map.remove('id');
       await nodeRef.set(map);
     }
@@ -110,7 +110,7 @@ class ProjectsRepository {
     }
 
     Future<void> createItem(Map<String, dynamic> map) async {
-      final itemRef = workspaceItemsRef.doc(map['id']);
+      final itemRef = workspaceItemsRef.doc(map['id'] as String);
       map.remove('id');
       await itemRef.set(map);
     }

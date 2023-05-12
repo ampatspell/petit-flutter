@@ -1,9 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/providers/selected_project.dart';
 
 import '../../blocks/riverpod/async_value.dart';
 import '../../blocks/riverpod/delete_confirmation.dart';
+import '../../providers/project.dart';
 import '../router.dart';
 
 class ProjectScreen extends ConsumerWidget {
@@ -13,8 +13,8 @@ class ProjectScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final project = ref.watch(selectedProjectProvider);
-    final delete = ref.watch(selectedProjectDeleteProvider);
+    final project = ref.watch(projectProvider);
+    final delete = ref.watch(projectDeleteProvider);
 
     return ScaffoldPage.withPadding(
       header: PageHeader(

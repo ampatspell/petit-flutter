@@ -11,6 +11,7 @@ class Project with _$Project {
 
   const factory Project({
     required MapDocumentReference reference,
+    required bool isDeleted,
     required FirestoreMap data,
   }) = _Project;
 

@@ -8,7 +8,7 @@ class LoggingObserver implements ProviderObserver {
     return provider.name ?? provider.runtimeType;
   }
 
-  _print(
+  void _print(
     String prefix,
     ProviderBase<Object?> provider,
     ProviderContainer container, [

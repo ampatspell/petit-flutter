@@ -3,10 +3,10 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/providers/references.dart';
-import 'package:petit_editor/src/providers/selected_project.dart';
 
 import '../blocks/riverpod/fluent_screen.dart';
+import '../providers/project.dart';
+import '../providers/references.dart';
 import 'development.dart';
 import 'development/measurable.dart';
 import 'development/riverpod.dart';
@@ -122,7 +122,7 @@ class ProjectRoute extends GoRouteData {
         final reference = ref.watch(firestoreReferencesProvider).projects().doc(projectId);
         return ProviderScope(
           overrides: [
-            selectedProjectReferenceProvider.overrideWithValue(reference),
+            projectReferenceProvider.overrideWithValue(reference),
           ],
           child: child!,
         );
