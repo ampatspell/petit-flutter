@@ -12,6 +12,7 @@ class ProjectScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     print('1 build project');
+
     return ProviderScopeOverrides(
       parent: this,
       overrides: (context, ref) => [
@@ -20,6 +21,26 @@ class ProjectScreen extends ConsumerWidget {
         overrideProvider(projectWorkspaceDocsProvider).withAsyncValue(ref.watch(projectWorkspaceDocsStreamProvider)),
       ],
       child: const ProjectScreenContent(),
+    );
+  }
+}
+
+class Loaded extends ConsumerWidget {
+  const Loaded({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final project = ref.watch(projectDocStreamProvider.select((value) => value.requireValue.name));
+    return ScaffoldPage.withPadding(
+      header: const PageHeader(
+        title: Text('Loaded'),
+      ),
+      content: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(project),
+        ],
+      ),
     );
   }
 }
@@ -117,33 +138,8 @@ class ProjectWorkspaces extends ConsumerWidget {
         // ref.read(loadedProjectWorkspacesModelProvider).selectIndex(index);
       },
       onNewPressed: () {
-        // ref.read(loadedProjectWorkspacesModelProvider).add(name: 'Untitled');
+        ref.read(projectWorkspacesProvider).add(name: 'Untitled');
       },
     );
   }
 }
-
-//
-// class ProjectWorkspacesList extends ConsumerWidget {
-//   final void Function(ProjectWorkspace workspace) onSelect;
-//
-//   const ProjectWorkspacesList({
-//     super.key,
-//     required this.onSelect,
-//   });
-//
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final workspaces = ref.watch(loadedProjectWorkspacesProvider);
-//     return ListView.builder(
-//       itemCount: workspaces.length,
-//       itemBuilder: (context, index) {
-//         final workspace = workspaces[index];
-//         return ListTile(
-//           onPressed: () => onSelect(workspace),
-//           title: Text(workspace.name),
-//         );
-//       },
-//     );
-//   }
-// }

@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import '../../models/base.dart';
 
 abstract class ScopeOverride<T> {
-  AutoDisposeProvider<T> get provider;
+  AutoDisposeProvider<T>? get provider;
 
   bool get hasError;
 
@@ -16,6 +16,37 @@ abstract class ScopeOverride<T> {
   StackTrace? get stackTrace;
 
   T? get value;
+
+  Override? createOverride();
+}
+
+class AsyncValueLoader<T> implements ScopeOverride<T> {
+  final AsyncValue<T> _value;
+
+  AsyncValueLoader({
+    required AsyncValue<T> value,
+  }) : _value = value;
+
+  @override
+  Override? createOverride() => null;
+
+  @override
+  T? get value => _value.value;
+
+  @override
+  StackTrace? get stackTrace => _value.stackTrace;
+
+  @override
+  Object? get error => _value.error;
+
+  @override
+  bool get hasValue => _value.hasValue;
+
+  @override
+  bool get hasError => _value.hasError;
+
+  @override
+  AutoDisposeProvider<T>? get provider => null;
 }
 
 class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
@@ -47,6 +78,11 @@ class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
   T? get value => _value.value;
 
   @override
+  Override? createOverride() {
+    return _provider.overrideWithValue(_value.requireValue);
+  }
+
+  @override
   String toString() {
     return 'AsyncValueScopeOverride{provider: $_provider, value: $_value}';
   }
@@ -67,6 +103,10 @@ class ScopeOverrideBuilder<T> {
 }
 
 ScopeOverrideBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
+
+AsyncValueLoader<T> loadAsyncValue<T>(AsyncValue<T> value) {
+  return AsyncValueLoader<T>(value: value);
+}
 
 class ProviderScopeOverridesLoading extends StatelessWidget {
   const ProviderScopeOverridesLoading({super.key});
@@ -169,21 +209,33 @@ class ProviderScopeOverrides extends ConsumerWidget {
       return ensureScaffold(null, const ProviderScopeOverridesLoading());
     }
 
+    final created = built
+        .map((override) => override.createOverride())
+        .where((element) => element != null)
+        .cast<Override>()
+        .toList(growable: false);
+
+    if (created.isEmpty) {
+      return child;
+    }
+
+    print('overrides: $created');
+
     return ProviderScope(
-      overrides: built.map((override) {
-        return override.provider.overrideWithValue(override.value!);
-      }).toList(growable: false),
+      overrides: created,
       child: Consumer(
         builder: (context, ref, child) {
           final container = ProviderScope.containerOf(context);
           final logging = ref.read(loggingObserverProvider);
           for (var override in built) {
-            logging.didOverrideProvider(
-              override.provider,
-              override.value!,
-              container,
-              parent?.runtimeType.toString(),
-            );
+            if (override.provider != null) {
+              logging.didOverrideProvider(
+                override.provider!,
+                override.value!,
+                container,
+                parent?.runtimeType.toString(),
+              );
+            }
           }
           return child!;
         },

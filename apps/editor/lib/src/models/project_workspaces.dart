@@ -15,6 +15,8 @@ class ProjectWorkspaces with _$ProjectWorkspaces {
 
   const ProjectWorkspaces._();
 
+  MapCollectionReference get collection => references.projectWorkspacesCollection(projectRef);
+
   ProjectWorkspaceDoc _asDoc(MapDocumentSnapshot snapshot) {
     return ProjectWorkspaceDoc(
       reference: snapshot.reference,
@@ -28,7 +30,15 @@ class ProjectWorkspaces with _$ProjectWorkspaces {
   }
 
   Stream<List<ProjectWorkspaceDoc>> all() {
-    final ref = references.projectWorkspacesCollection(projectRef);
+    final ref = collection;
     return ref.snapshots(includeMetadataChanges: false).map((event) => _asDocs(event));
+  }
+
+  Future<MapDocumentReference> add({required String name}) async {
+    final ref = collection.doc();
+    await ref.set({
+      'name': name,
+    });
+    return ref;
   }
 }
