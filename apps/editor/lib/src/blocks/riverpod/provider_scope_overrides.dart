@@ -44,43 +44,13 @@ class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
 
   @override
   Override asOverride() {
-    final value = _value.value as T;
-    return _provider.overrideWithValue(value);
+    return _provider.overrideWithValue(_value.requireValue);
   }
 
   @override
   String toString() {
     return 'AsyncValueScopeOverride{provider: $_provider, value: $_value}';
   }
-}
-
-class ValueScopeOverride<T> implements ScopeOverride<T> {
-  final AutoDisposeProvider<T> _provider;
-  final T _value;
-
-  const ValueScopeOverride({
-    required AutoDisposeProvider<T> provider,
-    required T value,
-  })  : _value = value,
-        _provider = provider;
-
-  @override
-  final Object? error = null;
-
-  @override
-  final bool hasError = false;
-
-  @override
-  final bool isLoading = false;
-
-  @override
-  AutoDisposeProvider<T> get provider => _provider;
-
-  @override
-  T? get value => _value;
-
-  @override
-  Override asOverride() => _provider.overrideWithValue(_value);
 }
 
 class ScopeOverrideBuilder<T> {
@@ -92,8 +62,8 @@ class ScopeOverrideBuilder<T> {
     return AsyncValueScopeOverride(provider: provider, value: value);
   }
 
-  ValueScopeOverride<T> withValue(T value) {
-    return ValueScopeOverride(provider: provider, value: value);
+  AsyncValueScopeOverride<T> withValue(T value) {
+    return AsyncValueScopeOverride(provider: provider, value: AsyncValue.data(value));
   }
 }
 
