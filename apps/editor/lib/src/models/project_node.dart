@@ -5,14 +5,15 @@ import '../typedefs.dart';
 
 part 'project_node.freezed.dart';
 
-abstract class ProjectNode {}
+abstract class ProjectNodeDoc {}
 
 @freezed
-class ProjectBoxNode with _$ProjectBoxNode implements ProjectNode {
-  const ProjectBoxNode._();
+class ProjectBoxNodeDoc with _$ProjectBoxNodeDoc implements ProjectNodeDoc {
+  const ProjectBoxNodeDoc._();
 
-  const factory ProjectBoxNode({
+  const factory ProjectBoxNodeDoc({
     required MapDocumentReference reference,
     required FirestoreMap data,
-  }) = _ProjectBoxNode;
+    required bool isDeleted,
+  }) = _ProjectBoxNodeDoc;
 }

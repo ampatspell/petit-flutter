@@ -6,26 +6,26 @@ import '../typedefs.dart';
 part 'project.freezed.dart';
 
 @freezed
-class Project with _$Project {
-  const Project._();
+class ProjectDoc with _$ProjectDoc {
+  const ProjectDoc._();
 
-  const factory Project({
+  const factory ProjectDoc({
     required MapDocumentReference reference,
     required bool isDeleted,
     required FirestoreMap data,
-  }) = _Project;
+  }) = _ProjectDoc;
 
   String get name => data['name'] as String;
-}
 
-@freezed
-class NewProjectData with _$NewProjectData {
-  const NewProjectData._();
+  String? get workspace => data['workspace'] as String?;
 
-  const factory NewProjectData({
-    @Default(false) bool isBusy,
-    @Default('') String name,
-  }) = _NewProjectData;
+  Future<void> updateWorkspaceId(String? id) async {
+    await reference.set({
+      'workspace': id,
+    }, SetOptions(merge: true));
+  }
 
-  bool get isValid => name.isNotEmpty;
+  Future<void> delete() async {
+    await reference.delete();
+  }
 }

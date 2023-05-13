@@ -1,6 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/providers/new_project.dart';
+import 'package:petit_editor/src/providers/projects.dart';
 import 'package:petit_editor/src/routes/router.dart';
 import 'package:petit_editor/src/theme.dart';
 import 'package:petit_editor/src/typedefs.dart';

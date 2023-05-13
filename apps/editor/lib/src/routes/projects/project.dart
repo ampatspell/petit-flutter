@@ -11,12 +11,13 @@ class ProjectScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('1 build project');
     return ProviderScopeOverrides(
       parent: this,
       overrides: (context, ref) => [
-        overrideProvider(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
-        overrideProvider(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
-        overrideProvider(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
+        overrideProvider(projectDocProvider).withAsyncValue(ref.watch(projectDocStreamProvider)),
+        overrideProvider(projectNodeDocsProvider).withAsyncValue(ref.watch(projectNodeDocsStreamProvider)),
+        overrideProvider(projectWorkspaceDocsProvider).withAsyncValue(ref.watch(projectWorkspaceDocsStreamProvider)),
       ],
       child: const ProjectScreenContent(),
     );
@@ -28,14 +29,16 @@ class ProjectScreenContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final project = ref.watch(loadedProjectProvider);
-    final nodes = ref.watch(loadedProjectNodesProvider);
-    final workspaces = ref.watch(loadedProjectWorkspacesProvider);
-    final delete = ref.watch(projectDeleteProvider);
+    print('2 build project content');
+    // final project = ref.watch(loadedProjectProvider);
+    // final nodes = ref.watch(loadedProjectNodesProvider);
+    // final workspaces = ref.watch(loadedProjectWorkspacesProvider);
+    final name = ref.watch(projectDocProvider.select((value) => value.name));
+    final delete = ref.watch(projectDocDeleteProvider);
 
     return ScaffoldPage.withPadding(
       header: PageHeader(
-        title: const Text('Project'),
+        title: Text(name),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
@@ -51,11 +54,96 @@ class ProjectScreenContent extends ConsumerWidget {
           ],
         ),
       ),
-      content: Text([
-        project,
-        nodes,
-        workspaces,
-      ].join('\n\n')),
+      content: const ProjectScreenScaffoldContent(),
     );
   }
 }
+
+class ProjectScreenScaffoldContent extends ConsumerWidget {
+  const ProjectScreenScaffoldContent({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('3 build project scaffold content');
+    return const ProjectWorkspaces();
+  }
+}
+
+class ProjectWorkspaces extends ConsumerWidget {
+  const ProjectWorkspaces({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('4 build project workspaces');
+
+    final docs = ref.watch(projectWorkspaceDocsProvider);
+
+    final tabs = docs.map((workspace) {
+      final name = workspace.name;
+      return Tab(
+        text: Text(name),
+        body: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              FilledButton(
+                child: const Text('Touch'),
+                onPressed: () {
+                  workspace.touch();
+                },
+              ),
+            ],
+          ),
+        ),
+        // closeIcon: FluentIcons.close_pane,
+        onClosed: () {
+          workspace.delete();
+        },
+      );
+    }).toList(growable: false);
+
+    // final currentIndex = ref.watch(loadedProjectWorkspacesModelProvider.select((value) {
+    //   return value.selectedIndex;
+    // }));
+
+    const currentIndex = 0;
+
+    return TabView(
+      currentIndex: currentIndex,
+      tabs: tabs,
+      closeButtonVisibility: CloseButtonVisibilityMode.onHover,
+      onChanged: (index) {
+        // ref.read(loadedProjectWorkspacesModelProvider).selectIndex(index);
+      },
+      onNewPressed: () {
+        // ref.read(loadedProjectWorkspacesModelProvider).add(name: 'Untitled');
+      },
+    );
+  }
+}
+
+//
+// class ProjectWorkspacesList extends ConsumerWidget {
+//   final void Function(ProjectWorkspace workspace) onSelect;
+//
+//   const ProjectWorkspacesList({
+//     super.key,
+//     required this.onSelect,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final workspaces = ref.watch(loadedProjectWorkspacesProvider);
+//     return ListView.builder(
+//       itemCount: workspaces.length,
+//       itemBuilder: (context, index) {
+//         final workspace = workspaces[index];
+//         return ListTile(
+//           onPressed: () => onSelect(workspace),
+//           title: Text(workspace.name),
+//         );
+//       },
+//     );
+//   }
+// }

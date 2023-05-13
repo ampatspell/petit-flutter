@@ -40,7 +40,7 @@ class ProjectsScreen extends ConsumerWidget {
       content: ProviderScopeOverrides(
         parent: this,
         overrides: (context, ref) => [
-          overrideProvider(loadedSortedProjectsProvider).withAsyncValue(ref.watch(sortedProjectsProvider)),
+          overrideProvider(projectDocsProvider).withAsyncValue(ref.watch(projectDocsStreamProvider)),
         ],
         child: ProjectsList(
           onSelect: (project) {

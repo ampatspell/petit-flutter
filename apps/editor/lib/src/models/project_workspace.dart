@@ -6,11 +6,24 @@ import '../typedefs.dart';
 part 'project_workspace.freezed.dart';
 
 @freezed
-class ProjectWorkspace with _$ProjectWorkspace {
-  const ProjectWorkspace._();
+class ProjectWorkspaceDoc with _$ProjectWorkspaceDoc {
+  const ProjectWorkspaceDoc._();
 
-  const factory ProjectWorkspace({
+  const factory ProjectWorkspaceDoc({
     required MapDocumentReference reference,
     required FirestoreMap data,
-  }) = _ProjectWorkspace;
+    required bool isDeleted,
+  }) = _ProjectWorkspaceDoc;
+
+  String get name => data['name'] as String;
+
+  Future<void> touch() async {
+    await reference.set({
+      'foo': DateTime.now(),
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> delete() async {
+    await reference.delete();
+  }
 }

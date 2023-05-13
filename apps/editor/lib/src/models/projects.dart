@@ -1,43 +1,57 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:petit_editor/src/blocks/riverpod/order.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../models/project.dart';
+import '../blocks/riverpod/order.dart';
 import '../typedefs.dart';
+import 'project.dart';
 import 'references.dart';
 
-class ProjectsRepository {
-  final FirestoreReferences references;
+part 'projects.freezed.dart';
 
-  const ProjectsRepository({
-    required this.references,
-  });
+@freezed
+class Projects with _$Projects {
+  const factory Projects({
+    required FirestoreReferences references,
+  }) = _Projects;
+
+  const Projects._();
 
   MapCollectionReference get collection => references.projects();
 
-  Project _asProject(MapDocumentSnapshot e) {
-    return Project(
+  ProjectDoc _asDoc(MapDocumentSnapshot e) {
+    return ProjectDoc(
       reference: e.reference,
       isDeleted: !e.exists,
       data: e.data() ?? {},
     );
   }
 
-  List<Project> _asProjects(QuerySnapshot<FirestoreMap> event) {
-    return event.docs.map((e) => _asProject(e)).toList(growable: false);
+  List<ProjectDoc> _asDocs(QuerySnapshot<FirestoreMap> event) {
+    return event.docs.map((e) => _asDoc(e)).toList(growable: false);
   }
 
-  Stream<List<Project>> all(OrderDirection order) {
+  Stream<List<ProjectDoc>> all(OrderDirection order) {
     return collection
         .orderBy('name', descending: order.isDescending)
         .snapshots(includeMetadataChanges: false)
-        .map((event) => _asProjects(event));
+        .map((event) => _asDocs(event));
   }
 
-  Stream<Project> byReference(MapDocumentReference projectRef) {
-    return projectRef.snapshots(includeMetadataChanges: false).map((event) {
-      return _asProject(event);
+  Stream<ProjectDoc> byReference(MapDocumentReference projectRef) {
+    return projectRef.snapshots(includeMetadataChanges: false).map((event) => _asDoc(event));
+  }
+
+  Future<MapDocumentReference> add(NewProjectData data) async {
+    final ref = collection.doc();
+    await ref.set({
+      'name': data.name,
     });
+    return ref;
+  }
+
+  MapDocumentReference referenceById(String id) {
+    return collection.doc(id);
   }
 
   Future<void> reset() async {
@@ -166,17 +180,16 @@ class ProjectsRepository {
       ]);
     }));
   }
+}
 
-  Future<MapDocumentReference> add(NewProjectData data) async {
-    final ref = collection.doc();
-    await ref.set({
-      'name': data.name,
-    });
-    return ref;
-  }
+@freezed
+class NewProjectData with _$NewProjectData {
+  const NewProjectData._();
 
-  @override
-  String toString() {
-    return 'ProjectsRepository{collection: ${collection.path}}';
-  }
+  const factory NewProjectData({
+    @Default(false) bool isBusy,
+    @Default('') String name,
+  }) = _NewProjectData;
+
+  bool get isValid => name.isNotEmpty;
 }

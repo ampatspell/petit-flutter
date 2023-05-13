@@ -6,7 +6,7 @@ import 'package:petit_editor/src/providers/projects.dart';
 import '../../../models/project.dart';
 
 class ProjectsList extends ConsumerWidget {
-  final void Function(Project project) onSelect;
+  final void Function(ProjectDoc project) onSelect;
 
   const ProjectsList({
     super.key,
@@ -16,7 +16,7 @@ class ProjectsList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Consumer(builder: (context, ref, child) {
-      final projects = ref.watch(loadedSortedProjectsProvider);
+      final projects = ref.watch(projectDocsProvider);
       return ModelsListView(
         models: projects,
         placeholder: const Text('No projects created yet'),

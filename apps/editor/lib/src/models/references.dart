@@ -1,14 +1,20 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../models/firebase.dart';
 import '../typedefs.dart';
+import 'firebase.dart';
 
-class FirestoreReferences {
-  final FirebaseServices _services;
+part 'references.freezed.dart';
 
-  FirestoreReferences(FirebaseServices services) : _services = services;
+@freezed
+class FirestoreReferences with _$FirestoreReferences {
+  const factory FirestoreReferences({
+    required FirebaseServices services,
+  }) = _FirestoreReferences;
 
-  FirebaseFirestore get _firestore => _services.firestore;
+  const FirestoreReferences._();
+
+  FirebaseFirestore get _firestore => services.firestore;
 
   MapCollectionReference projects() {
     return _firestore.collection('projects');
@@ -24,10 +30,5 @@ class FirestoreReferences {
 
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {
     return workspaceRef.collection('items');
-  }
-
-  @override
-  String toString() {
-    return 'FirestoreReferences{}';
   }
 }

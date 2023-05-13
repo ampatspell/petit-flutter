@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/blocks/riverpod/provider_scope_overrides.dart';
 
 import '../blocks/riverpod/fluent_screen.dart';
@@ -161,7 +160,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/projects',
+  initialLocation: '/projects/PhE7AVJRlHSWTaNRucIp',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );
