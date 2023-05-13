@@ -118,17 +118,11 @@ class ProjectRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ProviderScopeOverrides(
+      parent: this,
       overrides: (context, ref) => [
         overrideProvider(projectIdProvider).withValue(id),
       ],
-      child: ProviderScopeOverrides(
-        overrides: (context, ref) => [
-          overrideProvider(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
-          overrideProvider(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
-          overrideProvider(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
-        ],
-        child: const ProjectScreen(),
-      ),
+      child: const ProjectScreen(),
     );
   }
 }
@@ -167,7 +161,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/riverpod',
+  initialLocation: '/projects',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

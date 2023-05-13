@@ -66,7 +66,13 @@ class LoggingObserver implements ProviderObserver {
     ProviderBase<Object?> provider,
     Object? value,
     ProviderContainer container,
+    String? name,
   ) {
-    _print('override', provider, container);
+    _print('override', provider, container, name != null ? '($name)' : null);
+  }
+
+  @override
+  String toString() {
+    return 'LoggingObserver{}';
   }
 }

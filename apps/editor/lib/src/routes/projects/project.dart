@@ -2,11 +2,29 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../blocks/riverpod/delete_confirmation.dart';
+import '../../blocks/riverpod/provider_scope_overrides.dart';
 import '../../providers/project.dart';
 import '../router.dart';
 
 class ProjectScreen extends ConsumerWidget {
   const ProjectScreen({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return ProviderScopeOverrides(
+      parent: this,
+      overrides: (context, ref) => [
+        overrideProvider(loadedProjectProvider).withAsyncValue(ref.watch(projectProvider)),
+        overrideProvider(loadedProjectNodesProvider).withAsyncValue(ref.watch(projectNodesProvider)),
+        overrideProvider(loadedProjectWorkspacesProvider).withAsyncValue(ref.watch(projectWorkspacesProvider)),
+      ],
+      child: const ProjectScreenContent(),
+    );
+  }
+}
+
+class ProjectScreenContent extends ConsumerWidget {
+  const ProjectScreenContent({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -24,7 +42,7 @@ class ProjectScreen extends ConsumerWidget {
             CommandBarButton(
               icon: const Icon(FluentIcons.remove),
               label: const Text('Delete'),
-              onPressed: withConfirmation(context, delete),
+              onPressed: _deleteWithConfirmation(context, delete),
             )
           ],
         ),
@@ -37,7 +55,7 @@ class ProjectScreen extends ConsumerWidget {
     );
   }
 
-  VoidCallback? withConfirmation(BuildContext context, VoidCallback? delete) {
+  VoidCallback? _deleteWithConfirmation(BuildContext context, VoidCallback? delete) {
     if (delete == null) {
       return null;
     }

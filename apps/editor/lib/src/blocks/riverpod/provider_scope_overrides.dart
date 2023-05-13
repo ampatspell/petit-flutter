@@ -1,4 +1,5 @@
-import 'package:flutter/widgets.dart';
+import 'package:fluent_ui/fluent_ui.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../models/base.dart';
@@ -8,13 +9,13 @@ abstract class ScopeOverride<T> {
 
   bool get hasError;
 
+  bool get hasValue;
+
   Object? get error;
 
-  bool get isLoading;
+  StackTrace? get stackTrace;
 
   T? get value;
-
-  Override asOverride();
 }
 
 class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
@@ -31,21 +32,19 @@ class AsyncValueScopeOverride<T> implements ScopeOverride<T> {
   AutoDisposeProvider<T> get provider => _provider;
 
   @override
-  bool get isLoading => _value.isLoading;
+  Object? get error => _value.error;
 
   @override
-  Object? get error => _value.error;
+  StackTrace? get stackTrace => _value.stackTrace;
 
   @override
   bool get hasError => _value.hasError;
 
   @override
-  T? get value => _value.value;
+  bool get hasValue => _value.hasValue;
 
   @override
-  Override asOverride() {
-    return _provider.overrideWithValue(_value.requireValue);
-  }
+  T? get value => _value.value;
 
   @override
   String toString() {
@@ -69,12 +68,73 @@ class ScopeOverrideBuilder<T> {
 
 ScopeOverrideBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
 
+class ProviderScopeOverridesLoading extends StatelessWidget {
+  const ProviderScopeOverridesLoading({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SizedBox.shrink();
+  }
+}
+
+class ProviderScopeOverridesError extends StatelessWidget {
+  final List<ScopeOverride<dynamic>> errors;
+
+  const ProviderScopeOverridesError({
+    super.key,
+    required this.errors,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (var error in errors) ...[
+          Text([
+            error.error.toString(),
+            error.stackTrace.toString(),
+          ].join('\n')),
+          const Gap(20),
+        ],
+      ],
+    );
+  }
+}
+
+class ProviderScopeOverridesScaffold extends StatelessWidget {
+  final String? title;
+  final Widget child;
+
+  const ProviderScopeOverridesScaffold({
+    super.key,
+    required this.title,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ScaffoldPage.scrollable(
+      header: title != null
+          ? PageHeader(
+              title: Text(title!),
+            )
+          : null,
+      children: [
+        child,
+      ],
+    );
+  }
+}
+
 class ProviderScopeOverrides extends ConsumerWidget {
   final List<ScopeOverride<dynamic>> Function(BuildContext context, WidgetRef ref) overrides;
   final Widget child;
+  final Object? parent;
 
   const ProviderScopeOverrides({
     super.key,
+    this.parent,
     required this.overrides,
     required this.child,
   });
@@ -83,24 +143,47 @@ class ProviderScopeOverrides extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final built = overrides(context, ref);
 
-    final hasErrors = built.where((element) => element.hasError);
-    if (hasErrors.isNotEmpty) {
-      return Text('Errors: $hasErrors');
+    Widget ensureScaffold(String? title, Widget child) {
+      final scaffold = context.findAncestorWidgetOfExactType<ScaffoldPage>();
+      if (scaffold == null) {
+        child = ProviderScopeOverridesScaffold(
+          title: title,
+          child: child,
+        );
+      } else {
+        child = Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: child,
+        );
+      }
+      return child;
     }
 
-    final loading = built.where((element) => element.isLoading);
+    final errors = built.where((element) => element.hasError).toList(growable: false);
+    if (errors.isNotEmpty) {
+      return ensureScaffold('Something went wrong', ProviderScopeOverridesError(errors: errors));
+    }
+
+    final loading = built.where((element) => !element.hasValue).toList(growable: false);
     if (loading.isNotEmpty) {
-      return const SizedBox.shrink();
+      return ensureScaffold(null, const ProviderScopeOverridesLoading());
     }
 
     return ProviderScope(
-      overrides: built.map((e) => e.asOverride()).toList(growable: false),
+      overrides: built.map((e) {
+        return e.provider.overrideWithValue(e.value!);
+      }).toList(growable: false),
       child: Consumer(
         builder: (context, ref, child) {
           final container = ProviderScope.containerOf(context);
           final logging = ref.read(loggingObserverProvider);
           for (var override in built) {
-            logging.didOverrideProvider(override.provider, override.value!, container);
+            logging.didOverrideProvider(
+              override.provider,
+              override.value!,
+              container,
+              parent?.runtimeType.toString(),
+            );
           }
           return child!;
         },
