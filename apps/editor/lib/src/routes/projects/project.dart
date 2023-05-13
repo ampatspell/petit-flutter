@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../blocks/riverpod/delete_confirmation.dart';
+import '../../blocks/riverpod/confirmation.dart';
 import '../../blocks/riverpod/provider_scope_overrides.dart';
 import '../../providers/project.dart';
 import '../router.dart';
@@ -39,11 +39,15 @@ class ProjectScreenContent extends ConsumerWidget {
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
-            CommandBarButton(
-              icon: const Icon(FluentIcons.remove),
-              label: const Text('Delete'),
-              onPressed: _deleteWithConfirmation(context, delete),
-            )
+            buildDeleteCommandBarButton(
+              context,
+              message: 'Are you sure you want to delete this product?',
+              action: delete,
+              onCommit: (context, action) {
+                ProjectsRoute().go(context);
+                action();
+              },
+            ),
           ],
         ),
       ),
@@ -53,21 +57,5 @@ class ProjectScreenContent extends ConsumerWidget {
         workspaces,
       ].join('\n\n')),
     );
-  }
-
-  VoidCallback? _deleteWithConfirmation(BuildContext context, VoidCallback? delete) {
-    if (delete == null) {
-      return null;
-    }
-    return () async {
-      await deleteWithConfirmation(
-        context,
-        message: 'Are you sure you want to delete this project?',
-        onDelete: (context) {
-          ProjectsRoute().go(context);
-          delete();
-        },
-      );
-    };
   }
 }

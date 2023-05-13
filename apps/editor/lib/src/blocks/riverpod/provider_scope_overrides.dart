@@ -170,8 +170,8 @@ class ProviderScopeOverrides extends ConsumerWidget {
     }
 
     return ProviderScope(
-      overrides: built.map((e) {
-        return e.provider.overrideWithValue(e.value!);
+      overrides: built.map((override) {
+        return override.provider.overrideWithValue(override.value!);
       }).toList(growable: false),
       child: Consumer(
         builder: (context, ref, child) {
