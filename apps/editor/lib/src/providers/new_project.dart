@@ -1,11 +1,11 @@
 import 'dart:ui';
 
-import 'package:petit_editor/src/providers/projects.dart';
-import 'package:petit_editor/src/typedefs.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/project.dart';
+import '../typedefs.dart';
 import 'firebase.dart';
+import 'projects.dart';
 import 'references.dart';
 
 part 'new_project.g.dart';

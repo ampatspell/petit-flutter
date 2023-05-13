@@ -4,6 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../blocks/riverpod/order.dart';
 import '../models/project.dart';
 import '../repositories/projects.dart';
+import 'base.dart';
 import 'firebase.dart';
 import 'references.dart';
 
@@ -54,4 +55,4 @@ class ResetProjects extends _$ResetProjects {
 //
 
 @Riverpod(dependencies: [])
-List<Project> loadedSortedProjects(LoadedSortedProjectsRef ref) => throw UnimplementedError('override');
+List<Project> loadedSortedProjects(LoadedSortedProjectsRef ref) => throw OverrideProviderException();

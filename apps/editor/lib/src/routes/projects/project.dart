@@ -6,9 +6,7 @@ import '../../providers/project.dart';
 import '../router.dart';
 
 class ProjectScreen extends ConsumerWidget {
-  const ProjectScreen({
-    super.key,
-  });
+  const ProjectScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

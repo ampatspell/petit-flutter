@@ -1,9 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/models/project.dart';
 
-import '../../blocks/riverpod/async_value.dart';
 import '../../blocks/riverpod/provider_scope_overrides.dart';
 import '../../providers/project.dart';
 import '../../providers/projects.dart';
@@ -32,35 +30,30 @@ class ProjectsWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final projects = ref.watch(sortedProjectsProvider);
-    return AsyncValueWidget(
-      value: projects,
-      builder: (context, projects) {
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ProjectScope(project: projects[0]),
-            const Gap(20),
-            ProjectScope(project: projects[1]),
-          ],
-        );
-      },
-    );
-  }
-}
-
-class ProjectScope extends StatelessWidget {
-  final Project project;
-
-  const ProjectScope({super.key, required this.project});
-
-  @override
-  Widget build(BuildContext context) {
     return ProviderScopeOverrides(
       overrides: (context, ref) => [
-        overrideProvider(projectReferenceProvider).withValue(project.reference),
+        overrideProvider(loadedSortedProjectsProvider).withAsyncValue(ref.watch(sortedProjectsProvider)),
       ],
-      child: const ProjectWidget(),
+      child: Consumer(
+        builder: (context, ref, child) {
+          final ids = ref.watch(loadedSortedProjectsProvider.select((value) {
+            return value.map((e) {
+              return e.reference.id;
+            });
+          }));
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: ids.map((id) {
+              return ProviderScopeOverrides(
+                overrides: (context, ref) => [
+                  overrideProvider(projectIdProvider).withValue(id),
+                ],
+                child: const ProjectWidget(),
+              );
+            }).toList(growable: false),
+          );
+        },
+      ),
     );
   }
 }
@@ -95,6 +88,8 @@ class ScopedWidget extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        const ProjectTitleWidget(),
+        const Gap(10),
         Text(project.toString()),
         const Gap(10),
         Text(nodes.toString()),
@@ -102,5 +97,16 @@ class ScopedWidget extends ConsumerWidget {
         Text(workspaces.toString()),
       ],
     );
+  }
+}
+
+class ProjectTitleWidget extends ConsumerWidget {
+  const ProjectTitleWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    print('build title');
+    final name = ref.watch(loadedProjectProvider.select((value) => value.name));
+    return Text('Project: $name');
   }
 }

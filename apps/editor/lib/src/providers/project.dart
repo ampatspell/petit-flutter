@@ -10,6 +10,7 @@ import '../repositories/project.dart';
 import '../repositories/project_nodes.dart';
 import '../repositories/project_workspaces.dart';
 import '../typedefs.dart';
+import 'base.dart';
 import 'firebase.dart';
 import 'projects.dart';
 import 'references.dart';
@@ -17,7 +18,7 @@ import 'references.dart';
 part 'project.g.dart';
 
 @Riverpod(dependencies: [])
-String projectId(ProjectIdRef ref) => throw UnimplementedError('override');
+String projectId(ProjectIdRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [projectId, firestoreReferences])
 MapDocumentReference projectReference(ProjectReferenceRef ref) {
@@ -90,10 +91,10 @@ class ProjectDelete extends _$ProjectDelete {
 //
 
 @Riverpod(dependencies: [])
-Project loadedProject(LoadedProjectRef ref) => throw UnimplementedError('override');
+Project loadedProject(LoadedProjectRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [])
-List<ProjectNode> loadedProjectNodes(LoadedProjectNodesRef ref) => throw UnimplementedError('override');
+List<ProjectNode> loadedProjectNodes(LoadedProjectNodesRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [])
-List<ProjectWorkspace> loadedProjectWorkspaces(LoadedProjectWorkspacesRef ref) => throw UnimplementedError('override');
+List<ProjectWorkspace> loadedProjectWorkspaces(LoadedProjectWorkspacesRef ref) => throw OverrideProviderException();

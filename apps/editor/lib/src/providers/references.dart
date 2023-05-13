@@ -1,7 +1,7 @@
-import 'package:petit_editor/src/providers/firebase.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../repositories/references.dart';
+import 'firebase.dart';
 
 part 'references.g.dart';
 
