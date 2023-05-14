@@ -1,16 +1,15 @@
 import 'dart:async';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 
-import '../blocks/fluent_screen.dart';
-import '../get_it.dart';
+import '../blocks/riverpod/fluent_screen.dart';
+import '../blocks/riverpod/loaded_scope/loaded_scope.dart';
+import '../providers/project.dart';
 import 'development.dart';
-import 'development/activatable.dart';
-import 'development/workspace.dart';
-import 'development/resizable.dart';
-import 'development/sprite_editor.dart';
+import 'development/one.dart';
+import 'development/three.dart';
+import 'development/two.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 import 'projects/project.dart';
@@ -26,16 +25,15 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
       path: '/projects',
       routes: <TypedGoRoute<GoRouteData>>[
         TypedGoRoute<NewProjectRoute>(path: 'new'),
-        TypedGoRoute<ProjectRoute>(path: ':projectId'),
+        TypedGoRoute<ProjectRoute>(path: ':id'),
       ],
     ),
     TypedGoRoute<DevelopmentRoute>(
       path: '/dev',
       routes: [
-        TypedGoRoute<DevelopmentActivatableRoute>(path: 'activatable'),
-        TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
-        TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
-        TypedGoRoute<DevelopmentWorkspaceRoute>(path: 'workspace'),
+        TypedGoRoute<DevelopmentOneRoute>(path: '1'),
+        TypedGoRoute<DevelopmentTwoRoute>(path: '2'),
+        TypedGoRoute<DevelopmentThreeRoute>(path: '3'),
       ],
     ),
   ],
@@ -61,31 +59,24 @@ class DevelopmentRoute extends GoRouteData {
   }
 }
 
-class DevelopmentActivatableRoute extends GoRouteData {
+class DevelopmentOneRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentActivatableScreen();
+    return const DevelopmentOneScreen();
   }
 }
 
-class DevelopmentSpriteEditorRoute extends GoRouteData {
+class DevelopmentTwoRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentSpriteEditorScreen();
+    return const DevelopmentTwoScreen();
   }
 }
 
-class DevelopmentWorkspaceRoute extends GoRouteData {
+class DevelopmentThreeRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentWorkspaceScreen();
-  }
-}
-
-class DevelopmentResizableRoute extends GoRouteData {
-  @override
-  Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentResizableScreen();
+    return const DevelopmentThreeScreen();
   }
 }
 
@@ -104,16 +95,18 @@ class NewProjectRoute extends GoRouteData {
 }
 
 class ProjectRoute extends GoRouteData {
-  final String projectId;
+  final String id;
 
-  ProjectRoute({required this.projectId});
-
-  FirebaseFirestore get firestore => it.get();
+  ProjectRoute({required this.id});
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProjectScreen(
-      reference: firestore.collection('projects').doc(projectId),
+    return LoadedScope(
+      parent: this,
+      loaders: (context, ref) => [
+        overrideProvider(projectIdProvider).withValue(id),
+      ],
+      child: const ProjectScreen(),
     );
   }
 }
@@ -152,7 +145,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/dev/activatable',
+  initialLocation: '/projects',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

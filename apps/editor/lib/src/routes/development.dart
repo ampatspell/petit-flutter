@@ -29,20 +29,16 @@ class DevelopmentScreen extends HookWidget {
 
     return [
       item(
-        label: 'Activatable',
-        onPressed: () => DevelopmentActivatableRoute().go(context),
+        label: 'Measurable',
+        onPressed: () => DevelopmentOneRoute().go(context),
       ),
       item(
-        label: 'Sprite editor',
-        onPressed: () => DevelopmentSpriteEditorRoute().go(context),
+        label: 'Two',
+        onPressed: () => DevelopmentTwoRoute().go(context),
       ),
       item(
-        label: 'Resizable',
-        onPressed: () => DevelopmentResizableRoute().go(context),
-      ),
-      item(
-        label: 'Workspace',
-        onPressed: () => DevelopmentWorkspaceRoute().go(context),
+        label: 'Three',
+        onPressed: () => DevelopmentThreeRoute().go(context),
       ),
     ];
   }

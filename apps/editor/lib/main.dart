@@ -1,31 +1,37 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:petit_editor/src/get_it.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/models/base.dart';
+import 'package:petit_editor/src/providers/firebase.dart';
 import 'package:petit_editor/src/theme.dart';
 
+import 'src/provider_logging_observer.dart';
 import 'src/routes/router.dart';
 
 void main() async {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  final firebaseServices = await initializeFirebase();
+  final loggingObserver = ProviderLoggingObserver(enabled: false);
+  runApp(ProviderScope(
+    overrides: [
+      loggingObserverProvider.overrideWithValue(loggingObserver),
+      firebaseServicesProvider.overrideWithValue(firebaseServices),
+    ],
+    observers: [
+      loggingObserver,
+    ],
+    child: const EditorApp(),
+  ));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class EditorApp extends StatelessWidget {
+  const EditorApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: getItReady,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          return FluentApp.router(
-            debugShowCheckedModeBanner: false,
-            routerConfig: router,
-            theme: theme,
-          );
-        } else {
-          return Container();
-        }
-      },
+    return FluentApp.router(
+      debugShowCheckedModeBanner: false,
+      routerConfig: router,
+      theme: theme,
     );
   }
 }

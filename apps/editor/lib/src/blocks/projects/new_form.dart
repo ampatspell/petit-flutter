@@ -1,43 +1,40 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/providers/projects.dart';
 import 'package:petit_editor/src/routes/router.dart';
-import 'package:petit_editor/src/stores/projects.dart';
 import 'package:petit_editor/src/theme.dart';
+import 'package:petit_editor/src/typedefs.dart';
 
-class NewProjectForm extends HookWidget {
+class NewProjectForm extends ConsumerWidget {
   const NewProjectForm({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final store = useState(NewProjectStore());
-    return Observer(
-      builder: (context) {
-        void commit() async {
-          final ref = await store.value.commit();
-          if (context.mounted && ref != null) {
-            ProjectRoute(projectId: ref.id).go(context);
-          }
-        }
+  Widget build(BuildContext context, WidgetRef ref) {
+    // FIXME: content is NewProjectData which I'm not accessing. watching just to keep it alive
+    ref.watch(newProjectProvider);
 
-        return SizedBox(
-          width: 320,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextBox(
-                placeholder: 'Project name',
-                onChanged: (value) => store.value.name = value,
-              ),
-              AppGaps.gap10,
-              FilledButton(
-                onPressed: store.value.canCommit ? () => commit() : null,
-                child: const Text('Create'),
-              ),
-            ],
+    void didCreate(MapDocumentReference reference) {
+      if (context.mounted) {
+        ProjectRoute(id: reference.id).go(context);
+      }
+    }
+
+    return SizedBox(
+      width: 320,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          TextBox(
+            placeholder: 'Project name',
+            onChanged: (value) => ref.read(newProjectProvider.notifier).setName(value),
           ),
-        );
-      },
+          AppGaps.gap10,
+          FilledButton(
+            onPressed: ref.read(newProjectProvider.notifier).createCallback(didCreate),
+            child: const Text('Create'),
+          ),
+        ],
+      ),
     );
   }
 }

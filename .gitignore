@@ -10,5 +10,6 @@ pubspec_overrides.yaml
 *.iml
 
 *.g.dart
+*.freezed.dart
 .flutter-plugins
 .flutter-plugins-dependencies
