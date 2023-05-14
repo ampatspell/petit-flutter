@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../typedefs.dart';
+import 'typedefs.dart';
 import 'base.dart';
 
 part 'references.freezed.dart';

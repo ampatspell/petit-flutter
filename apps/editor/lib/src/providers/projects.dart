@@ -1,11 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../blocks/riverpod/order.dart';
 import '../models/project.dart';
 import '../models/project_node.dart';
 import '../models/projects.dart';
-import '../typedefs.dart';
+import '../models/typedefs.dart';
+import '../widgets/base/order.dart';
 import 'base.dart';
 import 'references.dart';
 

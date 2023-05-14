@@ -1,11 +1,11 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../blocks/riverpod/loaded_scope/loaded_scope.dart';
-import '../blocks/riverpod/order.dart';
-import '../blocks/riverpod/projects/list.dart';
-import '../providers/projects.dart';
-import 'router.dart';
+import '../base/loaded_scope/loaded_scope.dart';
+import '../base/order.dart';
+import 'list.dart';
+import '../../providers/projects.dart';
+import '../../app/router.dart';
 
 class ProjectsScreen extends ConsumerWidget {
   const ProjectsScreen({super.key});

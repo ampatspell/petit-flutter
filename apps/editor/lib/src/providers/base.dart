@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../firebase_options.dart';
 import '../models/base.dart';
-import '../provider_logging_observer.dart';
+import '../app/provider_logging_observer.dart';
 
 part 'base.g.dart';
 

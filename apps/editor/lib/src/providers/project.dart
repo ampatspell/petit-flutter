@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 import 'package:petit_editor/src/models/project_node.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -8,7 +9,7 @@ import '../models/project.dart';
 import '../models/project_nodes.dart';
 import '../models/project_workspace.dart';
 import '../models/project_workspaces.dart';
-import '../typedefs.dart';
+import '../models/typedefs.dart';
 import 'base.dart';
 import 'projects.dart';
 import 'references.dart';
@@ -74,6 +75,17 @@ List<ProjectNodeDoc> projectNodeDocs(ProjectNodeDocsRef ref) => throw OverridePr
 List<ProjectWorkspaceDoc> projectWorkspaceDocs(ProjectWorkspaceDocsRef ref) => throw OverrideProviderException();
 
 //
+
+@Riverpod(dependencies: [projectDoc, projectWorkspaceDocs])
+ProjectWorkspaceDoc? projectWorkspaceDoc(ProjectWorkspaceDocRef ref) {
+  final id = ref.watch(projectDocProvider.select((value) => value.workspace));
+  if (id == null) {
+    return null;
+  }
+  return ref.watch(projectWorkspaceDocsProvider.select((value) {
+    return value.firstWhereOrNull((element) => element.reference.id == id);
+  }));
+}
 
 @Riverpod(dependencies: [projectDoc])
 class ProjectDocDelete extends _$ProjectDocDelete {

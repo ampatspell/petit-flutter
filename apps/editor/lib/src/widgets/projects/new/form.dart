@@ -1,9 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:petit_editor/src/providers/projects.dart';
-import 'package:petit_editor/src/routes/router.dart';
-import 'package:petit_editor/src/theme.dart';
-import 'package:petit_editor/src/typedefs.dart';
+import 'package:petit_editor/src/app/router.dart';
+import 'package:petit_editor/src/models/typedefs.dart';
 
 class NewProjectForm extends ConsumerWidget {
   const NewProjectForm({super.key});
@@ -28,7 +28,7 @@ class NewProjectForm extends ConsumerWidget {
             placeholder: 'Project name',
             onChanged: (value) => ref.read(newProjectProvider.notifier).setName(value),
           ),
-          AppGaps.gap10,
+          const Gap(10),
           FilledButton(
             onPressed: ref.read(newProjectProvider.notifier).createCallback(didCreate),
             child: const Text('Create'),

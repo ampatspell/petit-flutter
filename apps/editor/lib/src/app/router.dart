@@ -3,16 +3,16 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 
-import '../blocks/riverpod/fluent_screen.dart';
-import '../blocks/riverpod/loaded_scope/loaded_scope.dart';
 import '../providers/project.dart';
-import 'development.dart';
-import 'development/one.dart';
-import 'development/three.dart';
-import 'development/two.dart';
-import 'projects.dart';
-import 'projects/new.dart';
-import 'projects/project.dart';
+import '../widgets/base/fluent_screen.dart';
+import '../widgets/base/loaded_scope/loaded_scope.dart';
+import '../widgets/development/one.dart';
+import '../widgets/development/screen.dart';
+import '../widgets/development/three.dart';
+import '../widgets/development/two.dart';
+import '../widgets/project/screen.dart';
+import '../widgets/projects/new/screen.dart';
+import '../widgets/projects/screen.dart';
 
 part 'router.g.dart';
 

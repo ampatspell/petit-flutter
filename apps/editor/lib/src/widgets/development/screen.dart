@@ -1,7 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart' hide Store;
 import 'package:gap/gap.dart';
-import 'package:petit_editor/src/routes/router.dart';
+import 'package:petit_editor/src/app/router.dart';
 
 class DevelopmentScreen extends HookWidget {
   const DevelopmentScreen({super.key});

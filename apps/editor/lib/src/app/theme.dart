@@ -1,26 +1,25 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:gap/gap.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-abstract class AppColors {
-  static const Color grey255 = Color.fromARGB(255, 255, 255, 255);
-  static const Color grey249 = Color.fromARGB(255, 249, 249, 249);
-  static const Color grey245 = Color.fromARGB(255, 245, 245, 245);
-  static const Color grey230 = Color.fromARGB(255, 230, 230, 230);
-  static const Color grey200 = Color.fromARGB(255, 200, 200, 200);
-  static const Color grey150 = Color.fromARGB(255, 150, 150, 150);
-  static const Color grey020 = Color.fromARGB(255, 20, 20, 20);
-  static const Color grey000 = Color.fromARGB(255, 0, 0, 0);
-}
+// abstract class AppColors {
+//   static const Color grey255 = Color.fromARGB(255, 255, 255, 255);
+//   static const Color grey249 = Color.fromARGB(255, 249, 249, 249);
+//   static const Color grey245 = Color.fromARGB(255, 245, 245, 245);
+//   static const Color grey230 = Color.fromARGB(255, 230, 230, 230);
+//   static const Color grey200 = Color.fromARGB(255, 200, 200, 200);
+//   static const Color grey150 = Color.fromARGB(255, 150, 150, 150);
+//   static const Color grey020 = Color.fromARGB(255, 20, 20, 20);
+//   static const Color grey000 = Color.fromARGB(255, 0, 0, 0);
+// }
 
-abstract class AppEdgeInsets {
-  static const EdgeInsets symmetric15x7 = EdgeInsets.symmetric(horizontal: 15.0, vertical: 7.0);
-  static const EdgeInsets all10 = EdgeInsets.all(10);
-}
+// abstract class AppEdgeInsets {
+//   static const EdgeInsets symmetric15x7 = EdgeInsets.symmetric(horizontal: 15.0, vertical: 7.0);
+//   static const EdgeInsets all10 = EdgeInsets.all(10);
+// }
 
-abstract class AppGaps {
-  static const Gap gap10 = Gap(10);
-}
+// abstract class AppGaps {
+//   static const Gap gap10 = Gap(10);
+// }
 
 final fontFamily = GoogleFonts.ubuntuMono().fontFamily;
 final lightTheme = FluentThemeData.light();

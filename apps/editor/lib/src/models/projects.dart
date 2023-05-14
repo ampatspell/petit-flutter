@@ -2,8 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../blocks/riverpod/order.dart';
-import '../typedefs.dart';
+import '../widgets/base/order.dart';
+import 'typedefs.dart';
 import 'project.dart';
 import 'references.dart';
 

@@ -1,10 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import 'src/provider_logging_observer.dart';
+import 'src/app/provider_logging_observer.dart';
+import 'src/app/theme.dart';
 import 'src/providers/base.dart';
-import 'src/routes/router.dart';
-import 'src/theme.dart';
+import 'src/app/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

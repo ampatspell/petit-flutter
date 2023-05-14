@@ -22,6 +22,7 @@ Future<void> confirmation(
 }) async {
   await showDialog<String>(
     context: context,
+    dismissWithEsc: true,
     barrierDismissible: true,
     builder: (context) => ContentDialog(
       title: Text(message),
@@ -46,6 +47,7 @@ Future<void> confirmation(
 
 CommandBarButton buildDeleteCommandBarButton(
   BuildContext context, {
+  required String label,
   required String message,
   required VoidCallback? action,
   required void Function(BuildContext context, VoidCallback onDelete) onCommit,
@@ -66,7 +68,7 @@ CommandBarButton buildDeleteCommandBarButton(
 
   return CommandBarButton(
     icon: const Icon(FluentIcons.remove),
-    label: const Text('Delete'),
+    label: Text(label),
     onPressed: delete(),
   );
 }

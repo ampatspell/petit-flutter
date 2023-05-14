@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:petit_editor/src/models/project_node.dart';
 import 'package:petit_editor/src/models/references.dart';
-import 'package:petit_editor/src/typedefs.dart';
+import 'package:petit_editor/src/models/typedefs.dart';
 
 part 'project_nodes.freezed.dart';
 
