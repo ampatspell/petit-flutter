@@ -5,12 +5,12 @@ import 'references.dart';
 part 'project.freezed.dart';
 
 @freezed
-class ProjectDoc with _$ProjectDoc {
-  const ProjectDoc._();
-
-  const factory ProjectDoc({
+class ProjectModel with _$ProjectModel {
+  const factory ProjectModel({
     required Doc doc,
-  }) = _ProjectDoc;
+  }) = _ProjectModel;
+
+  const ProjectModel._();
 
   String get name => doc['name'] as String;
 

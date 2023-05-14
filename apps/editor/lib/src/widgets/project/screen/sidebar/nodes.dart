@@ -9,14 +9,14 @@ class ProjectNodesListView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final count = ref.watch(projectNodeDocsProvider.select((value) => value.length));
+    final count = ref.watch(projectNodeModelsProvider.select((value) => value.length));
     return ListView.builder(
       itemCount: count,
       itemBuilder: (context, index) {
-        final node = ref.watch(projectNodeDocsProvider.select((value) => value[index]));
+        final node = ref.watch(projectNodeModelsProvider.select((value) => value[index]));
         return LoadedScope(
           loaders: (context, ref) => [
-            overrideProvider(projectNodeDocProvider).withValue(node),
+            overrideProvider(projectNodeModelProvider).withValue(node),
           ],
           child: const ProjectNodeListTile(),
         );
@@ -30,15 +30,15 @@ class ProjectNodeListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(projectNodeDocProvider.select((value) => value.doc.id));
-    final type = ref.watch(projectNodeDocProvider.select((value) => value.type));
+    final id = ref.watch(projectNodeModelProvider.select((value) => value.doc.id));
+    final type = ref.watch(projectNodeModelProvider.select((value) => value.type));
 
     return ListTile.selectable(
       title: Text(id),
       subtitle: Text(type),
-      selected: ref.watch(projectDocProvider.select((value) => value.node)) == id,
+      selected: ref.watch(projectModelProvider.select((value) => value.node)) == id,
       onPressed: () {
-        ref.read(projectDocProvider).updateNodeId(id);
+        ref.read(projectModelProvider).updateNodeId(id);
       },
     );
   }

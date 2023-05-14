@@ -6,7 +6,6 @@ environment:
 
 dev_dependencies:
   melos: ^3.0.1
-  dart_flutter_team_lints: ^1.0.0
 
 scripts:
   build:

@@ -1,13 +1,13 @@
 part of 'loaded_scope.dart';
 
 class ScopeLoader<T> {
-  final AutoDisposeProvider<T>? provider;
-  final AsyncValue<T> value;
-
   const ScopeLoader({
     required this.provider,
     required this.value,
   });
+
+  final AutoDisposeProvider<T>? provider;
+  final AsyncValue<T> value;
 
   @override
   String toString() {
@@ -16,9 +16,9 @@ class ScopeLoader<T> {
 }
 
 class ScopeLoaderBuilder<T> {
-  final AutoDisposeProvider<T> provider;
-
   ScopeLoaderBuilder(this.provider);
+
+  final AutoDisposeProvider<T> provider;
 
   ScopeLoader<T> withLoadedValue(AsyncValue<T> value) {
     return ScopeLoader(

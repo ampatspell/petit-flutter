@@ -40,18 +40,18 @@ class DevelopmentOneScreen extends HookWidget {
 }
 
 class ToolsWidget extends HookWidget {
-  final Widget child;
-
   const ToolsWidget({
     super.key,
     required this.child,
   });
 
+  final Widget child;
+
   @override
   Widget build(BuildContext context) {
     final size = useState<Size?>(null);
 
-    MeasurableWidget measurable = MeasurableWidget(
+    final measurable = MeasurableWidget(
       onSize: (measuredSize) {
         size.value = measuredSize;
       },

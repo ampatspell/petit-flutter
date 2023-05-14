@@ -1,12 +1,12 @@
 part of 'loaded_scope.dart';
 
 class ProviderScopeOverridesError extends StatelessWidget {
-  final List<ScopeLoader<dynamic>> errors;
-
   const ProviderScopeOverridesError({
     super.key,
     required this.errors,
   });
+
+  final List<ScopeLoader<dynamic>> errors;
 
   @override
   Widget build(BuildContext context) {

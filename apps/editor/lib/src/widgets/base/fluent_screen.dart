@@ -5,18 +5,18 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../providers/base.dart';
 import '../../app/router.dart';
+import '../../providers/base.dart';
 
 class FluentScreen extends HookConsumerWidget {
-  final Widget content;
-  final BuildContext? shellContext;
-
   const FluentScreen({
     super.key,
     required this.content,
     required this.shellContext,
   });
+
+  final Widget content;
+  final BuildContext? shellContext;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -95,7 +95,7 @@ class _LeadingState extends State<_Leading> {
     VoidCallback? onPressed;
     if (canPop) {
       enabled = true;
-      onPressed = () => router.pop();
+      onPressed = router.pop;
     }
 
     return PaneItem(

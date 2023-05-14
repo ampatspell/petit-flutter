@@ -11,11 +11,10 @@ import 'references.dart';
 part 'projects.g.dart';
 
 @Riverpod(dependencies: [])
-class ProjectDocsOrder extends _$ProjectDocsOrder {
+class ProjectModelsOrder extends _$ProjectModelsOrder {
   @override
   OrderDirection build() {
-    state = OrderDirection.asc;
-    return state;
+    return OrderDirection.asc;
   }
 
   void toggle() {
@@ -24,9 +23,9 @@ class ProjectDocsOrder extends _$ProjectDocsOrder {
 }
 
 @Riverpod(dependencies: [firestoreReferences])
-Projects projects(ProjectsRef ref) {
+ProjectsRepository projectsRepository(ProjectsRepositoryRef ref) {
   final references = ref.watch(firestoreReferencesProvider);
-  return Projects(references: references);
+  return ProjectsRepository(references: references);
 }
 
 @Riverpod(dependencies: [firestoreReferences])
@@ -35,10 +34,10 @@ ProjectsReset projectsReset(ProjectsResetRef ref) {
   return ProjectsReset(references: references);
 }
 
-@Riverpod(dependencies: [projects, ProjectDocsOrder])
-Stream<List<ProjectDoc>> projectDocsStream(ProjectDocsStreamRef ref) {
-  final order = ref.watch(projectDocsOrderProvider);
-  return ref.watch(projectsProvider).all(order);
+@Riverpod(dependencies: [projectsRepository, ProjectModelsOrder])
+Stream<List<ProjectModel>> projectModelsStream(ProjectModelsStreamRef ref) {
+  final order = ref.watch(projectModelsOrderProvider);
+  return ref.watch(projectsRepositoryProvider).all(order);
 }
 
 @Riverpod(dependencies: [projectsReset])
@@ -58,7 +57,7 @@ class ResetProjects extends _$ResetProjects {
   }
 }
 
-@Riverpod(dependencies: [projects])
+@Riverpod(dependencies: [projectsRepository])
 class NewProject extends _$NewProject {
   @override
   NewProjectData build() {
@@ -76,7 +75,7 @@ class NewProject extends _$NewProject {
     return () async {
       state = state.copyWith(isBusy: true);
       try {
-        final reference = await ref.read(projectsProvider).add(state);
+        final reference = await ref.read(projectsRepositoryProvider).add(state);
         cb(reference);
       } finally {
         state = state.copyWith(isBusy: false);
@@ -88,4 +87,4 @@ class NewProject extends _$NewProject {
 //
 
 @Riverpod(dependencies: [])
-List<ProjectDoc> projectDocs(ProjectDocsRef ref) => throw OverrideProviderException();
+List<ProjectModel> projectModels(ProjectModelsRef ref) => throw OverrideProviderException();

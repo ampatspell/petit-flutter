@@ -4,9 +4,9 @@ enum OrderDirection {
   asc(FluentIcons.sort_up),
   desc(FluentIcons.sort_down);
 
-  final IconData icon;
-
   const OrderDirection(this.icon);
+
+  final IconData icon;
 
   OrderDirection get next {
     if (this == asc) {

@@ -1,9 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/providers/projects.dart';
-import 'package:petit_editor/src/app/router.dart';
-import 'package:petit_editor/src/models/typedefs.dart';
+
+import '../../../app/router.dart';
+import '../../../models/typedefs.dart';
+import '../../../providers/projects.dart';
 
 class NewProjectForm extends ConsumerWidget {
   const NewProjectForm({super.key});

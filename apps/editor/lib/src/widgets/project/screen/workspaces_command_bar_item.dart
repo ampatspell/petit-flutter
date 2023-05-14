@@ -1,21 +1,20 @@
 import 'package:collection/collection.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:petit_editor/src/app/utils.dart';
-
+import '../../../app/utils.dart';
 import '../../../models/project_workspace.dart';
 import '../../base/combo_box_command_bar_item.dart';
 
 class WorkspacesCommandBarItem extends CommandBarItem {
-  final List<ProjectWorkspaceDoc> workspaces;
-  final ProjectWorkspaceDoc? selected;
-  final void Function(ProjectWorkspaceDoc? doc) onSelect;
-
   WorkspacesCommandBarItem({
     super.key,
     required this.workspaces,
     required this.selected,
     required this.onSelect,
   });
+
+  final List<ProjectWorkspaceModel> workspaces;
+  final ProjectWorkspaceModel? selected;
+  final void Function(ProjectWorkspaceModel? doc) onSelect;
 
   @override
   Widget build(BuildContext context, CommandBarItemDisplayMode displayMode) {

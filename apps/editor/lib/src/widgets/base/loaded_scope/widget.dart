@@ -1,16 +1,16 @@
 part of 'loaded_scope.dart';
 
 class LoadedScope extends ConsumerWidget {
-  final List<ScopeLoader<dynamic>> Function(BuildContext context, WidgetRef ref) loaders;
-  final Widget child;
-  final Object? parent;
-
   const LoadedScope({
     super.key,
     this.parent,
     required this.loaders,
     required this.child,
   });
+
+  final List<ScopeLoader<dynamic>> Function(BuildContext context, WidgetRef ref) loaders;
+  final Widget child;
+  final Object? parent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -54,8 +54,7 @@ class LoadedScope extends ConsumerWidget {
       return child;
     }
 
-    Widget scopeChild = child;
-
+    var scopeChild = child;
     if (withProviders.isNotEmpty) {
       scopeChild = Consumer(
         builder: (context, ref, child) {

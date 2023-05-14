@@ -4,19 +4,19 @@ import 'references.dart';
 
 part 'project_node.freezed.dart';
 
-abstract class ProjectNodeDoc {
+abstract class ProjectNodeModel {
   Doc get doc;
 
   String get type;
 }
 
 @freezed
-class ProjectBoxNodeDoc with _$ProjectBoxNodeDoc implements ProjectNodeDoc {
-  const factory ProjectBoxNodeDoc({
+class ProjectBoxNodeModel with _$ProjectBoxNodeModel implements ProjectNodeModel {
+  const factory ProjectBoxNodeModel({
     required Doc doc,
-  }) = _ProjectBoxNodeDoc;
+  }) = _ProjectBoxNodeModel;
 
-  const ProjectBoxNodeDoc._();
+  const ProjectBoxNodeModel._();
 
   @override
   String get type => doc['type'] as String;

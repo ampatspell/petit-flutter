@@ -2,11 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod/riverpod.dart';
 
 class ProviderLoggingObserver implements ProviderObserver {
-  final bool enabled;
-
   ProviderLoggingObserver({
     required this.enabled,
   });
+
+  final bool enabled;
 
   Object _name(ProviderBase<Object?> provider) {
     return provider.name ?? provider.runtimeType;

@@ -1,18 +1,18 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../providers/project.dart';
 import '../../../app/router.dart';
+import '../../../providers/project.dart';
 import '../../base/confirmation.dart';
-import 'workspaces_command_bar_item.dart';
 import 'content.dart';
+import 'workspaces_command_bar_item.dart';
 
 class ProjectScreenScaffold extends ConsumerWidget {
   const ProjectScreenScaffold({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(projectDocProvider.select((value) => value.name));
+    final name = ref.watch(projectModelProvider.select((value) => value.name));
     final delete = ref.watch(projectDocDeleteProvider);
     return ScaffoldPage(
       header: PageHeader(
@@ -21,9 +21,9 @@ class ProjectScreenScaffold extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
             WorkspacesCommandBarItem(
-              workspaces: ref.watch(projectWorkspaceDocsProvider),
-              selected: ref.watch(projectWorkspaceDocProvider),
-              onSelect: (workspace) => ref.read(projectDocProvider).updateWorkspaceId(workspace?.doc.id),
+              workspaces: ref.watch(projectWorkspaceModelsProvider),
+              selected: ref.watch(projectWorkspaceModelProvider),
+              onSelect: (workspace) => ref.read(projectModelProvider).updateWorkspaceId(workspace?.doc.id),
             ),
           ],
           secondaryItems: [

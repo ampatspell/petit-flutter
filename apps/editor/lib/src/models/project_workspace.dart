@@ -5,12 +5,12 @@ import 'references.dart';
 part 'project_workspace.freezed.dart';
 
 @freezed
-class ProjectWorkspaceDoc with _$ProjectWorkspaceDoc {
-  const ProjectWorkspaceDoc._();
-
-  const factory ProjectWorkspaceDoc({
+class ProjectWorkspaceModel with _$ProjectWorkspaceModel {
+  const factory ProjectWorkspaceModel({
     required Doc doc,
-  }) = _ProjectWorkspaceDoc;
+  }) = _ProjectWorkspaceModel;
+
+  const ProjectWorkspaceModel._();
 
   String get name => doc['name'] as String;
 

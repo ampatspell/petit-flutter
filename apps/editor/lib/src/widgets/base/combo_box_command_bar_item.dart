@@ -1,11 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 
 class ComboBoxCommandBarItem<T> extends CommandBarItem {
-  final T? value;
-  final List<ComboBoxItem<T>> items;
-  final ValueChanged<T?>? onChanged;
-  final Widget? placeholder;
-
   ComboBoxCommandBarItem({
     super.key,
     this.value,
@@ -13,6 +8,11 @@ class ComboBoxCommandBarItem<T> extends CommandBarItem {
     this.onChanged,
     this.placeholder,
   });
+
+  final T? value;
+  final List<ComboBoxItem<T>> items;
+  final ValueChanged<T?>? onChanged;
+  final Widget? placeholder;
 
   @override
   Widget build(BuildContext context, CommandBarItemDisplayMode displayMode) {

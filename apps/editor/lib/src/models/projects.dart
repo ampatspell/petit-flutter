@@ -3,43 +3,41 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import '../widgets/base/order.dart';
-import 'typedefs.dart';
 import 'project.dart';
 import 'references.dart';
+import 'typedefs.dart';
 
 part 'projects.freezed.dart';
 
 @freezed
-class Projects with _$Projects {
-  const factory Projects({
+class ProjectsRepository with _$ProjectsRepository {
+  const factory ProjectsRepository({
     required FirestoreReferences references,
-  }) = _Projects;
+  }) = _ProjectsRepository;
 
-  const Projects._();
+  const ProjectsRepository._();
 
   MapCollectionReference get collection => references.projects();
 
-  ProjectDoc _asDoc(MapDocumentSnapshot e) {
-    return ProjectDoc(
-      doc: references.asDoc(e),
+  ProjectModel _asDoc(MapDocumentSnapshot snapshot) {
+    return ProjectModel(
+      doc: references.asDoc(snapshot),
     );
   }
 
-  List<ProjectDoc> _asDocs(QuerySnapshot<FirestoreMap> event) {
-    return event.docs.map((e) => _asDoc(e)).toList(growable: false);
+  List<ProjectModel> _asDocs(QuerySnapshot<FirestoreMap> event) {
+    return event.docs.map(_asDoc).toList(growable: false);
   }
 
-  Stream<List<ProjectDoc>> all(OrderDirection order) {
+  Stream<List<ProjectModel>> all(OrderDirection order) {
     return collection
         .orderBy('name', descending: order.isDescending)
         .snapshots(includeMetadataChanges: true)
-        .map((event) => _asDocs(event));
+        .map(_asDocs);
   }
 
-  Stream<ProjectDoc> byReference(MapDocumentReference projectRef) {
-    return projectRef.snapshots(includeMetadataChanges: true).map((event) {
-      return _asDoc(event);
-    });
+  Stream<ProjectModel> byReference(MapDocumentReference projectRef) {
+    return projectRef.snapshots(includeMetadataChanges: true).map(_asDoc);
   }
 
   Future<MapDocumentReference> add(NewProjectData data) async {
@@ -129,7 +127,7 @@ class ProjectsReset with _$ProjectsReset {
     }
 
     Future<void> createNodes() async {
-      await Future.wait(nodes.map((e) => createNode(e)));
+      await Future.wait(nodes.map(createNode));
     }
 
     Future<void> createItem(Map<String, dynamic> map) async {
@@ -139,7 +137,7 @@ class ProjectsReset with _$ProjectsReset {
     }
 
     Future<void> createItems() async {
-      await Future.wait(items.map((e) => createItem(e)));
+      await Future.wait(items.map(createItem));
     }
 
     Future<void> createWorkspace() async {
@@ -193,12 +191,12 @@ class ProjectsReset with _$ProjectsReset {
 
 @freezed
 class NewProjectData with _$NewProjectData {
-  const NewProjectData._();
-
   const factory NewProjectData({
     @Default(false) bool isBusy,
     @Default('') String name,
   }) = _NewProjectData;
+
+  const NewProjectData._();
 
   bool get isValid => name.isNotEmpty;
 }

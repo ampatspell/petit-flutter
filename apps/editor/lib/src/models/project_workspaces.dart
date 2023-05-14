@@ -1,36 +1,34 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:petit_editor/src/models/project_workspace.dart';
-import 'package:petit_editor/src/models/references.dart';
-import 'package:petit_editor/src/models/typedefs.dart';
+import 'project_workspace.dart';
+import 'references.dart';
+import 'typedefs.dart';
 
 part 'project_workspaces.freezed.dart';
 
 @freezed
-class ProjectWorkspaces with _$ProjectWorkspaces {
-  const factory ProjectWorkspaces({
+class ProjectWorkspacesRepository with _$ProjectWorkspacesRepository {
+  const factory ProjectWorkspacesRepository({
     required FirestoreReferences references,
     required MapDocumentReference projectRef,
-  }) = _ProjectWorkspaces;
+  }) = _ProjectWorkspacesRepository;
 
-  const ProjectWorkspaces._();
+  const ProjectWorkspacesRepository._();
 
   MapCollectionReference get collection => references.projectWorkspacesCollection(projectRef);
 
-  ProjectWorkspaceDoc _asDoc(MapDocumentSnapshot snapshot) {
-    return ProjectWorkspaceDoc(
+  ProjectWorkspaceModel _asDoc(MapDocumentSnapshot snapshot) {
+    return ProjectWorkspaceModel(
       doc: references.asDoc(snapshot),
     );
   }
 
-  List<ProjectWorkspaceDoc> _asDocs(MapQuerySnapshot event) {
-    return event.docs.map((e) => _asDoc(e)).toList(growable: false);
+  List<ProjectWorkspaceModel> _asDocs(MapQuerySnapshot event) {
+    return event.docs.map(_asDoc).toList(growable: false);
   }
 
-  Stream<List<ProjectWorkspaceDoc>> all() {
-    return collection.snapshots(includeMetadataChanges: true).map((event) {
-      return _asDocs(event);
-    });
+  Stream<List<ProjectWorkspaceModel>> all() {
+    return collection.snapshots(includeMetadataChanges: true).map(_asDocs);
   }
 
   Future<MapDocumentReference> add({required String name}) async {

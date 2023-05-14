@@ -2,10 +2,10 @@ import 'dart:ui';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
-import 'package:petit_editor/src/models/project_node.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/project.dart';
+import '../models/project_node.dart';
 import '../models/project_nodes.dart';
 import '../models/project_workspace.dart';
 import '../models/project_workspaces.dart';
@@ -19,84 +19,83 @@ part 'project.g.dart';
 @Riverpod(dependencies: [])
 String projectId(ProjectIdRef ref) => throw OverrideProviderException();
 
-@Riverpod(dependencies: [projectId, projects])
+@Riverpod(dependencies: [projectId, projectsRepository])
 MapDocumentReference projectReference(ProjectReferenceRef ref) {
   final id = ref.watch(projectIdProvider);
-  final projects = ref.watch(projectsProvider);
-  return projects.referenceById(id);
+  final repository = ref.watch(projectsRepositoryProvider);
+  return repository.referenceById(id);
 }
 
-@Riverpod(dependencies: [projectReference, projects])
-Stream<ProjectDoc> projectDocStream(ProjectDocStreamRef ref) {
+@Riverpod(dependencies: [projectReference, projectsRepository])
+Stream<ProjectModel> projectModelStream(ProjectModelStreamRef ref) {
   final projectRef = ref.watch(projectReferenceProvider);
-  final projects = ref.watch(projectsProvider);
-  return projects.byReference(projectRef);
+  final repository = ref.watch(projectsRepositoryProvider);
+  return repository.byReference(projectRef);
 }
 
 @Riverpod(dependencies: [firestoreReferences, projectReference])
-ProjectNodes projectNodes(ProjectNodesRef ref) {
+ProjectNodesRepository projectNodesRepository(ProjectNodesRepositoryRef ref) {
   final references = ref.watch(firestoreReferencesProvider);
   final projectRef = ref.watch(projectReferenceProvider);
-  return ProjectNodes(
+  return ProjectNodesRepository(
     references: references,
     projectRef: projectRef,
   );
 }
 
 @Riverpod(dependencies: [firestoreReferences, projectReference])
-ProjectWorkspaces projectWorkspaces(ProjectWorkspacesRef ref) {
+ProjectWorkspacesRepository projectWorkspacesRepository(ProjectWorkspacesRepositoryRef ref) {
   final references = ref.watch(firestoreReferencesProvider);
   final projectRef = ref.watch(projectReferenceProvider);
-  return ProjectWorkspaces(
+  return ProjectWorkspacesRepository(
     references: references,
     projectRef: projectRef,
   );
 }
 
-@Riverpod(dependencies: [projectNodes])
-Stream<List<ProjectNodeDoc>> projectNodeDocsStream(ProjectNodeDocsStreamRef ref) {
-  return ref.watch(projectNodesProvider).all();
+@Riverpod(dependencies: [projectNodesRepository])
+Stream<List<ProjectNodeModel>> projectNodeModelsStream(ProjectNodeModelsStreamRef ref) {
+  return ref.watch(projectNodesRepositoryProvider).all();
 }
 
-@Riverpod(dependencies: [projectWorkspaces])
-Stream<List<ProjectWorkspaceDoc>> projectWorkspaceDocsStream(ProjectWorkspaceDocsStreamRef ref) {
-  return ref.watch(projectWorkspacesProvider).all();
+@Riverpod(dependencies: [projectWorkspacesRepository])
+Stream<List<ProjectWorkspaceModel>> projectWorkspaceModelsStream(ProjectWorkspaceModelsStreamRef ref) {
+  return ref.watch(projectWorkspacesRepositoryProvider).all();
 }
 
 //
 
 @Riverpod(dependencies: [])
-ProjectDoc projectDoc(ProjectDocRef ref) => throw OverrideProviderException();
+ProjectModel projectModel(ProjectModelRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [])
-List<ProjectNodeDoc> projectNodeDocs(ProjectNodeDocsRef ref) => throw OverrideProviderException();
+List<ProjectNodeModel> projectNodeModels(ProjectNodeModelsRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [])
-List<ProjectWorkspaceDoc> projectWorkspaceDocs(ProjectWorkspaceDocsRef ref) => throw OverrideProviderException();
+List<ProjectWorkspaceModel> projectWorkspaceModels(ProjectWorkspaceModelsRef ref) => throw OverrideProviderException();
 
 //
 
-@Riverpod(dependencies: [projectDoc, projectWorkspaceDocs])
-ProjectWorkspaceDoc? projectWorkspaceDoc(ProjectWorkspaceDocRef ref) {
-  final id = ref.watch(projectDocProvider.select((value) => value.workspace));
+@Riverpod(dependencies: [projectModel, projectWorkspaceModels])
+ProjectWorkspaceModel? projectWorkspaceModel(ProjectWorkspaceModelRef ref) {
+  final id = ref.watch(projectModelProvider.select((value) => value.workspace));
   if (id == null) {
     return null;
   }
-  return ref.watch(projectWorkspaceDocsProvider.select((value) {
+  return ref.watch(projectWorkspaceModelsProvider.select((value) {
     return value.firstWhereOrNull((element) => element.doc.id == id);
   }));
 }
 
-@Riverpod(dependencies: [projectDoc])
+@Riverpod(dependencies: [projectModel])
 class ProjectDocDelete extends _$ProjectDocDelete {
   @override
   VoidCallback? build() {
-    state = commit;
-    return state;
+    return commit;
   }
 
   void commit() async {
-    final doc = ref.read(projectDocProvider);
+    final doc = ref.read(projectModelProvider);
     state = null;
     try {
       await doc.delete();
@@ -107,4 +106,4 @@ class ProjectDocDelete extends _$ProjectDocDelete {
 }
 
 @Riverpod(dependencies: [])
-ProjectNodeDoc projectNodeDoc(ProjectNodeDocRef ref) => throw OverrideProviderException();
+ProjectNodeModel projectNodeModel(ProjectNodeModelRef ref) => throw OverrideProviderException();

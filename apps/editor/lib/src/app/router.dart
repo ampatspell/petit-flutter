@@ -95,9 +95,9 @@ class NewProjectRoute extends GoRouteData {
 }
 
 class ProjectRoute extends GoRouteData {
-  final String id;
-
   ProjectRoute({required this.id});
+
+  final String id;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
@@ -115,17 +115,16 @@ class ProjectRoute extends GoRouteData {
 // static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
 class Route {
-  final String location;
-  final IconData icon;
-  final String title;
-  final void Function(BuildContext context) go;
-
   const Route({
     required this.location,
     required this.icon,
     required this.title,
     required this.go,
   });
+  final String location;
+  final IconData icon;
+  final String title;
+  final void Function(BuildContext context) go;
 }
 
 final routes = [

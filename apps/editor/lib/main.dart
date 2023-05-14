@@ -2,9 +2,9 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import 'src/app/provider_logging_observer.dart';
+import 'src/app/router.dart';
 import 'src/app/theme.dart';
 import 'src/providers/base.dart';
-import 'src/app/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

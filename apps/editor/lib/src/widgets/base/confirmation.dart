@@ -22,7 +22,6 @@ Future<void> confirmation(
 }) async {
   await showDialog<String>(
     context: context,
-    dismissWithEsc: true,
     barrierDismissible: true,
     builder: (context) => ContentDialog(
       title: Text(message),

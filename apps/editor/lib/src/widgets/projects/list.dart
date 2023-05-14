@@ -6,17 +6,17 @@ import '../../providers/projects.dart';
 import '../base/models_list_view.dart';
 
 class ProjectsList extends ConsumerWidget {
-  final void Function(ProjectDoc project) onSelect;
-
   const ProjectsList({
     super.key,
     required this.onSelect,
   });
 
+  final void Function(ProjectModel project) onSelect;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Consumer(builder: (context, ref, child) {
-      final projects = ref.watch(projectDocsProvider);
+      final projects = ref.watch(projectModelsProvider);
       return ModelsListView(
         models: projects,
         placeholder: const Text('No projects created yet'),

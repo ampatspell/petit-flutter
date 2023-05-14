@@ -8,7 +8,7 @@ class ProjectWorkspace extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final workspace = ref.watch(projectWorkspaceDocProvider);
+    final workspace = ref.watch(projectWorkspaceModelProvider);
     return Container(
       constraints: const BoxConstraints.expand(),
       color: Colors.red.withAlpha(10),

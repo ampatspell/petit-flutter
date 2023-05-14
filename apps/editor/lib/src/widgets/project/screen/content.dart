@@ -10,9 +10,7 @@ class ProjectScreenScaffoldContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return const Row(
-      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.max,
       children: [
         ProjectSidebar(),
         Expanded(
