@@ -4,7 +4,6 @@ import 'package:petit_editor/src/providers/projects.dart';
 
 import '../../blocks/riverpod/confirmation.dart';
 import '../../blocks/riverpod/loaded_scope/loaded_scope.dart';
-import '../../models/project_node.dart';
 import '../../providers/project.dart';
 import '../router.dart';
 
