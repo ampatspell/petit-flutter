@@ -9,7 +9,9 @@ import 'src/theme.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final firebaseServices = await initializeFirebase();
-  final loggingObserver = ProviderLoggingObserver(enabled: false);
+  final loggingObserver = ProviderLoggingObserver(
+    enabled: false,
+  );
   runApp(ProviderScope(
     overrides: [
       loggingObserverProvider.overrideWithValue(loggingObserver),
