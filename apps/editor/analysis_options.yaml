@@ -20,6 +20,8 @@ linter:
     prefer_final_in_for_each: true
     prefer_foreach: true
     prefer_inlined_adds: true
+    use_enums: true
+    use_is_even_rather_than_modulo: true
     prefer_function_declarations_over_variables: true
     prefer_adjacent_string_concatenation: true
     sort_constructors_first: true
