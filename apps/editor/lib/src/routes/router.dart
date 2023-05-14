@@ -7,8 +7,9 @@ import '../blocks/riverpod/fluent_screen.dart';
 import '../blocks/riverpod/loaded_scope/loaded_scope.dart';
 import '../providers/project.dart';
 import 'development.dart';
-import 'development/measurable.dart';
-import 'development/riverpod.dart';
+import 'development/one.dart';
+import 'development/three.dart';
+import 'development/two.dart';
 import 'projects.dart';
 import 'projects/new.dart';
 import 'projects/project.dart';
@@ -30,11 +31,9 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
     TypedGoRoute<DevelopmentRoute>(
       path: '/dev',
       routes: [
-        TypedGoRoute<DevelopmentRiverpodRoute>(path: 'riverpod'),
-        TypedGoRoute<DevelopmentMeasurableRoute>(path: 'measurable'),
-        // TypedGoRoute<DevelopmentSpriteEditorRoute>(path: 'sprite-editor'),
-        // TypedGoRoute<DevelopmentResizableRoute>(path: 'resizable'),
-        // TypedGoRoute<DevelopmentWorkspaceRoute>(path: 'workspace'),
+        TypedGoRoute<DevelopmentOneRoute>(path: '1'),
+        TypedGoRoute<DevelopmentTwoRoute>(path: '2'),
+        TypedGoRoute<DevelopmentThreeRoute>(path: '3'),
       ],
     ),
   ],
@@ -60,40 +59,26 @@ class DevelopmentRoute extends GoRouteData {
   }
 }
 
-class DevelopmentMeasurableRoute extends GoRouteData {
+class DevelopmentOneRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentMeasurableScreen();
+    return const DevelopmentOneScreen();
   }
 }
 
-class DevelopmentRiverpodRoute extends GoRouteData {
+class DevelopmentTwoRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const DevelopmentRiverpodScreen();
+    return const DevelopmentTwoScreen();
   }
 }
 
-// class DevelopmentSpriteEditorRoute extends GoRouteData {
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) {
-//     return const DevelopmentSpriteEditorScreen();
-//   }
-// }
-//
-// class DevelopmentWorkspaceRoute extends GoRouteData {
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) {
-//     return const DevelopmentWorkspaceScreen();
-//   }
-// }
-//
-// class DevelopmentResizableRoute extends GoRouteData {
-//   @override
-//   Widget build(BuildContext context, GoRouterState state) {
-//     return const DevelopmentResizableScreen();
-//   }
-// }
+class DevelopmentThreeRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const DevelopmentThreeScreen();
+  }
+}
 
 class ProjectsRoute extends GoRouteData {
   @override

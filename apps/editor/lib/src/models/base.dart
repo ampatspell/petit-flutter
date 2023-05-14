@@ -1,8 +1,8 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../logging.dart';
+import '../provider_logging_observer.dart';
 
 part 'base.g.dart';
 
 @Riverpod(dependencies: [])
-LoggingObserver loggingObserver(LoggingObserverRef ref) => throw UnimplementedError('override');
+ProviderLoggingObserver loggingObserver(LoggingObserverRef ref) => throw UnimplementedError('override');

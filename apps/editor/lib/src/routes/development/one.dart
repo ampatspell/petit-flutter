@@ -4,8 +4,8 @@ import 'package:gap/gap.dart';
 
 import '../../blocks/riverpod/measurable.dart';
 
-class DevelopmentMeasurableScreen extends HookWidget {
-  const DevelopmentMeasurableScreen({super.key});
+class DevelopmentOneScreen extends HookWidget {
+  const DevelopmentOneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

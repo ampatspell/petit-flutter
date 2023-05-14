@@ -1,10 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:riverpod/riverpod.dart';
 
-class LoggingObserver implements ProviderObserver {
+class ProviderLoggingObserver implements ProviderObserver {
   final bool enabled;
 
-  LoggingObserver({
+  ProviderLoggingObserver({
     required this.enabled,
   });
 

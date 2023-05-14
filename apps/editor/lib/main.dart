@@ -4,13 +4,13 @@ import 'package:petit_editor/src/models/base.dart';
 import 'package:petit_editor/src/providers/firebase.dart';
 import 'package:petit_editor/src/theme.dart';
 
-import 'src/logging.dart';
+import 'src/provider_logging_observer.dart';
 import 'src/routes/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final firebaseServices = await initializeFirebase();
-  final loggingObserver = LoggingObserver(enabled: false);
+  final loggingObserver = ProviderLoggingObserver(enabled: false);
   runApp(ProviderScope(
     overrides: [
       loggingObserverProvider.overrideWithValue(loggingObserver),
