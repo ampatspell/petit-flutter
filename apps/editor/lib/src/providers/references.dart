@@ -1,7 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/references.dart';
-import 'firebase.dart';
+import 'base.dart';
 
 part 'references.g.dart';
 

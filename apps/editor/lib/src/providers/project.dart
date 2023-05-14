@@ -10,7 +10,6 @@ import '../models/project_workspace.dart';
 import '../models/project_workspaces.dart';
 import '../typedefs.dart';
 import 'base.dart';
-import 'firebase.dart';
 import 'projects.dart';
 import 'references.dart';
 

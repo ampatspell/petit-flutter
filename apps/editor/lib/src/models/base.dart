@@ -1,8 +1,15 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../provider_logging_observer.dart';
+part 'base.freezed.dart';
 
-part 'base.g.dart';
-
-@Riverpod(dependencies: [])
-ProviderLoggingObserver loggingObserver(LoggingObserverRef ref) => throw UnimplementedError('override');
+@freezed
+class FirebaseServices with _$FirebaseServices {
+  const factory FirebaseServices({
+    required FirebaseApp app,
+    required FirebaseFirestore firestore,
+    required FirebaseAuth auth,
+  }) = _FirebaseServices;
+}

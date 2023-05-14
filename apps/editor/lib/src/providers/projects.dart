@@ -7,7 +7,6 @@ import '../models/project_node.dart';
 import '../models/projects.dart';
 import '../typedefs.dart';
 import 'base.dart';
-import 'firebase.dart';
 import 'references.dart';
 
 part 'projects.g.dart';
