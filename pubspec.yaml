@@ -1,4 +1,5 @@
 name: petit_workspace
+publish_to: 'none'
 
 environment:
   sdk: '>=3.0.0'
