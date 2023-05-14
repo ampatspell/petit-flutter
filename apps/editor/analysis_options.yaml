@@ -11,11 +11,20 @@ analyzer:
 
 linter:
   rules:
+    lines_longer_than_80_chars: false
+    always_declare_return_types: true
+    always_put_control_body_on_new_line: true
     avoid_print: true
+    eol_at_end_of_file: true
+    hash_and_equals: true
+    prefer_final_in_for_each: true
+    prefer_foreach: true
+    prefer_inlined_adds: true
+    prefer_function_declarations_over_variables: true
+    prefer_adjacent_string_concatenation: true
     sort_constructors_first: true
     sort_unnamed_constructors_first: true
     sort_pub_dependencies: false
-    lines_longer_than_80_chars: false
     cascade_invocations: false
     prefer_single_quotes: true
     missing_whitespace_between_adjacent_strings: true

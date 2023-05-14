@@ -60,7 +60,7 @@ class LoadedScope extends ConsumerWidget {
         builder: (context, ref, child) {
           final container = ProviderScope.containerOf(context);
           final logging = ref.read(loggingObserverProvider);
-          for (var override in withProviders) {
+          for (final override in withProviders) {
             logging.didOverrideProvider(
               override.provider!,
               override.value.requireValue,
