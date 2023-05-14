@@ -24,15 +24,28 @@ void main() async {
   ));
 }
 
-class EditorApp extends StatelessWidget {
+class EditorApp extends ConsumerWidget {
   const EditorApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return FluentApp.router(
-      debugShowCheckedModeBanner: false,
-      routerConfig: router,
-      theme: theme,
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    final resolved = ref.watch(firstAuthStateResolvedProvider);
+    if (resolved) {
+      return FluentApp.router(
+        debugShowCheckedModeBanner: false,
+        routerConfig: ref.read(routerProvider),
+        theme: theme,
+      );
+    } else {
+      return FluentApp(
+        debugShowCheckedModeBanner: false,
+        theme: theme,
+        home: const NavigationView(
+          content: Center(
+            child: Text('Loading…'),
+          ),
+        ),
+      );
+    }
   }
 }

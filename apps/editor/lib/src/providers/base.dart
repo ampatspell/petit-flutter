@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../firebase_options.dart';
 import '../app/provider_logging_observer.dart';
+import '../app/utils.dart';
 import '../models/base.dart';
 
 part 'base.g.dart';
@@ -47,10 +49,31 @@ Future<FirebaseServices> initializeFirebase() async {
 FirebaseServices firebaseServices(FirebaseServicesRef ref) => throw UnimplementedError('override');
 
 @Riverpod(keepAlive: true, dependencies: [firebaseServices])
-class AuthStateChanges extends _$AuthStateChanges {
+Stream<User?> authStateChanges(AuthStateChangesRef ref) {
+  final services = ref.watch(firebaseServicesProvider);
+  return services.auth.authStateChanges();
+}
+
+@Riverpod(keepAlive: true, dependencies: [authStateChanges])
+class FirstAuthStateResolved extends _$FirstAuthStateResolved {
+  ProviderSubscription<AsyncValue<User?>>? _subscription;
+
+  void _close() {
+    _subscription.exists((subscription) {
+      subscription.close();
+      _subscription = null;
+    });
+  }
+
   @override
-  Stream<User?> build() {
-    final services = ref.watch(firebaseServicesProvider);
-    return services.auth.authStateChanges();
+  bool build() {
+    _subscription = ref.listen(authStateChangesProvider, (previous, next) {
+      if (state == false) {
+        state = true;
+        _close();
+      }
+    });
+    ref.onDispose(_close);
+    return false;
   }
 }

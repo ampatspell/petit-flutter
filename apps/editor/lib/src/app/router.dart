@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/project.dart';
 import '../widgets/base/fluent_screen.dart';
@@ -121,6 +123,7 @@ class Route {
     required this.title,
     required this.go,
   });
+
   final String location;
   final IconData icon;
   final String title;
@@ -142,9 +145,32 @@ final routes = [
   ),
 ];
 
-final router = GoRouter(
-  debugLogDiagnostics: true,
-  initialLocation: '/projects',
-  routes: $appRoutes,
-  navigatorKey: _rootKey,
-);
+@Riverpod(keepAlive: true)
+Raw<GoRouter> router(RouterRef ref) {
+  return GoRouter(
+    debugLogDiagnostics: true,
+    initialLocation: '/projects',
+    routes: $appRoutes,
+    navigatorKey: _rootKey,
+    redirect: (context, state) async {
+      print('redirect: ${state.name}');
+      return null;
+    },
+  );
+}
+
+@Riverpod(keepAlive: true, dependencies: [router])
+Stream<Object> routerOnRouteChange(RouterOnRouteChangeRef ref) {
+  final controller = StreamController<Object>();
+  void listener() {
+    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
+      controller.add(Object());
+    });
+  }
+
+  final router = ref.read(routerProvider);
+  router.addListener(listener);
+  ref.onDispose(() => router.removeListener(listener));
+
+  return controller.stream;
+}

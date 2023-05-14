@@ -1,12 +1,12 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../app/router.dart';
 import '../../providers/base.dart';
+import 'loaded_scope/loaded_scope.dart';
 
 class FluentScreen extends HookConsumerWidget {
   const FluentScreen({
@@ -20,6 +20,7 @@ class FluentScreen extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final router = ref.read(routerProvider);
     final location = router.location;
     final items = useMemoized(() => routes
         .map((route) => PaneItem(
@@ -46,7 +47,7 @@ class FluentScreen extends HookConsumerWidget {
           height: 50,
           child: Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
-            child: CurrentUser(),
+            child: _CurrentUser(),
           ),
         ),
       ),
@@ -61,48 +62,25 @@ class FluentScreen extends HookConsumerWidget {
   }
 }
 
-class _Leading extends StatefulWidget {
+class _Leading extends HookConsumerWidget {
   const _Leading();
 
   @override
-  State<_Leading> createState() => _LeadingState();
-}
-
-class _LeadingState extends State<_Leading> {
-  bool canPop = false;
-
-  void onRouteChange() {
-    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      setState(() => canPop = router.canPop());
-    });
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    router.addListener(onRouteChange);
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    router.removeListener(onRouteChange);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    var enabled = false;
-    VoidCallback? onPressed;
-    if (canPop) {
-      enabled = true;
-      onPressed = router.pop;
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(routerOnRouteChangeProvider);
+    final canPop = ref.read(routerProvider.select((value) => value.canPop()));
+    VoidCallback? onPressed() {
+      if (canPop) {
+        ref.read(routerProvider).pop();
+      }
+      return null;
     }
 
     return PaneItem(
       icon: const Center(child: Icon(FluentIcons.back, size: 12.0)),
       title: const Text('Back'),
       body: const SizedBox.shrink(),
-      enabled: enabled,
+      enabled: canPop,
     ).build(
       context,
       false,
@@ -112,15 +90,13 @@ class _LeadingState extends State<_Leading> {
   }
 }
 
-class CurrentUser extends HookConsumerWidget {
-  const CurrentUser({super.key});
+class _CurrentUser extends HookConsumerWidget {
+  const _CurrentUser();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(authStateChangesProvider);
-    final auth = ref.watch(firebaseServicesProvider.select((services) {
-      return services.auth;
-    }));
+    final auth = ref.watch(firebaseServicesProvider.select((services) => services.auth));
 
     return state.when(
       data: (data) {
