@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/project.dart';
-import '../models/project_node.dart';
 import '../models/projects.dart';
 import '../models/typedefs.dart';
 import '../widgets/base/order.dart';
@@ -90,8 +89,3 @@ class NewProject extends _$NewProject {
 
 @Riverpod(dependencies: [])
 List<ProjectDoc> projectDocs(ProjectDocsRef ref) => throw OverrideProviderException();
-
-//
-
-@Riverpod(dependencies: [])
-ProjectNodeDoc projectNodeDoc(ProjectNodeDocRef ref) => throw OverrideProviderException();

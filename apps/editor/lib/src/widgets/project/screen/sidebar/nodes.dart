@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../providers/project.dart';
-import '../../../../providers/projects.dart';
 import '../../../base/loaded_scope/loaded_scope.dart';
 
 class ProjectNodesListView extends ConsumerWidget {

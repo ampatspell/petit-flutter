@@ -105,3 +105,6 @@ class ProjectDocDelete extends _$ProjectDocDelete {
     }
   }
 }
+
+@Riverpod(dependencies: [])
+ProjectNodeDoc projectNodeDoc(ProjectNodeDocRef ref) => throw OverrideProviderException();
