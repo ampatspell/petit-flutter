@@ -61,8 +61,7 @@ class ToolsWidget extends HookWidget {
     const offset = 5.0;
 
     if (size.value == null) {
-      return Opacity(
-        opacity: 0,
+      return Offstage(
         child: measurable,
       );
     } else {
