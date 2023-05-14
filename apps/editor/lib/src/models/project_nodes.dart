@@ -31,12 +31,16 @@ class ProjectNodes with _$ProjectNodes {
     throw UnsupportedError(data.toString());
   }
 
-  List<ProjectNodeDoc> _asDocs(MapQuerySnapshot event) {
-    return event.docs.map((e) => _asDoc(e)).toList(growable: false);
+  List<ProjectNodeDoc> _asDocs(MapQuerySnapshot snapshot) {
+    return snapshot.docs.map((snapshot) {
+      return _asDoc(snapshot);
+    }).toList(growable: false);
   }
 
   Stream<List<ProjectNodeDoc>> all() {
     final ref = references.projectNodesCollection(projectRef);
-    return ref.snapshots(includeMetadataChanges: false).map((event) => _asDocs(event));
+    return ref.snapshots(includeMetadataChanges: true).map((event) {
+      return _asDocs(event);
+    });
   }
 }

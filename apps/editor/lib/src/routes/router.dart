@@ -2,9 +2,9 @@ import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
-import 'package:petit_editor/src/blocks/riverpod/provider_scope_overrides.dart';
 
 import '../blocks/riverpod/fluent_screen.dart';
+import '../blocks/riverpod/loaded_scope/loaded_scope.dart';
 import '../providers/project.dart';
 import 'development.dart';
 import 'development/measurable.dart';
@@ -116,9 +116,9 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ProviderScopeOverrides(
+    return LoadedScope(
       parent: this,
-      overrides: (context, ref) => [
+      loaders: (context, ref) => [
         overrideProvider(projectIdProvider).withValue(id),
       ],
       child: const ProjectScreen(),
@@ -160,7 +160,7 @@ final routes = [
 
 final router = GoRouter(
   debugLogDiagnostics: true,
-  initialLocation: '/projects/PhE7AVJRlHSWTaNRucIp',
+  initialLocation: '/projects',
   routes: $appRoutes,
   navigatorKey: _rootKey,
 );

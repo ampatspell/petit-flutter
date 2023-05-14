@@ -1,8 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:petit_editor/src/providers/projects.dart';
 
 import '../../blocks/riverpod/confirmation.dart';
-import '../../blocks/riverpod/provider_scope_overrides.dart';
+import '../../blocks/riverpod/loaded_scope/loaded_scope.dart';
+import '../../models/project_node.dart';
 import '../../providers/project.dart';
 import '../router.dart';
 
@@ -11,36 +13,14 @@ class ProjectScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('1 build project');
-
-    return ProviderScopeOverrides(
+    return LoadedScope(
       parent: this,
-      overrides: (context, ref) => [
-        overrideProvider(projectDocProvider).withAsyncValue(ref.watch(projectDocStreamProvider)),
-        overrideProvider(projectNodeDocsProvider).withAsyncValue(ref.watch(projectNodeDocsStreamProvider)),
-        overrideProvider(projectWorkspaceDocsProvider).withAsyncValue(ref.watch(projectWorkspaceDocsStreamProvider)),
+      loaders: (context, ref) => [
+        overrideProvider(projectDocProvider).withLoadedValue(ref.watch(projectDocStreamProvider)),
+        overrideProvider(projectNodeDocsProvider).withLoadedValue(ref.watch(projectNodeDocsStreamProvider)),
+        overrideProvider(projectWorkspaceDocsProvider).withLoadedValue(ref.watch(projectWorkspaceDocsStreamProvider)),
       ],
       child: const ProjectScreenContent(),
-    );
-  }
-}
-
-class Loaded extends ConsumerWidget {
-  const Loaded({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final project = ref.watch(projectDocStreamProvider.select((value) => value.requireValue.name));
-    return ScaffoldPage.withPadding(
-      header: const PageHeader(
-        title: Text('Loaded'),
-      ),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(project),
-        ],
-      ),
     );
   }
 }
@@ -50,14 +30,9 @@ class ProjectScreenContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('2 build project content');
-    // final project = ref.watch(loadedProjectProvider);
-    // final nodes = ref.watch(loadedProjectNodesProvider);
-    // final workspaces = ref.watch(loadedProjectWorkspacesProvider);
     final name = ref.watch(projectDocProvider.select((value) => value.name));
     final delete = ref.watch(projectDocDeleteProvider);
-
-    return ScaffoldPage.withPadding(
+    return ScaffoldPage(
       header: PageHeader(
         title: Text(name),
         commandBar: CommandBar(
@@ -85,8 +60,69 @@ class ProjectScreenScaffoldContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('3 build project scaffold content');
-    return const ProjectWorkspaces();
+    return const Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.max,
+      children: [
+        ProjectNodes(),
+        Expanded(
+          child: ProjectWorkspaces(),
+        ),
+      ],
+    );
+  }
+}
+
+class ProjectNodes extends ConsumerWidget {
+  const ProjectNodes({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      constraints: const BoxConstraints.expand(width: 250),
+      child: const ProjectNodesListView(),
+    );
+  }
+}
+
+class ProjectNodesListView extends ConsumerWidget {
+  const ProjectNodesListView({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(projectNodeDocsProvider.select((value) => value.length));
+    return ListView.builder(
+      itemCount: count,
+      itemBuilder: (context, index) {
+        final node = ref.watch(projectNodeDocsProvider.select((value) => value[index]));
+        return LoadedScope(
+          loaders: (context, ref) => [
+            overrideProvider(projectNodeDocProvider).withValue(node),
+          ],
+          child: const ProjectNodeListTile(),
+        );
+      },
+    );
+  }
+}
+
+class ProjectNodeListTile extends ConsumerWidget {
+  const ProjectNodeListTile({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final id = ref.watch(projectNodeDocProvider.select((value) => value.reference.id));
+    final type = ref.watch(projectNodeDocProvider.select((value) => value.type));
+
+    return ListTile.selectable(
+      title: Text(id),
+      subtitle: Text(type),
+      selected: ref.watch(projectDocProvider.select((value) => value.node)) == id,
+      onPressed: () {
+        ref.read(projectDocProvider).updateNodeId(id);
+      },
+    );
   }
 }
 
@@ -95,51 +131,11 @@ class ProjectWorkspaces extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('4 build project workspaces');
-
-    final docs = ref.watch(projectWorkspaceDocsProvider);
-
-    final tabs = docs.map((workspace) {
-      final name = workspace.name;
-      return Tab(
-        text: Text(name),
-        body: Padding(
-          padding: const EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              FilledButton(
-                child: const Text('Touch'),
-                onPressed: () {
-                  workspace.touch();
-                },
-              ),
-            ],
-          ),
-        ),
-        // closeIcon: FluentIcons.close_pane,
-        onClosed: () {
-          workspace.delete();
-        },
-      );
-    }).toList(growable: false);
-
-    // final currentIndex = ref.watch(loadedProjectWorkspacesModelProvider.select((value) {
-    //   return value.selectedIndex;
-    // }));
-
-    const currentIndex = 0;
-
-    return TabView(
-      currentIndex: currentIndex,
-      tabs: tabs,
-      closeButtonVisibility: CloseButtonVisibilityMode.onHover,
-      onChanged: (index) {
-        // ref.read(loadedProjectWorkspacesModelProvider).selectIndex(index);
-      },
-      onNewPressed: () {
-        ref.read(projectWorkspacesProvider).add(name: 'Untitled');
-      },
+    final workspaces = ref.watch(projectWorkspaceDocsProvider);
+    return Container(
+      constraints: const BoxConstraints.expand(),
+      color: Colors.red.withAlpha(10),
+      child: Text(workspaces.map((e) => e.toString()).join('\n\n')),
     );
   }
 }

@@ -2,7 +2,11 @@ import 'package:flutter/foundation.dart';
 import 'package:riverpod/riverpod.dart';
 
 class LoggingObserver implements ProviderObserver {
-  LoggingObserver();
+  final bool enabled;
+
+  LoggingObserver({
+    required this.enabled,
+  });
 
   Object _name(ProviderBase<Object?> provider) {
     return provider.name ?? provider.runtimeType;
@@ -14,14 +18,16 @@ class LoggingObserver implements ProviderObserver {
     ProviderContainer? container, [
     String? message,
   ]) {
-    if (kDebugMode) {
-      final components = [
-        '[$prefix]',
-        '${container?.depth}',
-        _name(provider),
-        if (message != null) message,
-      ];
-      print(components.join(' '));
+    if (enabled) {
+      if (kDebugMode) {
+        final components = [
+          '[$prefix]',
+          '${container?.depth}',
+          _name(provider),
+          if (message != null) message,
+        ];
+        print(components.join(' '));
+      }
     }
   }
 

@@ -10,7 +10,7 @@ import 'src/routes/router.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final firebaseServices = await initializeFirebase();
-  final loggingObserver = LoggingObserver();
+  final loggingObserver = LoggingObserver(enabled: false);
   runApp(ProviderScope(
     overrides: [
       loggingObserverProvider.overrideWithValue(loggingObserver),

@@ -21,7 +21,7 @@ class ProjectWorkspaces with _$ProjectWorkspaces {
     return ProjectWorkspaceDoc(
       reference: snapshot.reference,
       data: snapshot.data() ?? {},
-      isDeleted: snapshot.exists,
+      isDeleted: !snapshot.exists,
     );
   }
 
@@ -30,8 +30,9 @@ class ProjectWorkspaces with _$ProjectWorkspaces {
   }
 
   Stream<List<ProjectWorkspaceDoc>> all() {
-    final ref = collection;
-    return ref.snapshots(includeMetadataChanges: false).map((event) => _asDocs(event));
+    return collection.snapshots(includeMetadataChanges: true).map((event) {
+      return _asDocs(event);
+    });
   }
 
   Future<MapDocumentReference> add({required String name}) async {

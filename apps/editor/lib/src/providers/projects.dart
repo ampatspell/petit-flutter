@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../blocks/riverpod/order.dart';
 import '../models/project.dart';
+import '../models/project_node.dart';
 import '../models/projects.dart';
 import '../typedefs.dart';
 import 'base.dart';
@@ -12,7 +13,7 @@ import 'references.dart';
 part 'projects.g.dart';
 
 @Riverpod(dependencies: [])
-class SortedProjectsOrder extends _$SortedProjectsOrder {
+class ProjectDocsOrder extends _$ProjectDocsOrder {
   @override
   OrderDirection build() {
     state = OrderDirection.asc;
@@ -30,13 +31,19 @@ Projects projects(ProjectsRef ref) {
   return Projects(references: references);
 }
 
-@Riverpod(dependencies: [projects, SortedProjectsOrder])
+@Riverpod(dependencies: [firestoreReferences])
+ProjectsReset projectsReset(ProjectsResetRef ref) {
+  final references = ref.watch(firestoreReferencesProvider);
+  return ProjectsReset(references: references);
+}
+
+@Riverpod(dependencies: [projects, ProjectDocsOrder])
 Stream<List<ProjectDoc>> projectDocsStream(ProjectDocsStreamRef ref) {
-  final order = ref.watch(sortedProjectsOrderProvider);
+  final order = ref.watch(projectDocsOrderProvider);
   return ref.watch(projectsProvider).all(order);
 }
 
-@Riverpod(dependencies: [projects])
+@Riverpod(dependencies: [projectsReset])
 class ResetProjects extends _$ResetProjects {
   @override
   VoidCallback? build() {
@@ -46,7 +53,7 @@ class ResetProjects extends _$ResetProjects {
   void reset() async {
     state = null;
     try {
-      await ref.read(projectsProvider).reset();
+      await ref.read(projectsResetProvider).reset();
     } finally {
       state = reset;
     }
@@ -84,3 +91,8 @@ class NewProject extends _$NewProject {
 
 @Riverpod(dependencies: [])
 List<ProjectDoc> projectDocs(ProjectDocsRef ref) => throw OverrideProviderException();
+
+//
+
+@Riverpod(dependencies: [])
+ProjectNodeDoc projectNodeDoc(ProjectNodeDocRef ref) => throw OverrideProviderException();

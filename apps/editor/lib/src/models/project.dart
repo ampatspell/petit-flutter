@@ -19,9 +19,17 @@ class ProjectDoc with _$ProjectDoc {
 
   String? get workspace => data['workspace'] as String?;
 
+  String? get node => data['node'] as String?;
+
   Future<void> updateWorkspaceId(String? id) async {
     await reference.set({
       'workspace': id,
+    }, SetOptions(merge: true));
+  }
+
+  Future<void> updateNodeId(String? id) async {
+    await reference.set({
+      'node': id,
     }, SetOptions(merge: true));
   }
 

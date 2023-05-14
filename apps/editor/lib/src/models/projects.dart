@@ -34,12 +34,14 @@ class Projects with _$Projects {
   Stream<List<ProjectDoc>> all(OrderDirection order) {
     return collection
         .orderBy('name', descending: order.isDescending)
-        .snapshots(includeMetadataChanges: false)
+        .snapshots(includeMetadataChanges: true)
         .map((event) => _asDocs(event));
   }
 
   Stream<ProjectDoc> byReference(MapDocumentReference projectRef) {
-    return projectRef.snapshots(includeMetadataChanges: false).map((event) => _asDoc(event));
+    return projectRef.snapshots(includeMetadataChanges: true).map((event) {
+      return _asDoc(event);
+    });
   }
 
   Future<MapDocumentReference> add(NewProjectData data) async {
@@ -53,6 +55,15 @@ class Projects with _$Projects {
   MapDocumentReference referenceById(String id) {
     return collection.doc(id);
   }
+}
+
+@freezed
+class ProjectsReset with _$ProjectsReset {
+  const factory ProjectsReset({
+    required FirestoreReferences references,
+  }) = _ProjectsReset;
+
+  const ProjectsReset._();
 
   Future<void> reset() async {
     await _deleteProjects();
@@ -101,7 +112,7 @@ class Projects with _$Projects {
     required List<Map<String, dynamic>> nodes,
     required List<Map<String, dynamic>> items,
   }) async {
-    final projectRef = collection.doc();
+    final projectRef = references.projects().doc();
     final nodesRef = references.projectNodesCollection(projectRef);
     final workspacesRef = references.projectWorkspacesCollection(projectRef);
     final workspaceRef = workspacesRef.doc();
@@ -148,7 +159,7 @@ class Projects with _$Projects {
   }
 
   Future<void> _deleteProjects() async {
-    final projects = await collection.get();
+    final projects = await references.projects().get();
     await Future.wait(projects.docs.map((projectSnap) async {
       final projectRef = projectSnap.reference;
 

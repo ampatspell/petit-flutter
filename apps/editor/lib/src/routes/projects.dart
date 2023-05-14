@@ -1,8 +1,8 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:petit_editor/src/blocks/riverpod/order.dart';
-import 'package:petit_editor/src/blocks/riverpod/provider_scope_overrides.dart';
 
+import '../blocks/riverpod/loaded_scope/loaded_scope.dart';
+import '../blocks/riverpod/order.dart';
 import '../blocks/riverpod/projects/list.dart';
 import '../providers/projects.dart';
 import 'router.dart';
@@ -12,7 +12,7 @@ class ProjectsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final order = ref.watch(sortedProjectsOrderProvider);
+    final order = ref.watch(projectDocsOrderProvider);
     final reset = ref.watch(resetProjectsProvider);
 
     return ScaffoldPage(
@@ -21,7 +21,7 @@ class ProjectsScreen extends ConsumerWidget {
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
-            buildOrderCommandBarButton(order, () => ref.read(sortedProjectsOrderProvider.notifier).toggle()),
+            buildOrderCommandBarButton(order, () => ref.read(projectDocsOrderProvider.notifier).toggle()),
             CommandBarButton(
               icon: const Icon(FluentIcons.add),
               label: const Text('New'),
@@ -37,10 +37,10 @@ class ProjectsScreen extends ConsumerWidget {
           ],
         ),
       ),
-      content: ProviderScopeOverrides(
+      content: LoadedScope(
         parent: this,
-        overrides: (context, ref) => [
-          overrideProvider(projectDocsProvider).withAsyncValue(ref.watch(projectDocsStreamProvider)),
+        loaders: (context, ref) => [
+          overrideProvider(projectDocsProvider).withLoadedValue(ref.watch(projectDocsStreamProvider)),
         ],
         child: ProjectsList(
           onSelect: (project) {
