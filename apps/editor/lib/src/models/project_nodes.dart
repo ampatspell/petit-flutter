@@ -16,16 +16,12 @@ class ProjectNodes with _$ProjectNodes {
   const ProjectNodes._();
 
   ProjectNodeDoc _asDoc(MapDocumentSnapshot snapshot) {
-    final reference = snapshot.reference;
-    final data = snapshot.data();
-    final exists = snapshot.exists;
     // TODO: deleted
+    final data = snapshot.data();
     final type = data!['type'] as String;
     if (type == 'box') {
       return ProjectBoxNodeDoc(
-        reference: reference,
-        data: data,
-        isDeleted: !exists,
+        doc: references.asDoc(snapshot),
       );
     }
     throw UnsupportedError(data.toString());

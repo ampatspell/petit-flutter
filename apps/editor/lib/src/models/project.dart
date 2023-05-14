@@ -1,7 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'typedefs.dart';
+import 'references.dart';
 
 part 'project.freezed.dart';
 
@@ -10,30 +9,28 @@ class ProjectDoc with _$ProjectDoc {
   const ProjectDoc._();
 
   const factory ProjectDoc({
-    required MapDocumentReference reference,
-    required bool isDeleted,
-    required FirestoreMap data,
+    required Doc doc,
   }) = _ProjectDoc;
 
-  String get name => data['name'] as String;
+  String get name => doc['name'] as String;
 
-  String? get workspace => data['workspace'] as String?;
+  String? get workspace => doc['workspace'] as String?;
 
-  String? get node => data['node'] as String?;
+  String? get node => doc['node'] as String?;
 
   Future<void> updateWorkspaceId(String? id) async {
-    await reference.set({
+    await doc.merge({
       'workspace': id,
-    }, SetOptions(merge: true));
+    });
   }
 
   Future<void> updateNodeId(String? id) async {
-    await reference.set({
+    await doc.merge({
       'node': id,
-    }, SetOptions(merge: true));
+    });
   }
 
   Future<void> delete() async {
-    await reference.delete();
+    await doc.delete();
   }
 }

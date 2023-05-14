@@ -44,7 +44,7 @@ class ProjectsScreen extends ConsumerWidget {
         ],
         child: ProjectsList(
           onSelect: (project) {
-            ProjectRoute(id: project.reference.id).go(context);
+            ProjectRoute(id: project.doc.id).go(context);
           },
         ),
       ),

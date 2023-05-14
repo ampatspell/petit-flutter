@@ -31,4 +31,41 @@ class FirestoreReferences with _$FirestoreReferences {
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {
     return workspaceRef.collection('items');
   }
+
+  Doc asDoc(MapDocumentSnapshot snapshot) {
+    return Doc(
+      reference: snapshot.reference,
+      isDeleted: !snapshot.exists,
+      data: snapshot.data() ?? {},
+    );
+  }
+}
+
+@freezed
+class Doc with _$Doc {
+  const factory Doc({
+    required MapDocumentReference reference,
+    required FirestoreMap data,
+    required bool isDeleted,
+  }) = _Doc;
+
+  const Doc._();
+
+  String get id => reference.id;
+
+  String get path => reference.path;
+
+  dynamic operator [](String key) => data[key];
+
+  Future<void> merge(FirestoreMap map) async {
+    await reference.set(map, SetOptions(merge: true));
+  }
+
+  Future<void> set(FirestoreMap map) async {
+    await reference.set(map);
+  }
+
+  Future<void> delete() async {
+    await reference.delete();
+  }
 }

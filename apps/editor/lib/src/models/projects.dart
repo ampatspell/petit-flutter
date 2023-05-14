@@ -21,9 +21,7 @@ class Projects with _$Projects {
 
   ProjectDoc _asDoc(MapDocumentSnapshot e) {
     return ProjectDoc(
-      reference: e.reference,
-      isDeleted: !e.exists,
-      data: e.data() ?? {},
+      doc: references.asDoc(e),
     );
   }
 

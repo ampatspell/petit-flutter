@@ -19,9 +19,7 @@ class ProjectWorkspaces with _$ProjectWorkspaces {
 
   ProjectWorkspaceDoc _asDoc(MapDocumentSnapshot snapshot) {
     return ProjectWorkspaceDoc(
-      reference: snapshot.reference,
-      data: snapshot.data() ?? {},
-      isDeleted: !snapshot.exists,
+      doc: references.asDoc(snapshot),
     );
   }
 

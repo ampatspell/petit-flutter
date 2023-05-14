@@ -83,7 +83,7 @@ ProjectWorkspaceDoc? projectWorkspaceDoc(ProjectWorkspaceDocRef ref) {
     return null;
   }
   return ref.watch(projectWorkspaceDocsProvider.select((value) {
-    return value.firstWhereOrNull((element) => element.reference.id == id);
+    return value.firstWhereOrNull((element) => element.doc.id == id);
   }));
 }
 

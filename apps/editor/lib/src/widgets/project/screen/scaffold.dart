@@ -23,7 +23,7 @@ class ProjectScreenScaffold extends ConsumerWidget {
             WorkspacesCommandBarItem(
               workspaces: ref.watch(projectWorkspaceDocsProvider),
               selected: ref.watch(projectWorkspaceDocProvider),
-              onSelect: (doc) => ref.read(projectDocProvider).updateWorkspaceId(doc?.reference.id),
+              onSelect: (workspace) => ref.read(projectDocProvider).updateWorkspaceId(workspace?.doc.id),
             ),
           ],
           secondaryItems: [

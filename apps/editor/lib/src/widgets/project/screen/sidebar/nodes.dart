@@ -31,7 +31,7 @@ class ProjectNodeListTile extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final id = ref.watch(projectNodeDocProvider.select((value) => value.reference.id));
+    final id = ref.watch(projectNodeDocProvider.select((value) => value.doc.id));
     final type = ref.watch(projectNodeDocProvider.select((value) => value.type));
 
     return ListTile.selectable(

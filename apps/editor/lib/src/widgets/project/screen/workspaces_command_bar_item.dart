@@ -3,7 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:petit_editor/src/app/utils.dart';
 
 import '../../../models/project_workspace.dart';
-import '../../base/fluent/combo_box_command_bar_item.dart';
+import '../../base/combo_box_command_bar_item.dart';
 
 class WorkspacesCommandBarItem extends CommandBarItem {
   final List<ProjectWorkspaceDoc> workspaces;
@@ -22,13 +22,13 @@ class WorkspacesCommandBarItem extends CommandBarItem {
     return ComboBoxCommandBarItem(
       items: workspaces.map((workspace) {
         return ComboBoxItem(
-          value: workspace.reference.id,
+          value: workspace.doc.id,
           child: Text(workspace.name),
         );
       }).toList(growable: false),
-      value: selected?.reference.id,
+      value: selected?.doc.id,
       onChanged: (workspaces.length > 1 && selected != null).ifTrue((value) {
-        final workspace = workspaces.firstWhereOrNull((element) => element.reference.id == value);
+        final workspace = workspaces.firstWhereOrNull((element) => element.doc.id == value);
         onSelect(workspace);
       }),
       placeholder: const Text('Workspace not selected'),
