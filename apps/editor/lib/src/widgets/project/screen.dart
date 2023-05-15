@@ -13,10 +13,18 @@ class ProjectScreen extends ConsumerWidget {
     return LoadedScope(
       parent: this,
       loaders: (context, ref) => [
-        overrideProvider(projectModelProvider).withLoadedValue(ref.watch(projectModelStreamProvider)),
-        overrideProvider(projectNodeModelsProvider).withLoadedValue(ref.watch(projectNodeModelsStreamProvider)),
-        overrideProvider(projectWorkspaceModelsProvider)
-            .withLoadedValue(ref.watch(projectWorkspaceModelsStreamProvider)),
+        overrideProvider(projectStateModelProvider).withLoadedValue(
+          ref.watch(projectStateModelStreamProvider),
+        ),
+        overrideProvider(projectModelProvider).withLoadedValue(
+          ref.watch(projectModelStreamProvider),
+        ),
+        overrideProvider(projectNodeModelsProvider).withLoadedValue(
+          ref.watch(projectNodeModelsStreamProvider),
+        ),
+        overrideProvider(projectWorkspaceModelsProvider).withLoadedValue(
+          ref.watch(projectWorkspaceModelsStreamProvider),
+        ),
       ],
       child: const ProjectScreenScaffold(),
     );

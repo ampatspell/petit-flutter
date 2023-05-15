@@ -39,3 +39,36 @@ class ProjectWorkspacesRepository with _$ProjectWorkspacesRepository {
     return ref;
   }
 }
+
+@freezed
+class ProjectWorkspaceStatesRepository with _$ProjectWorkspaceStatesRepository {
+  const factory ProjectWorkspaceStatesRepository({
+    required MapDocumentReference projectWorkspaceRef,
+    required FirestoreReferences references,
+  }) = _ProjectWorkspaceStatesRepository;
+
+  const ProjectWorkspaceStatesRepository._();
+
+  ProjectWorkspaceStateModel _asModel(MapDocumentSnapshot snapshot) {
+    return ProjectWorkspaceStateModel(
+      doc: references.asDoc(snapshot),
+    );
+  }
+
+  Stream<ProjectWorkspaceStateModel> forUser({required String uid}) {
+    return references
+        .projectWorkspaceStateCollection(projectWorkspaceRef)
+        .doc(uid)
+        .snapshots(includeMetadataChanges: true)
+        .map(_asModel);
+  }
+}
+
+@freezed
+class ProjectWorkspaceStateModel with _$ProjectWorkspaceStateModel {
+  const factory ProjectWorkspaceStateModel({
+    required Doc doc,
+  }) = _ProjectWorkspaceStateModel;
+
+  const ProjectWorkspaceStateModel._();
+}

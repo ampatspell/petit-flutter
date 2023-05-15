@@ -14,13 +14,33 @@ class ProjectModel with _$ProjectModel {
 
   String get name => doc['name'] as String;
 
-  String? get workspace => doc['workspace'] as String?;
-
   String? get node => doc['node'] as String?;
 
-  String? get sidebarTab => doc['sidebar_tab'] as String?;
-
   int get pixel => doc['pixel'] as int? ?? 2;
+
+  // TODO: per workspace
+  Future<void> updateNodeId(String? id) async {
+    await doc.merge({
+      'node': id,
+    });
+  }
+
+  Future<void> delete() async {
+    await doc.delete();
+  }
+}
+
+@freezed
+class ProjectStateModel with _$ProjectStateModel {
+  const factory ProjectStateModel({
+    required Doc doc,
+  }) = _ProjectStateModel;
+
+  const ProjectStateModel._();
+
+  String? get workspace => doc['workspace_id'] as String?;
+
+  String? get sidebarTab => doc['sidebar_tab'] as String?;
 
   Future<void> updateSidebarTab(String? value) async {
     await doc.merge({
@@ -30,17 +50,7 @@ class ProjectModel with _$ProjectModel {
 
   Future<void> updateWorkspaceId(String? id) async {
     await doc.merge({
-      'workspace': id,
+      'workspace_id': id,
     });
-  }
-
-  Future<void> updateNodeId(String? id) async {
-    await doc.merge({
-      'node': id,
-    });
-  }
-
-  Future<void> delete() async {
-    await doc.delete();
   }
 }

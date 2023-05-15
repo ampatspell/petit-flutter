@@ -47,7 +47,7 @@ class ProjectWorkspaceListTile extends ConsumerWidget {
       title: Text(name),
       selected: selected,
       onPressed: () {
-        ref.read(projectModelProvider).updateWorkspaceId(id);
+        ref.read(projectStateModelProvider).updateWorkspaceId(id);
       },
     );
   }

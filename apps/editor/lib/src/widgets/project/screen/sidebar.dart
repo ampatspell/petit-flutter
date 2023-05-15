@@ -27,7 +27,7 @@ class ProjectSidebar extends ConsumerWidget {
 }
 
 String _watchSelectedSidebarTab(WidgetRef ref) {
-  return ref.watch(projectModelProvider.select((value) => value.sidebarTab)) ?? 'nodes';
+  return ref.watch(projectStateModelProvider.select((value) => value.sidebarTab)) ?? 'nodes';
 }
 
 class ProjectSidebarContent extends ConsumerWidget {
@@ -65,7 +65,7 @@ class ProjectSidebarTabs extends ConsumerWidget {
       ],
       selected: selected,
       onSelect: (value) {
-        ref.read(projectModelProvider).updateSidebarTab(value);
+        ref.read(projectStateModelProvider).updateSidebarTab(value);
       },
     );
   }

@@ -54,6 +54,28 @@ class ProjectsRepository with _$ProjectsRepository {
 }
 
 @freezed
+class ProjectStatesRepository with _$ProjectStatesRepository {
+  const factory ProjectStatesRepository({
+    required MapDocumentReference projectRef,
+    required FirestoreReferences references,
+  }) = _ProjectStatesRepository;
+
+  const ProjectStatesRepository._();
+
+  Stream<ProjectStateModel> forUser({
+    required String uid,
+  }) {
+    return references.projectStateCollection(projectRef).doc(uid).snapshots(includeMetadataChanges: true).map(_asModel);
+  }
+
+  ProjectStateModel _asModel(MapDocumentSnapshot snapshot) {
+    return ProjectStateModel(
+      doc: references.asDoc(snapshot),
+    );
+  }
+}
+
+@freezed
 class ProjectsReset with _$ProjectsReset {
   const factory ProjectsReset({
     required FirestoreReferences references,

@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'base.dart';
+import 'project.dart';
 import 'typedefs.dart';
 
 part 'references.freezed.dart';
@@ -22,12 +23,20 @@ class FirestoreReferences with _$FirestoreReferences {
     return _firestore.collection('projects');
   }
 
+  MapCollectionReference projectStateCollection(MapDocumentReference projectRef) {
+    return projectRef.collection('state');
+  }
+
   MapCollectionReference projectNodesCollection(MapDocumentReference projectRef) {
     return projectRef.collection('nodes');
   }
 
   MapCollectionReference projectWorkspacesCollection(MapDocumentReference projectRef) {
     return projectRef.collection('workspaces');
+  }
+
+  MapCollectionReference projectWorkspaceStateCollection(MapDocumentReference workspaceRef) {
+    return workspaceRef.collection('state');
   }
 
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {

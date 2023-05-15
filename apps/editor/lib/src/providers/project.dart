@@ -9,6 +9,7 @@ import '../models/project_node.dart';
 import '../models/project_nodes.dart';
 import '../models/project_workspace.dart';
 import '../models/project_workspaces.dart';
+import '../models/projects.dart';
 import '../models/typedefs.dart';
 import 'base.dart';
 import 'projects.dart';
@@ -63,16 +64,37 @@ Stream<List<ProjectWorkspaceModel>> projectWorkspaceModelsStream(ProjectWorkspac
   return ref.watch(projectWorkspacesRepositoryProvider).all();
 }
 
+@Riverpod(dependencies: [firestoreReferences, projectReference])
+ProjectStatesRepository projectStatesRepository(ProjectStatesRepositoryRef ref) {
+  final references = ref.watch(firestoreReferencesProvider);
+  final projectRef = ref.watch(projectReferenceProvider);
+  return ProjectStatesRepository(references: references, projectRef: projectRef);
+}
+
+@Riverpod(dependencies: [projectStatesRepository, authStateChanges])
+Stream<ProjectStateModel> projectStateModelStream(ProjectStateModelStreamRef ref) {
+  final repository = ref.watch(projectStatesRepositoryProvider);
+  final user = ref.watch(authStateChangesProvider).requireValue!;
+  return repository.forUser(
+    uid: user.uid,
+  );
+}
+
 //
 
 @Riverpod(dependencies: [])
 ProjectModel projectModel(ProjectModelRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [])
+ProjectStateModel projectStateModel(ProjectStateModelRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
 List<ProjectNodeModel> projectNodeModels(ProjectNodeModelsRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [])
 List<ProjectWorkspaceModel> projectWorkspaceModels(ProjectWorkspaceModelsRef ref) => throw OverrideProviderException();
+
+//
 
 @Riverpod(dependencies: [projectModel])
 class ProjectDocDelete extends _$ProjectDocDelete {
@@ -94,9 +116,9 @@ class ProjectDocDelete extends _$ProjectDocDelete {
 
 //
 
-@Riverpod(dependencies: [projectModel, projectWorkspaceModels])
+@Riverpod(dependencies: [projectStateModel, projectWorkspaceModels])
 ProjectWorkspaceModel? selectedProjectWorkspaceModel(SelectedProjectWorkspaceModelRef ref) {
-  final id = ref.watch(projectModelProvider.select((value) => value.workspace));
+  final id = ref.watch(projectStateModelProvider.select((value) => value.workspace));
   if (id == null) {
     return null;
   }
@@ -124,6 +146,16 @@ ProjectNodeModel projectNodeModel(ProjectNodeModelRef ref) => throw OverrideProv
 
 @Riverpod(dependencies: [])
 ProjectWorkspaceModel projectWorkspaceModel(ProjectWorkspaceModelRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [projectWorkspaceModel, firestoreReferences])
+ProjectWorkspaceStatesRepository projectWorkspaceStatesRepository(ProjectWorkspaceStatesRepositoryRef ref) {
+  final projectWorkspaceRef = ref.watch(projectWorkspaceModelProvider.select((value) => value.doc.reference));
+  final references = ref.watch(firestoreReferencesProvider);
+  return ProjectWorkspaceStatesRepository(
+    projectWorkspaceRef: projectWorkspaceRef,
+    references: references,
+  );
+}
 
 @Riverpod(dependencies: [projectWorkspaceModel, firestoreReferences])
 ProjectWorkspaceItemsModel projectWorkspaceItemsModel(ProjectWorkspaceItemsModelRef ref) {
