@@ -17,18 +17,18 @@ class ProjectWorkspacesRepository with _$ProjectWorkspacesRepository {
 
   MapCollectionReference get collection => references.projectWorkspacesCollection(projectRef);
 
-  ProjectWorkspaceModel _asDoc(MapDocumentSnapshot snapshot) {
+  ProjectWorkspaceModel _asModel(MapDocumentSnapshot snapshot) {
     return ProjectWorkspaceModel(
       doc: references.asDoc(snapshot),
     );
   }
 
-  List<ProjectWorkspaceModel> _asDocs(MapQuerySnapshot event) {
-    return event.docs.map(_asDoc).toList(growable: false);
+  List<ProjectWorkspaceModel> _asModels(MapQuerySnapshot event) {
+    return event.docs.map(_asModel).toList(growable: false);
   }
 
   Stream<List<ProjectWorkspaceModel>> all() {
-    return collection.snapshots(includeMetadataChanges: true).map(_asDocs);
+    return collection.snapshots(includeMetadataChanges: true).map(_asModels);
   }
 
   Future<MapDocumentReference> add({required String name}) async {

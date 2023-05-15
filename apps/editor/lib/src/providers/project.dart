@@ -74,19 +74,6 @@ List<ProjectNodeModel> projectNodeModels(ProjectNodeModelsRef ref) => throw Over
 @Riverpod(dependencies: [])
 List<ProjectWorkspaceModel> projectWorkspaceModels(ProjectWorkspaceModelsRef ref) => throw OverrideProviderException();
 
-//
-
-@Riverpod(dependencies: [projectModel, projectWorkspaceModels])
-ProjectWorkspaceModel? projectWorkspaceModel(ProjectWorkspaceModelRef ref) {
-  final id = ref.watch(projectModelProvider.select((value) => value.workspace));
-  if (id == null) {
-    return null;
-  }
-  return ref.watch(projectWorkspaceModelsProvider.select((value) {
-    return value.firstWhereOrNull((element) => element.doc.id == id);
-  }));
-}
-
 @Riverpod(dependencies: [projectModel])
 class ProjectDocDelete extends _$ProjectDocDelete {
   @override
@@ -105,5 +92,65 @@ class ProjectDocDelete extends _$ProjectDocDelete {
   }
 }
 
+//
+
+@Riverpod(dependencies: [projectModel, projectWorkspaceModels])
+ProjectWorkspaceModel? selectedProjectWorkspaceModel(SelectedProjectWorkspaceModelRef ref) {
+  final id = ref.watch(projectModelProvider.select((value) => value.workspace));
+  if (id == null) {
+    return null;
+  }
+  return ref.watch(projectWorkspaceModelsProvider.select((value) {
+    return value.firstWhereOrNull((element) => element.doc.id == id);
+  }));
+}
+
+@Riverpod(dependencies: [projectModel, projectNodeModels])
+ProjectNodeModel? selectedProjectNodeModel(SelectedProjectNodeModelRef ref) {
+  final id = ref.watch(projectModelProvider.select((value) => value.node));
+  if (id == null) {
+    return null;
+  }
+  return ref.watch(projectNodeModelsProvider.select((value) {
+    return value.firstWhereOrNull((element) => element.doc.id == id);
+  }));
+}
+
+// TODO: this is just for sidebar
 @Riverpod(dependencies: [])
 ProjectNodeModel projectNodeModel(ProjectNodeModelRef ref) => throw OverrideProviderException();
+
+//
+
+@Riverpod(dependencies: [])
+ProjectWorkspaceModel projectWorkspaceModel(ProjectWorkspaceModelRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [projectWorkspaceModel, firestoreReferences])
+ProjectWorkspaceItemsModel projectWorkspaceItemsModel(ProjectWorkspaceItemsModelRef ref) {
+  final workspace = ref.watch(projectWorkspaceModelProvider);
+  final references = ref.watch(firestoreReferencesProvider);
+  return ProjectWorkspaceItemsModel(workspace: workspace, references: references);
+}
+
+@Riverpod(dependencies: [projectWorkspaceItemsModel])
+Stream<List<ProjectWorkspaceItemModel>> projectWorkspaceItemModelsStream(ProjectWorkspaceItemModelsStreamRef ref) {
+  return ref.watch(projectWorkspaceItemsModelProvider).items();
+}
+
+//
+
+@Riverpod(dependencies: [])
+List<ProjectWorkspaceItemModel> projectWorkspaceItemModels(ProjectWorkspaceItemModelsRef ref) =>
+    throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
+ProjectWorkspaceItemModel projectWorkspaceItemModel(ProjectWorkspaceItemModelRef ref) =>
+    throw OverrideProviderException();
+
+@Riverpod(dependencies: [projectWorkspaceItemModel, projectNodeModels])
+ProjectNodeModel projectWorkspaceItemNodeModel(ProjectWorkspaceItemNodeModelRef ref) {
+  final id = ref.watch(projectWorkspaceItemModelProvider.select((value) => value.node));
+  return ref.watch(projectNodeModelsProvider.select((value) {
+    return value.firstWhere((node) => node.doc.id == id);
+  }));
+}

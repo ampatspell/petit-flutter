@@ -1,7 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../app/theme.dart';
 import '../../../providers/project.dart';
 import '../../base/footer_tabs.dart';
 import 'sidebar/nodes.dart';

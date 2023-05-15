@@ -42,9 +42,7 @@ class ProjectWorkspaceListTile extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(workspaceModelProvider.select((value) => value.doc.id));
     final name = ref.watch(workspaceModelProvider.select((value) => value.name));
-    final selected = ref.watch(projectWorkspaceModelProvider.select((value) {
-      return value?.doc.id == id;
-    }));
+    final selected = ref.watch(selectedProjectWorkspaceModelProvider.select((value) => value?.doc.id == id));
     return ListTile.selectable(
       title: Text(name),
       selected: selected,

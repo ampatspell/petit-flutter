@@ -17,7 +17,7 @@ class ProviderScopeOverridesError extends StatelessWidget {
           Text([
             error.value.error.toString(),
             error.value.stackTrace.toString(),
-          ].join('\n')),
+          ].join('\n\n')),
           const Gap(20),
         ],
       ],

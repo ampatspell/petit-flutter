@@ -34,12 +34,18 @@ class LoadedScope extends ConsumerWidget {
 
     final errors = built.where((element) => element.value.hasError).toList(growable: false);
     if (errors.isNotEmpty) {
-      return ensureScaffold('Something went wrong', ProviderScopeOverridesError(errors: errors));
+      return ensureScaffold(
+        'Something went wrong',
+        ProviderScopeOverridesError(errors: errors),
+      );
     }
 
     final loading = built.where((element) => !element.value.hasValue).toList(growable: false);
     if (loading.isNotEmpty) {
-      return ensureScaffold(null, const ProviderScopeOverridesLoading());
+      return ensureScaffold(
+        null,
+        const ProviderScopeOverridesLoading(),
+      );
     }
 
     final withProviders = built.where((e) {

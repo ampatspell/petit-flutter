@@ -20,6 +20,8 @@ class ProjectModel with _$ProjectModel {
 
   String? get sidebarTab => doc['sidebar_tab'] as String?;
 
+  int get pixel => doc['pixel'] as int? ?? 2;
+
   Future<void> updateSidebarTab(String? value) async {
     await doc.merge({
       'sidebar_tab': value,

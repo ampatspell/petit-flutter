@@ -19,25 +19,25 @@ class ProjectsRepository with _$ProjectsRepository {
 
   MapCollectionReference get collection => references.projects();
 
-  ProjectModel _asDoc(MapDocumentSnapshot snapshot) {
+  ProjectModel _asModel(MapDocumentSnapshot snapshot) {
     return ProjectModel(
       doc: references.asDoc(snapshot),
     );
   }
 
-  List<ProjectModel> _asDocs(QuerySnapshot<FirestoreMap> event) {
-    return event.docs.map(_asDoc).toList(growable: false);
+  List<ProjectModel> _asModels(QuerySnapshot<FirestoreMap> event) {
+    return event.docs.map(_asModel).toList(growable: false);
   }
 
   Stream<List<ProjectModel>> all(OrderDirection order) {
     return collection
         .orderBy('name', descending: order.isDescending)
         .snapshots(includeMetadataChanges: true)
-        .map(_asDocs);
+        .map(_asModels);
   }
 
   Stream<ProjectModel> byReference(MapDocumentReference projectRef) {
-    return projectRef.snapshots(includeMetadataChanges: true).map(_asDoc);
+    return projectRef.snapshots(includeMetadataChanges: true).map(_asModel);
   }
 
   Future<MapDocumentReference> add(NewProjectData data) async {

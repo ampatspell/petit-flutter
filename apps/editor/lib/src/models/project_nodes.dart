@@ -16,7 +16,7 @@ class ProjectNodesRepository with _$ProjectNodesRepository {
 
   const ProjectNodesRepository._();
 
-  ProjectNodeModel _asDoc(MapDocumentSnapshot snapshot) {
+  ProjectNodeModel _asModel(MapDocumentSnapshot snapshot) {
     // TODO: deleted
     final data = snapshot.data();
     final type = data!['type'] as String;
@@ -28,12 +28,12 @@ class ProjectNodesRepository with _$ProjectNodesRepository {
     throw UnsupportedError(data.toString());
   }
 
-  List<ProjectNodeModel> _asDocs(MapQuerySnapshot snapshot) {
-    return snapshot.docs.map(_asDoc).toList(growable: false);
+  List<ProjectNodeModel> _asModels(MapQuerySnapshot snapshot) {
+    return snapshot.docs.map(_asModel).toList(growable: false);
   }
 
   Stream<List<ProjectNodeModel>> all() {
     final ref = references.projectNodesCollection(projectRef);
-    return ref.snapshots(includeMetadataChanges: true).map(_asDocs);
+    return ref.snapshots(includeMetadataChanges: true).map(_asModels);
   }
 }
