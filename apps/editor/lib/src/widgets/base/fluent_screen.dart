@@ -1,14 +1,13 @@
+import 'package:collection/collection.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../app/router.dart';
 import '../../providers/base.dart';
-import 'loaded_scope/loaded_scope.dart';
 
-class FluentScreen extends HookConsumerWidget {
+class FluentScreen extends ConsumerWidget {
   const FluentScreen({
     super.key,
     required this.content,
@@ -21,8 +20,17 @@ class FluentScreen extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final router = ref.read(routerProvider);
-    final location = router.location;
-    final items = useMemoized(() => routes
+    final routes = ref.watch(routesProvider);
+
+    ref.listen(appStateProvider, (previous, next) {
+      if (next.user == null) {
+        HomeRoute().go(context);
+      } else {
+        ProjectsRoute().go(context);
+      }
+    });
+
+    final items = routes
         .map((route) => PaneItem(
               key: ValueKey(route.location),
               icon: Icon(route.icon),
@@ -31,16 +39,27 @@ class FluentScreen extends HookConsumerWidget {
               onTap: () => route.go(context),
             ))
         .toList(growable: false)
-        .cast<NavigationPaneItem>());
+        .cast<NavigationPaneItem>();
 
-    final selected = items.asMap().entries.firstWhere((element) {
+    final location = router.location;
+    final selected = items.asMap().entries.firstWhereOrNull((element) {
       final key = element.value.key as ValueKey<String>;
+      if (key.value == '/') {
+        return location == '/';
+      }
       return location.startsWith(key.value);
     });
 
+    Widget? title;
+    if (selected != null) {
+      title = (selected.value as PaneItem).title;
+    } else {
+      title = const Text('Petit');
+    }
+
     return NavigationView(
       appBar: NavigationAppBar(
-        title: (selected.value as PaneItem).title,
+        title: title,
         automaticallyImplyLeading: false,
         leading: shellContext != null ? const _Leading() : null,
         actions: const SizedBox(
@@ -56,7 +75,7 @@ class FluentScreen extends HookConsumerWidget {
         header: const Text('Petit'),
         displayMode: PaneDisplayMode.compact,
         items: items,
-        selected: selected.key,
+        selected: selected?.key,
       ),
     );
   }

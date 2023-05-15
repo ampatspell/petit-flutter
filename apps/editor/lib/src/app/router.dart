@@ -5,6 +5,7 @@ import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../providers/base.dart';
 import '../providers/project.dart';
 import '../widgets/base/fluent_screen.dart';
 import '../widgets/base/loaded_scope/loaded_scope.dart';
@@ -12,6 +13,7 @@ import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
 import '../widgets/development/three.dart';
 import '../widgets/development/two.dart';
+import '../widgets/home.dart';
 import '../widgets/project/screen.dart';
 import '../widgets/projects/new/screen.dart';
 import '../widgets/projects/screen.dart';
@@ -23,6 +25,9 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
 
 @TypedShellRoute<FluentRoute>(
   routes: <TypedRoute<RouteData>>[
+    TypedGoRoute<HomeRoute>(
+      path: '/',
+    ),
     TypedGoRoute<ProjectsRoute>(
       path: '/projects',
       routes: <TypedGoRoute<GoRouteData>>[
@@ -51,6 +56,13 @@ class FluentRoute extends ShellRouteData {
       content: navigator,
       shellContext: _shellKey.currentContext,
     );
+  }
+}
+
+class HomeRoute extends GoRouteData {
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return const HomeScreen();
   }
 }
 
@@ -130,7 +142,14 @@ class Route {
   final void Function(BuildContext context) go;
 }
 
-final routes = [
+final home = Route(
+  location: HomeRoute().location,
+  icon: FluentIcons.calories,
+  title: 'Home',
+  go: (context) => HomeRoute().go(context),
+);
+
+final loggedIn = [
   Route(
     location: ProjectsRoute().location,
     icon: FluentIcons.project_collection,
@@ -145,15 +164,35 @@ final routes = [
   ),
 ];
 
-@Riverpod(keepAlive: true)
+@Riverpod(keepAlive: true, dependencies: [appState])
+List<Route> routes(RoutesRef ref) {
+  final hasUser = ref.watch(appStateProvider.select((value) => value.user != null));
+  if (hasUser) {
+    return [
+      home,
+      ...loggedIn,
+    ];
+  }
+  return [
+    home,
+  ];
+}
+
+@Riverpod(keepAlive: true, dependencies: [appState])
 Raw<GoRouter> router(RouterRef ref) {
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: '/projects',
+    initialLocation: '/',
     routes: $appRoutes,
     navigatorKey: _rootKey,
     redirect: (context, state) async {
-      print('redirect: ${state.name}');
+      final location = state.location;
+      if (location != '/') {
+        final signedOut = ref.read(appStateProvider.select((value) => value.user == null));
+        if (signedOut) {
+          return '/';
+        }
+      }
       return null;
     },
   );

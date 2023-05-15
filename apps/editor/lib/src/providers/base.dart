@@ -1,12 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../firebase_options.dart';
 import '../app/provider_logging_observer.dart';
-import '../app/utils.dart';
 import '../models/base.dart';
 
 part 'base.g.dart';
@@ -55,25 +53,12 @@ Stream<User?> authStateChanges(AuthStateChangesRef ref) {
 }
 
 @Riverpod(keepAlive: true, dependencies: [authStateChanges])
-class FirstAuthStateResolved extends _$FirstAuthStateResolved {
-  ProviderSubscription<AsyncValue<User?>>? _subscription;
+AppState appState(AppStateRef ref) {
+  final subscription = ref.listen(authStateChangesProvider, (previous, next) {
+    ref.state = ref.state.copyWith(user: next.value, isLoaded: true);
+  });
+  ref.onDispose(subscription.close);
 
-  void _close() {
-    _subscription.exists((subscription) {
-      subscription.close();
-      _subscription = null;
-    });
-  }
-
-  @override
-  bool build() {
-    _subscription = ref.listen(authStateChangesProvider, (previous, next) {
-      if (state == false) {
-        state = true;
-        _close();
-      }
-    });
-    ref.onDispose(_close);
-    return false;
-  }
+  final user = ref.read(authStateChangesProvider).value;
+  return AppState(user: user);
 }

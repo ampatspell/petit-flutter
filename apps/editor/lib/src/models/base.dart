@@ -13,3 +13,11 @@ class FirebaseServices with _$FirebaseServices {
     required FirebaseAuth auth,
   }) = _FirebaseServices;
 }
+
+@freezed
+class AppState with _$AppState {
+  const factory AppState({
+    required User? user,
+    @Default(false) bool isLoaded,
+  }) = _AppState;
+}

@@ -29,8 +29,8 @@ class EditorApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final resolved = ref.watch(firstAuthStateResolvedProvider);
-    if (resolved) {
+    final isLoaded = ref.watch(appStateProvider.select((value) => value.isLoaded));
+    if (isLoaded) {
       return FluentApp.router(
         debugShowCheckedModeBanner: false,
         routerConfig: ref.read(routerProvider),
