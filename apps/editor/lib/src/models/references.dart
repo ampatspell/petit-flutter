@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
+import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'base.dart';
@@ -57,11 +59,28 @@ class Doc with _$Doc {
 
   dynamic operator [](String key) => data[key];
 
-  Future<void> merge(FirestoreMap map) async {
+  bool _noChanges(FirestoreMap map, bool force) {
+    if (force) {
+      return false;
+    }
+    final current = <String, dynamic>{};
+    for (final key in map.keys) {
+      current[key] = data[key];
+    }
+    return mapEquals(current, map);
+  }
+
+  Future<void> merge(FirestoreMap map, [bool force = false]) async {
+    if (_noChanges(map, force)) {
+      return;
+    }
     await reference.set(map, SetOptions(merge: true));
   }
 
-  Future<void> set(FirestoreMap map) async {
+  Future<void> set(FirestoreMap map, [bool force = false]) async {
+    if (_noChanges(map, force)) {
+      return;
+    }
     await reference.set(map);
   }
 

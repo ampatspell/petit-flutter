@@ -13,10 +13,7 @@ class ProjectWorkspaceEditor extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(projectWorkspaceItemModelsProvider);
 
-    void onDeselect() {
-      print('deselect');
-      ref.read(projectModelProvider).updateNodeId(null);
-    }
+    void onDeselect() => ref.read(projectModelProvider).updateNodeId(null);
 
     return GestureDetector(
       onTap: onDeselect,
