@@ -5,7 +5,6 @@ import '../../../app/router.dart';
 import '../../../providers/project.dart';
 import '../../base/confirmation.dart';
 import 'content.dart';
-import 'workspaces_command_bar_item.dart';
 
 class ProjectScreenScaffold extends ConsumerWidget {
   const ProjectScreenScaffold({super.key});
@@ -19,13 +18,7 @@ class ProjectScreenScaffold extends ConsumerWidget {
         title: Text(name),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
-          primaryItems: [
-            WorkspacesCommandBarItem(
-              workspaces: ref.watch(projectWorkspaceModelsProvider),
-              selected: ref.watch(projectWorkspaceModelProvider),
-              onSelect: (workspace) => ref.read(projectModelProvider).updateWorkspaceId(workspace?.doc.id),
-            ),
-          ],
+          primaryItems: [],
           secondaryItems: [
             buildDeleteCommandBarButton(
               context,

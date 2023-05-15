@@ -168,10 +168,7 @@ final loggedIn = [
 List<Route> routes(RoutesRef ref) {
   final hasUser = ref.watch(appStateProvider.select((value) => value.user != null));
   if (hasUser) {
-    return [
-      home,
-      ...loggedIn,
-    ];
+    return loggedIn;
   }
   return [
     home,
@@ -191,6 +188,11 @@ Raw<GoRouter> router(RouterRef ref) {
         final signedOut = ref.read(appStateProvider.select((value) => value.user == null));
         if (signedOut) {
           return '/';
+        }
+      } else if (location == '/') {
+        final signedIn = ref.read(appStateProvider.select((value) => value.user != null));
+        if (signedIn) {
+          return '/projects';
         }
       }
       return null;

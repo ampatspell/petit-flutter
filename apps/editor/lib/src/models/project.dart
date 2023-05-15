@@ -18,6 +18,14 @@ class ProjectModel with _$ProjectModel {
 
   String? get node => doc['node'] as String?;
 
+  String? get sidebarTab => doc['sidebar_tab'] as String?;
+
+  Future<void> updateSidebarTab(String? value) async {
+    await doc.merge({
+      'sidebar_tab': value,
+    });
+  }
+
   Future<void> updateWorkspaceId(String? id) async {
     await doc.merge({
       'workspace': id,

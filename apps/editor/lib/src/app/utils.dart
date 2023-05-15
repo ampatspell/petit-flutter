@@ -17,3 +17,5 @@ extension BoolB3Additions on bool {
 extension Exists<S, T> on T? {
   S? exists(S Function(T) f) => (this == null) ? null : f(this as T);
 }
+
+void foobar() {}
