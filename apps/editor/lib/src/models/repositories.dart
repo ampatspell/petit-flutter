@@ -50,10 +50,6 @@ class ProjectsRepository with _$ProjectsRepository {
     });
     return ref;
   }
-
-  MapDocumentReference referenceById(String id) {
-    return collection.doc(id);
-  }
 }
 
 @freezed

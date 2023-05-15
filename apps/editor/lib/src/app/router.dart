@@ -6,12 +6,16 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/base.dart';
+import '../providers/project.dart';
 import '../widgets/base/fluent_screen.dart';
+import '../widgets/base/loaded_scope/loaded_scope.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
 import '../widgets/development/three.dart';
 import '../widgets/development/two.dart';
 import '../widgets/home.dart';
+import '../widgets/project/screen.dart';
+import '../widgets/projects/screen.dart';
 
 part 'router.g.dart';
 
@@ -92,8 +96,7 @@ class DevelopmentThreeRoute extends GoRouteData {
 class ProjectsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    // return const ProjectsScreen();
-    return const Text('Projects screen');
+    return const ProjectsScreen();
   }
 }
 
@@ -112,14 +115,13 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const Text('Project screen');
-    // return LoadedScope(
-    //   parent: this,
-    //   loaders: (context, ref) => [
-    //     overrideProvider(projectIdProvider).withValue(id),
-    //   ],
-    //   child: const ProjectScreen(),
-    // );
+    return LoadedScope(
+      parent: this,
+      loaders: (context, ref) => [
+        overrideProvider(projectIdProvider).withValue(id),
+      ],
+      child: const ProjectScreen(),
+    );
   }
 }
 

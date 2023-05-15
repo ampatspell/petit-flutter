@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/project.dart';
+import '../models/project_node.dart';
 import '../models/repositories.dart';
 import '../models/typedefs.dart';
 import '../widgets/base/order.dart';
@@ -18,7 +19,7 @@ ProjectsRepository projectsRepository(ProjectsRepositoryRef ref) {
 }
 
 @Riverpod(dependencies: [projectsRepository])
-Stream<List<ProjectModel>> projectModelsStreamByOrder(
+Raw<Stream<List<ProjectModel>>> projectModelsStreamByOrder(
   ProjectModelsStreamByOrderRef ref, {
   required OrderDirection orderDirection,
 }) {
@@ -33,14 +34,11 @@ MapDocumentReference projectReferenceById(
   return ref.watch(firestoreReferencesProvider).projects().doc(projectId);
 }
 
-@Riverpod(dependencies: [projectReferenceById, projectsRepository])
-Stream<ProjectModel> projectModelStreamById(
-  ProjectModelStreamByIdRef ref, {
-  required String projectId,
+@Riverpod(dependencies: [projectsRepository])
+Raw<Stream<ProjectModel>> projectModelStreamByProjectReference(
+  ProjectModelStreamByProjectReferenceRef ref, {
+  required MapDocumentReference projectRef,
 }) {
-  final projectRef = ref.watch(projectReferenceByIdProvider(
-    projectId: projectId,
-  ));
   return ref.watch(projectsRepositoryProvider).byReference(projectRef);
 }
 
@@ -50,17 +48,67 @@ ProjectStatesRepository projectStatesRepositoryByProjectRef(
   required MapDocumentReference projectRef,
 }) {
   final references = ref.watch(firestoreReferencesProvider);
-  return ProjectStatesRepository(projectRef: projectRef, references: references);
+  return ProjectStatesRepository(
+    references: references,
+    projectRef: projectRef,
+  );
 }
 
 @Riverpod(dependencies: [projectStatesRepositoryByProjectRef])
-Stream<ProjectStateModel> projectStateModelByProjectRefAndUser(
+Raw<Stream<ProjectStateModel>> projectStateModelByProjectRefAndUser(
   ProjectStateModelByProjectRefAndUserRef ref, {
   required MapDocumentReference projectRef,
   required String uid,
 }) {
   final repository = ref.watch(projectStatesRepositoryByProjectRefProvider(projectRef: projectRef));
-  return repository.forUser(uid: uid);
+  return repository.forUser(
+    uid: uid,
+  );
+}
+
+@Riverpod(dependencies: [firestoreReferences])
+ProjectNodesRepository projectNodesRepositoryByProjectRef(
+  ProjectNodesRepositoryByProjectRefRef ref, {
+  required MapDocumentReference projectRef,
+}) {
+  final references = ref.watch(firestoreReferencesProvider);
+  return ProjectNodesRepository(
+    references: references,
+    projectRef: projectRef,
+  );
+}
+
+@Riverpod(dependencies: [firestoreReferences])
+ProjectWorkspacesRepository projectWorkspacesRepositoryByProjectRef(
+  ProjectWorkspacesRepositoryByProjectRefRef ref, {
+  required MapDocumentReference projectRef,
+}) {
+  final references = ref.watch(firestoreReferencesProvider);
+  return ProjectWorkspacesRepository(
+    references: references,
+    projectRef: projectRef,
+  );
+}
+
+@Riverpod(dependencies: [firestoreReferences])
+ProjectWorkspaceStatesRepository projectWorkspaceStatesRepository(
+  ProjectWorkspaceStatesRepositoryRef ref, {
+  required MapDocumentReference projectWorkspaceRef,
+}) {
+  final references = ref.watch(firestoreReferencesProvider);
+  return ProjectWorkspaceStatesRepository(
+    references: references,
+    projectWorkspaceRef: projectWorkspaceRef,
+  );
+}
+
+@Riverpod(dependencies: [projectNodesRepositoryByProjectRef])
+Raw<Stream<List<ProjectNodeModel>>> projectNodeModelsByProjectReference(
+  ProjectNodeModelsByProjectReferenceRef ref, {
+  required MapDocumentReference projectRef,
+}) {
+  final repository = ref.watch(projectNodesRepositoryByProjectRefProvider(projectRef: projectRef));
+  return repository.all();
 }
 
 // //

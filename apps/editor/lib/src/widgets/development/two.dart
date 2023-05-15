@@ -22,6 +22,7 @@ class Thing with _$Thing {
 class Wrapped with _$Wrapped {
   const factory Wrapped({
     required Thing thing,
+    required String role,
   }) = _Wrapped;
 }
 
@@ -34,11 +35,16 @@ Thing thingByName(ThingByNameRef ref, {required String name}) {
 }
 
 @Riverpod(dependencies: [thingByName])
-Wrapped wrapByName(WrapByNameRef ref, {required String name}) {
-  print('create wrap by name: $name');
+Wrapped wrapByName(
+  WrapByNameRef ref, {
+  required String name,
+  required String role,
+}) {
+  print('create wrap by name and role $name $role');
   final thing = ref.watch(thingByNameProvider(name: name));
   return Wrapped(
     thing: thing,
+    role: role,
   );
 }
 
@@ -46,6 +52,9 @@ Wrapped wrapByName(WrapByNameRef ref, {required String name}) {
 
 @Riverpod(dependencies: [])
 String theName(TheNameRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
+String theRole(TheRoleRef ref) => throw OverrideProviderException();
 
 @Riverpod(dependencies: [theName])
 class Name extends _$Name {
@@ -59,10 +68,26 @@ class Name extends _$Name {
   }
 }
 
-@Riverpod(dependencies: [Name, wrapByName])
+@Riverpod(dependencies: [theRole])
+class Role extends _$Role {
+  @override
+  String build() {
+    return ref.read(theRoleProvider);
+  }
+
+  void reset() {
+    state = 'default';
+  }
+}
+
+@Riverpod(dependencies: [Name, Role, wrapByName])
 Wrapped wrapped(WrappedRef ref) {
   final name = ref.watch(nameProvider);
-  return ref.watch(wrapByNameProvider(name: name));
+  final role = ref.watch(roleProvider);
+  return ref.watch(wrapByNameProvider(
+    name: name,
+    role: role,
+  ));
 }
 
 class DevelopmentTwoScreen extends HookConsumerWidget {
@@ -80,6 +105,7 @@ class DevelopmentTwoScreen extends HookConsumerWidget {
           LoadedScope(
             loaders: (context, ref) => [
               overrideProvider(theNameProvider).withValue('one'),
+              overrideProvider(theRoleProvider).withValue('admin'),
             ],
             child: const WrappedWidget(),
           ),
@@ -87,6 +113,7 @@ class DevelopmentTwoScreen extends HookConsumerWidget {
           LoadedScope(
             loaders: (context, ref) => [
               overrideProvider(theNameProvider).withValue('two'),
+              overrideProvider(theRoleProvider).withValue('zeeba'),
             ],
             child: const WrappedWidget(),
           ),
@@ -108,9 +135,16 @@ class WrappedWidget extends ConsumerWidget {
         Text(wrapped.toString()),
         const Gap(10),
         Button(
-          child: const Text('Reset'),
+          child: const Text('Reset name'),
           onPressed: () {
             ref.read(nameProvider.notifier).reset();
+          },
+        ),
+        const Gap(10),
+        Button(
+          child: const Text('Reset role'),
+          onPressed: () {
+            ref.read(roleProvider.notifier).reset();
           },
         ),
       ],
