@@ -23,7 +23,8 @@ Raw<Stream<List<ProjectModel>>> projectModelsStreamByOrder(
   ProjectModelsStreamByOrderRef ref, {
   required OrderDirection orderDirection,
 }) {
-  return ref.watch(projectsRepositoryProvider).all(orderDirection);
+  final repository = ref.watch(projectsRepositoryProvider);
+  return repository.all(orderDirection);
 }
 
 @Riverpod(dependencies: [firestoreReferences])
@@ -31,7 +32,8 @@ MapDocumentReference projectReferenceById(
   ProjectReferenceByIdRef ref, {
   required String projectId,
 }) {
-  return ref.watch(firestoreReferencesProvider).projects().doc(projectId);
+  final references = ref.watch(firestoreReferencesProvider);
+  return references.projects().doc(projectId);
 }
 
 @Riverpod(dependencies: [projectsRepository])
@@ -39,7 +41,8 @@ Raw<Stream<ProjectModel>> projectModelStreamByProjectReference(
   ProjectModelStreamByProjectReferenceRef ref, {
   required MapDocumentReference projectRef,
 }) {
-  return ref.watch(projectsRepositoryProvider).byReference(projectRef);
+  final repository = ref.watch(projectsRepositoryProvider);
+  return repository.byReference(projectRef);
 }
 
 @Riverpod(dependencies: [firestoreReferences])
@@ -107,22 +110,12 @@ Raw<Stream<List<ProjectNodeModel>>> projectNodeModelsByProjectReference(
   ProjectNodeModelsByProjectReferenceRef ref, {
   required MapDocumentReference projectRef,
 }) {
-  final repository = ref.watch(projectNodesRepositoryByProjectRefProvider(projectRef: projectRef));
+  final repository = ref.watch(projectNodesRepositoryByProjectRefProvider(
+    projectRef: projectRef,
+  ));
   return repository.all();
 }
 
-// //
-//
-// @Riverpod(dependencies: [])
-// String projectId(ProjectIdRef ref) => throw OverrideProviderException();
-//
-// @Riverpod(dependencies: [projectId, projectsRepository])
-// MapDocumentReference projectReference(ProjectReferenceRef ref) {
-//   final id = ref.watch(projectIdProvider);
-//   final repository = ref.watch(projectsRepositoryProvider);
-//   return repository.referenceById(id);
-// }
-//
 // @Riverpod(dependencies: [projectReference, projectsRepository])
 // Stream<ProjectModel> projectModelStream(ProjectModelStreamRef ref) {
 //   final projectRef = ref.watch(projectReferenceProvider);

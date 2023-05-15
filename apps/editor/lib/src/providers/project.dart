@@ -22,7 +22,9 @@ MapDocumentReference projectReference(ProjectReferenceRef ref) {
 @Riverpod(dependencies: [projectReference, projectModelStreamByProjectReference])
 Stream<ProjectModel> projectModelStream(ProjectModelStreamRef ref) {
   final projectRef = ref.watch(projectReferenceProvider);
-  return ref.watch(projectModelStreamByProjectReferenceProvider(projectRef: projectRef));
+  return ref.watch(projectModelStreamByProjectReferenceProvider(
+    projectRef: projectRef,
+  ));
 }
 
 @Riverpod(dependencies: [projectReference, uid, projectStateModelByProjectRefAndUser])
