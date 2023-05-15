@@ -12,6 +12,13 @@ extension BoolB3Additions on bool {
     }
     return null;
   }
+
+  T? when<T>(T? ifTrue, T? ifFalse) {
+    if (this == true) {
+      return ifTrue;
+    }
+    return ifFalse;
+  }
 }
 
 extension Exists<S, T> on T? {

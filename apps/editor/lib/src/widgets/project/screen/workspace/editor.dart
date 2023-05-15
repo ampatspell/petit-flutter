@@ -83,9 +83,6 @@ class ProjectWorkspaceItemContainer extends ConsumerWidget {
     final isSelected = selectedId == nodeId;
 
     void onSelect() {
-      if (isSelected) {
-        return;
-      }
       ref.read(projectModelProvider).updateNodeId(nodeId);
     }
 
@@ -97,7 +94,7 @@ class ProjectWorkspaceItemContainer extends ConsumerWidget {
       ),
       padding: const EdgeInsets.all(1),
       child: GestureDetector(
-        onTap: onSelect,
+        onTap: isSelected.when(() {}, onSelect),
         child: child,
       ),
     );
