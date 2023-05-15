@@ -2,28 +2,45 @@ import 'package:fluent_ui/fluent_ui.dart';
 
 import '../../app/theme.dart';
 
-class FooterTabs<T> extends StatelessWidget {
-  const FooterTabs({
+enum IconTabsPlacement {
+  top,
+  bottom,
+}
+
+class IconTabs<T> extends StatelessWidget {
+  const IconTabs({
     super.key,
+    required this.placement,
     required this.items,
     required this.selected,
     required this.onSelect,
   });
 
-  final List<FooterTab<T>> items;
+  final IconTabsPlacement placement;
+  final List<IconTab<T>> items;
   final T? selected;
   final void Function(T? value)? onSelect;
+
+  Border? get border {
+    final side = BorderSide(color: Colors.black.withAlpha(20));
+    switch (placement) {
+      case IconTabsPlacement.bottom:
+        return Border(top: side);
+      default:
+        return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border(top: BorderSide(color: Colors.black.withAlpha(20))),
+        border: border,
       ),
       child: Row(
         children: items.map((e) {
-          return _FooterTab<T>(
+          return _IconTab<T>(
             item: e,
             isSelected: e.value == selected,
             onSelect: onSelect,
@@ -34,8 +51,8 @@ class FooterTabs<T> extends StatelessWidget {
   }
 }
 
-class FooterTab<T> {
-  const FooterTab({
+class IconTab<T> {
+  const IconTab({
     required this.icon,
     required this.value,
   });
@@ -44,15 +61,15 @@ class FooterTab<T> {
   final T value;
 }
 
-class _FooterTab<T> extends StatelessWidget {
-  const _FooterTab({
+class _IconTab<T> extends StatelessWidget {
+  const _IconTab({
     super.key,
     required this.item,
     required this.isSelected,
     required this.onSelect,
   });
 
-  final FooterTab<T> item;
+  final IconTab<T> item;
   final bool isSelected;
   final void Function(T? value)? onSelect;
 

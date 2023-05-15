@@ -19,7 +19,7 @@ class ProjectSidebar extends ConsumerWidget {
           Expanded(
             child: ProjectSidebarContent(),
           ),
-          ProjectSidebarFooterTabs(),
+          ProjectSidebarTabs(placement: IconTabsPlacement.bottom),
         ],
       ),
     );
@@ -45,17 +45,23 @@ class ProjectSidebarContent extends ConsumerWidget {
   }
 }
 
-class ProjectSidebarFooterTabs extends ConsumerWidget {
-  const ProjectSidebarFooterTabs({super.key});
+class ProjectSidebarTabs extends ConsumerWidget {
+  const ProjectSidebarTabs({
+    super.key,
+    required this.placement,
+  });
+
+  final IconTabsPlacement placement;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selected = _watchSelectedSidebarTab(ref);
 
-    return FooterTabs<String>(
+    return IconTabs<String>(
+      placement: placement,
       items: [
-        const FooterTab(icon: Icon(FluentIcons.emoji_tab_symbols), value: 'nodes'),
-        const FooterTab(icon: Icon(FluentIcons.screen), value: 'workspaces'),
+        const IconTab(icon: Icon(FluentIcons.emoji_tab_symbols), value: 'nodes'),
+        const IconTab(icon: Icon(FluentIcons.screen), value: 'workspaces'),
       ],
       selected: selected,
       onSelect: (value) {

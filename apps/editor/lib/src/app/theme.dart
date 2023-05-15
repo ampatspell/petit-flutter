@@ -18,8 +18,8 @@ final fontFamily = GoogleFonts.ubuntuMono().fontFamily;
 final lightTheme = FluentThemeData.light();
 
 final typography = Typography.raw(
-  titleLarge: lightTheme.typography.titleLarge!.copyWith(fontFamily: fontFamily),
-  title: lightTheme.typography.title!.copyWith(fontFamily: fontFamily),
+  titleLarge: lightTheme.typography.titleLarge!.copyWith(fontFamily: fontFamily, fontSize: 21),
+  title: lightTheme.typography.title!.copyWith(fontFamily: fontFamily, fontSize: 18),
   subtitle: lightTheme.typography.subtitle!.copyWith(fontFamily: fontFamily),
   bodyLarge: lightTheme.typography.bodyLarge!.copyWith(fontFamily: fontFamily),
   body: lightTheme.typography.body!.copyWith(fontFamily: fontFamily),

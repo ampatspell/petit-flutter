@@ -65,7 +65,7 @@ class FluentScreen extends ConsumerWidget {
         actions: const SizedBox(
           height: 50,
           child: Padding(
-            padding: EdgeInsets.fromLTRB(0, 0, 20, 0),
+            padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
             child: _CurrentUser(),
           ),
         ),
@@ -73,7 +73,7 @@ class FluentScreen extends ConsumerWidget {
       paneBodyBuilder: (item, body) => content,
       pane: NavigationPane(
         header: const Text('Petit'),
-        displayMode: PaneDisplayMode.compact,
+        displayMode: PaneDisplayMode.minimal,
         items: items,
         selected: selected?.key,
       ),

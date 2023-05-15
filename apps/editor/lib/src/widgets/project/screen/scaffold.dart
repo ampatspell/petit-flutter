@@ -15,6 +15,7 @@ class ProjectScreenScaffold extends ConsumerWidget {
     final delete = ref.watch(projectDocDeleteProvider);
     return ScaffoldPage(
       header: PageHeader(
+        padding: 15,
         title: Text(name),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,

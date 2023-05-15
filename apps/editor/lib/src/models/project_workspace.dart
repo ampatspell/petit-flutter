@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'references.dart';
@@ -65,4 +67,10 @@ class ProjectWorkspaceItemModel with _$ProjectWorkspaceItemModel {
   int get pixel => doc['pixel'] as int? ?? 1;
 
   String get node => doc['node'] as String;
+
+  Offset get position => Offset(x.toDouble(), y.toDouble());
+
+  Offset renderedPosition(int pixel) {
+    return position * pixel.toDouble();
+  }
 }

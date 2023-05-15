@@ -12,19 +12,28 @@ class ProjectWorkspaceEditor extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final items = ref.watch(projectWorkspaceItemModelsProvider);
-    return Container(
-      color: Colors.white,
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          for (final item in items)
-            LoadedScope(
-              loaders: (context, ref) => [
-                overrideProvider(projectWorkspaceItemModelProvider).withValue(item),
-              ],
-              child: const ProjectWorkspaceItem(),
-            ),
-        ],
+
+    void onDeselect() {
+      print('deselect');
+      ref.read(projectModelProvider).updateNodeId(null);
+    }
+
+    return GestureDetector(
+      onTap: onDeselect,
+      child: Container(
+        color: Colors.white,
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            for (final item in items)
+              LoadedScope(
+                loaders: (context, ref) => [
+                  overrideProvider(projectWorkspaceItemModelProvider).withValue(item),
+                ],
+                child: const ProjectWorkspaceItem(),
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -36,7 +45,9 @@ class ProjectWorkspaceItem extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final pixel = ref.watch(projectModelProvider.select((value) => value.pixel));
-    final item = ref.watch(projectWorkspaceItemModelProvider);
+    final renderedPosition = ref.watch(projectWorkspaceItemModelProvider.select((value) {
+      return value.renderedPosition(pixel);
+    }));
     final type = ref.watch(projectWorkspaceItemNodeModelProvider.select((value) => value.type));
 
     late Widget child;
@@ -48,8 +59,8 @@ class ProjectWorkspaceItem extends ConsumerWidget {
     }
 
     return Positioned(
-      top: (item.y * pixel).toDouble(),
-      left: (item.x * pixel).toDouble(),
+      top: renderedPosition.dy,
+      left: renderedPosition.dx,
       child: ProjectWorkspaceItemContainer(
         child: child,
       ),
@@ -71,7 +82,12 @@ class ProjectWorkspaceItemContainer extends ConsumerWidget {
     final nodeId = ref.watch(projectWorkspaceItemNodeModelProvider.select((value) => value.doc.id));
     final isSelected = selectedId == nodeId;
 
-    void onSelect() => ref.read(projectModelProvider).updateNodeId(nodeId);
+    void onSelect() {
+      if (isSelected) {
+        return;
+      }
+      ref.read(projectModelProvider).updateNodeId(nodeId);
+    }
 
     return Container(
       decoration: BoxDecoration(
@@ -81,7 +97,7 @@ class ProjectWorkspaceItemContainer extends ConsumerWidget {
       ),
       padding: const EdgeInsets.all(1),
       child: GestureDetector(
-        onTap: isSelected.ifFalse(onSelect),
+        onTap: onSelect,
         child: child,
       ),
     );
@@ -109,12 +125,17 @@ class ProjectWorkspaceBoxItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final projectPixel = ref.watch(projectModelProvider.select((value) => value.pixel));
     final itemPixel = ref.watch(projectWorkspaceItemModelProvider.select((value) => value.pixel));
-    final node = ref.watch(projectWorkspaceItemNodeModelProvider) as ProjectBoxNodeModel;
+    final color = ref.watch(projectWorkspaceItemNodeModelProvider.select((value) {
+      return (value as ProjectBoxNodeModel).color;
+    }));
+    final size = ref.watch(projectWorkspaceItemNodeModelProvider.select((value) {
+      return (value as ProjectBoxNodeModel).renderedSize(itemPixel, projectPixel);
+    }));
 
     return Container(
-      width: (node.width * itemPixel * projectPixel).toDouble(),
-      height: (node.height * itemPixel * projectPixel).toDouble(),
-      color: node.color,
+      width: size.width,
+      height: size.height,
+      color: color,
     );
   }
 }
