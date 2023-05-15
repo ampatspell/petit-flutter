@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'references.dart';
@@ -26,13 +27,13 @@ class ProjectWorkspaceModel with _$ProjectWorkspaceModel {
 }
 
 @freezed
-class ProjectWorkspaceItemsModel with _$ProjectWorkspaceItemsModel {
-  const factory ProjectWorkspaceItemsModel({
-    required ProjectWorkspaceModel workspace,
+class ProjectWorkspaceItemsRepository with _$ProjectWorkspaceItemsRepository {
+  const factory ProjectWorkspaceItemsRepository({
+    required MapDocumentReference workspaceRef,
     required FirestoreReferences references,
-  }) = _ProjectWorkspaceItemsModel;
+  }) = _ProjectWorkspaceItemsRepository;
 
-  const ProjectWorkspaceItemsModel._();
+  const ProjectWorkspaceItemsRepository._();
 
   ProjectWorkspaceItemModel _asModel(MapDocumentSnapshot snapshot) {
     return ProjectWorkspaceItemModel(
@@ -46,7 +47,7 @@ class ProjectWorkspaceItemsModel with _$ProjectWorkspaceItemsModel {
 
   Stream<List<ProjectWorkspaceItemModel>> items() {
     return references
-        .projectWorkspaceItemsCollection(workspace.doc.reference)
+        .projectWorkspaceItemsCollection(workspaceRef)
         .snapshots(includeMetadataChanges: true)
         .map(_asModels);
   }

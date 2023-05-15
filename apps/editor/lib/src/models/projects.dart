@@ -1,79 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../widgets/base/order.dart';
-import 'project.dart';
 import 'references.dart';
 import 'typedefs.dart';
 
 part 'projects.freezed.dart';
-
-@freezed
-class ProjectsRepository with _$ProjectsRepository {
-  const factory ProjectsRepository({
-    required FirestoreReferences references,
-  }) = _ProjectsRepository;
-
-  const ProjectsRepository._();
-
-  MapCollectionReference get collection => references.projects();
-
-  ProjectModel _asModel(MapDocumentSnapshot snapshot) {
-    return ProjectModel(
-      doc: references.asDoc(snapshot),
-    );
-  }
-
-  List<ProjectModel> _asModels(QuerySnapshot<FirestoreMap> event) {
-    return event.docs.map(_asModel).toList(growable: false);
-  }
-
-  Stream<List<ProjectModel>> all(OrderDirection order) {
-    return collection
-        .orderBy('name', descending: order.isDescending)
-        .snapshots(includeMetadataChanges: true)
-        .map(_asModels);
-  }
-
-  Stream<ProjectModel> byReference(MapDocumentReference projectRef) {
-    return projectRef.snapshots(includeMetadataChanges: true).map(_asModel);
-  }
-
-  Future<MapDocumentReference> add(NewProjectData data) async {
-    final ref = collection.doc();
-    await ref.set({
-      'name': data.name,
-    });
-    return ref;
-  }
-
-  MapDocumentReference referenceById(String id) {
-    return collection.doc(id);
-  }
-}
-
-@freezed
-class ProjectStatesRepository with _$ProjectStatesRepository {
-  const factory ProjectStatesRepository({
-    required MapDocumentReference projectRef,
-    required FirestoreReferences references,
-  }) = _ProjectStatesRepository;
-
-  const ProjectStatesRepository._();
-
-  Stream<ProjectStateModel> forUser({
-    required String uid,
-  }) {
-    return references.projectStateCollection(projectRef).doc(uid).snapshots(includeMetadataChanges: true).map(_asModel);
-  }
-
-  ProjectStateModel _asModel(MapDocumentSnapshot snapshot) {
-    return ProjectStateModel(
-      doc: references.asDoc(snapshot),
-    );
-  }
-}
 
 @freezed
 class ProjectsReset with _$ProjectsReset {

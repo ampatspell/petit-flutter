@@ -6,17 +6,12 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/base.dart';
-import '../providers/project.dart';
 import '../widgets/base/fluent_screen.dart';
-import '../widgets/base/loaded_scope/loaded_scope.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
 import '../widgets/development/three.dart';
 import '../widgets/development/two.dart';
 import '../widgets/home.dart';
-import '../widgets/project/screen.dart';
-import '../widgets/projects/new/screen.dart';
-import '../widgets/projects/screen.dart';
 
 part 'router.g.dart';
 
@@ -97,14 +92,16 @@ class DevelopmentThreeRoute extends GoRouteData {
 class ProjectsRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const ProjectsScreen();
+    // return const ProjectsScreen();
+    return const Text('Projects screen');
   }
 }
 
 class NewProjectRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return const NewProjectScreen();
+    // return const NewProjectScreen();
+    return const Text('New project screen');
   }
 }
 
@@ -115,13 +112,14 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return LoadedScope(
-      parent: this,
-      loaders: (context, ref) => [
-        overrideProvider(projectIdProvider).withValue(id),
-      ],
-      child: const ProjectScreen(),
-    );
+    return const Text('Project screen');
+    // return LoadedScope(
+    //   parent: this,
+    //   loaders: (context, ref) => [
+    //     overrideProvider(projectIdProvider).withValue(id),
+    //   ],
+    //   child: const ProjectScreen(),
+    // );
   }
 }
 
@@ -179,7 +177,7 @@ List<Route> routes(RoutesRef ref) {
 Raw<GoRouter> router(RouterRef ref) {
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: '/',
+    initialLocation: initialLocation,
     routes: $appRoutes,
     navigatorKey: _rootKey,
     redirect: (context, state) async {
@@ -215,3 +213,5 @@ Stream<Object> routerOnRouteChange(RouterOnRouteChangeRef ref) {
 
   return controller.stream;
 }
+
+const initialLocation = '/';
