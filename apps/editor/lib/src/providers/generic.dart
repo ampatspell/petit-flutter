@@ -83,8 +83,8 @@ ProjectNodesRepository projectNodesRepositoryByProjectRef(
 }
 
 @Riverpod(dependencies: [firestoreReferences])
-ProjectWorkspacesRepository projectWorkspacesRepositoryByProjectRef(
-  ProjectWorkspacesRepositoryByProjectRefRef ref, {
+ProjectWorkspacesRepository workspacesRepositoryByProjectRef(
+  WorkspacesRepositoryByProjectRefRef ref, {
   required MapDocumentReference projectRef,
 }) {
   final references = ref.watch(firestoreReferencesProvider);
@@ -95,8 +95,8 @@ ProjectWorkspacesRepository projectWorkspacesRepositoryByProjectRef(
 }
 
 @Riverpod(dependencies: [firestoreReferences])
-ProjectWorkspaceStatesRepository projectWorkspaceStatesRepository(
-  ProjectWorkspaceStatesRepositoryRef ref, {
+ProjectWorkspaceStatesRepository workspaceStatesRepository(
+  WorkspaceStatesRepositoryRef ref, {
   required MapDocumentReference projectWorkspaceRef,
 }) {
   final references = ref.watch(firestoreReferencesProvider);
@@ -117,12 +117,12 @@ Raw<Stream<List<ProjectNodeModel>>> projectNodeModelsByProjectReference(
   return repository.all();
 }
 
-@Riverpod(dependencies: [projectWorkspacesRepositoryByProjectRef])
-Raw<Stream<List<ProjectWorkspaceModel>>> projectWorkspaceModelsStreamByProjectReference(
-  ProjectWorkspaceModelsStreamByProjectReferenceRef ref, {
+@Riverpod(dependencies: [workspacesRepositoryByProjectRef])
+Raw<Stream<List<ProjectWorkspaceModel>>> workspaceModelsStreamByProjectReference(
+  WorkspaceModelsStreamByProjectReferenceRef ref, {
   required MapDocumentReference projectRef,
 }) {
-  final repository = ref.watch(projectWorkspacesRepositoryByProjectRefProvider(
+  final repository = ref.watch(workspacesRepositoryByProjectRefProvider(
     projectRef: projectRef,
   ));
   return repository.all();

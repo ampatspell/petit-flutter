@@ -141,6 +141,10 @@ class ProjectWorkspacesRepository with _$ProjectWorkspacesRepository {
     });
     return ref;
   }
+
+  MapDocumentReference reference(String workspaceId) {
+    return collection.doc(workspaceId);
+  }
 }
 
 @freezed

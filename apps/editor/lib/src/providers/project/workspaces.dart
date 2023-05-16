@@ -7,10 +7,10 @@ import 'project.dart';
 
 part 'workspaces.g.dart';
 
-@Riverpod(dependencies: [projectReference, projectWorkspaceModelsStreamByProjectReference])
-Stream<List<ProjectWorkspaceModel>> projectWorkspaceModelsStream(ProjectWorkspaceModelsStreamRef ref) {
+@Riverpod(dependencies: [projectReference, workspaceModelsStreamByProjectReference])
+Stream<List<ProjectWorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamRef ref) {
   final projectRef = ref.watch(projectReferenceProvider);
-  return ref.watch(projectWorkspaceModelsStreamByProjectReferenceProvider(
+  return ref.watch(workspaceModelsStreamByProjectReferenceProvider(
     projectRef: projectRef,
   ));
 }
@@ -18,4 +18,4 @@ Stream<List<ProjectWorkspaceModel>> projectWorkspaceModelsStream(ProjectWorkspac
 //
 
 @Riverpod(dependencies: [])
-List<ProjectWorkspaceModel> projectWorkspaceModels(ProjectWorkspaceModelsRef ref) => throw OverrideProviderException();
+List<ProjectWorkspaceModel> workspaceModels(WorkspaceModelsRef ref) => throw OverrideProviderException();

@@ -17,7 +17,7 @@ class ProjectScreen extends ConsumerWidget {
       onDeleted: () => ProjectsRoute().go(context),
       overrides: (context, ref) => [
         overrideProvider(projectModelProvider).withListenable(projectModelStreamProvider),
-        overrideProvider(projectWorkspaceModelsProvider).withListenable(projectWorkspaceModelsStreamProvider),
+        overrideProvider(workspaceModelsProvider).withListenable(workspaceModelsStreamProvider),
       ],
       child: const ProjectScreenScaffold(),
     );

@@ -16,7 +16,6 @@ class ProjectScreenScaffold extends ConsumerWidget {
     final name = ref.watch(projectModelProvider.select((value) => value.name));
     return ScaffoldPage(
       header: PageHeader(
-        padding: 15,
         title: Text(name),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
