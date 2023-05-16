@@ -143,13 +143,13 @@ class ProjectsReset with _$ProjectsReset {
 }
 
 @freezed
-class NewProjectData with _$NewProjectData {
-  const factory NewProjectData({
+class NewProjectModel with _$NewProjectModel {
+  const factory NewProjectModel({
     @Default(false) bool isBusy,
     @Default('') String name,
-  }) = _NewProjectData;
+  }) = _NewProjectModel;
 
-  const NewProjectData._();
+  const NewProjectModel._();
 
   bool get isValid => name.isNotEmpty;
 }

@@ -1,10 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../providers/project/nodes.dart';
 import '../../providers/project/project.dart';
 import '../../providers/project/workspaces.dart';
 import '../base/scope_overrides/scope_overrides.dart';
+import 'screen/scaffold.dart';
 
 class ProjectScreen extends ConsumerWidget {
   const ProjectScreen({super.key});
@@ -15,21 +15,9 @@ class ProjectScreen extends ConsumerWidget {
       parent: this,
       overrides: (context, ref) => [
         overrideProvider(projectModelProvider).withListenable(projectModelStreamProvider),
-        overrideProvider(projectStateModelProvider).withListenable(projectStateModelStreamProvider),
-        overrideProvider(projectNodeModelsProvider).withListenable(projectNodeModelsStreamProvider),
         overrideProvider(projectWorkspaceModelsProvider).withListenable(projectWorkspaceModelsStreamProvider),
       ],
-      child: Consumer(
-        builder: (context, ref, child) {
-          return Text([
-            ref.watch(projectModelProvider),
-            // ref.watch(projectStateModelProvider),
-            // ref.watch(projectNodeModelsProvider),
-            // ref.watch(projectWorkspaceModelsProvider),
-          ].join('\n\n'));
-        },
-      ),
-      // child: const ProjectScreenScaffold(),
+      child: const ProjectScreenScaffold(),
     );
   }
 }

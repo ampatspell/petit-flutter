@@ -43,7 +43,7 @@ class ProjectsRepository with _$ProjectsRepository {
     return projectRef.snapshots(includeMetadataChanges: true).map(_asModel);
   }
 
-  Future<MapDocumentReference> add(NewProjectData data) async {
+  Future<MapDocumentReference> add(NewProjectModel data) async {
     final ref = collection.doc();
     await ref.set({
       'name': data.name,

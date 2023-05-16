@@ -3,6 +3,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../app/router.dart';
 import '../../providers/projects/projects.dart';
+import '../../providers/projects/reset.dart';
 import '../base/order.dart';
 import '../base/scope_overrides/scope_overrides.dart';
 import 'list.dart';
@@ -44,7 +45,7 @@ class ProjectsScreen extends ConsumerWidget {
         ],
         child: ProjectsList(
           onSelect: (project) {
-            ProjectRoute(id: project.doc.id).go(context);
+            ProjectRoute(projectId: project.doc.id).go(context);
           },
         ),
       ),

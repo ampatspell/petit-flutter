@@ -6,7 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/base.dart';
-import '../providers/project/project.dart';
+import '../providers/project/project.dart' hide projectId;
 import '../widgets/base/fluent_screen.dart';
 import '../widgets/base/scope_overrides/scope_overrides.dart';
 import '../widgets/development/one.dart';
@@ -15,6 +15,7 @@ import '../widgets/development/three.dart';
 import '../widgets/development/two.dart';
 import '../widgets/home.dart';
 import '../widgets/project/screen.dart';
+import '../widgets/projects/new/screen.dart';
 import '../widgets/projects/screen.dart';
 
 part 'router.g.dart';
@@ -31,7 +32,14 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
       path: '/projects',
       routes: <TypedGoRoute<GoRouteData>>[
         TypedGoRoute<NewProjectRoute>(path: 'new'),
-        TypedGoRoute<ProjectRoute>(path: ':id'),
+        TypedGoRoute<ProjectRoute>(
+          path: ':projectId',
+          routes: [
+            TypedGoRoute<ProjectWorkspaceRoute>(
+              path: 'workspaces/:workspaceId',
+            ),
+          ],
+        ),
       ],
     ),
     TypedGoRoute<DevelopmentRoute>(
@@ -103,25 +111,39 @@ class ProjectsRoute extends GoRouteData {
 class NewProjectRoute extends GoRouteData {
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    // return const NewProjectScreen();
-    return const Text('New project screen');
+    return const NewProjectScreen();
   }
 }
 
 class ProjectRoute extends GoRouteData {
-  ProjectRoute({required this.id});
+  const ProjectRoute({required this.projectId});
 
-  final String id;
+  final String projectId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
     return ScopeOverrides(
       parent: this,
       overrides: (context, ref) => [
-        overrideProvider(projectIdProvider).withValue(id),
+        overrideProvider(projectIdProvider).withValue(projectId),
       ],
       child: const ProjectScreen(),
     );
+  }
+}
+
+class ProjectWorkspaceRoute extends GoRouteData {
+  const ProjectWorkspaceRoute({
+    required this.projectId,
+    required this.workspaceId,
+  });
+
+  final String projectId;
+  final String workspaceId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return Text('Workspace $projectId $workspaceId');
   }
 }
 
