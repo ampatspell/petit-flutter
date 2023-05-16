@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../providers/base.dart';
-import '../base/loaded_scope/loaded_scope.dart';
+import '../base/scope_overrides/scope_overrides.dart';
 
 part 'two.freezed.dart';
 
@@ -102,16 +102,16 @@ class DevelopmentTwoScreen extends HookConsumerWidget {
       content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          LoadedScope(
-            loaders: (context, ref) => [
+          ScopeOverrides(
+            overrides: (context, ref) => [
               overrideProvider(theNameProvider).withValue('one'),
               overrideProvider(theRoleProvider).withValue('admin'),
             ],
             child: const WrappedWidget(),
           ),
           const Gap(20),
-          LoadedScope(
-            loaders: (context, ref) => [
+          ScopeOverrides(
+            overrides: (context, ref) => [
               overrideProvider(theNameProvider).withValue('two'),
               overrideProvider(theRoleProvider).withValue('zeeba'),
             ],

@@ -2,12 +2,12 @@ import 'dart:ui';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../models/project.dart';
-import '../models/projects.dart';
-import '../widgets/base/order.dart';
-import 'base.dart';
-import 'generic.dart';
-import 'references.dart';
+import '../../models/project.dart';
+import '../../models/projects.dart';
+import '../../widgets/base/order.dart';
+import '../base.dart';
+import '../generic.dart';
+import '../references.dart';
 
 part 'projects.g.dart';
 

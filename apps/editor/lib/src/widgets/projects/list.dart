@@ -2,7 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../models/project.dart';
-import '../../providers/projects.dart';
+import '../../providers/projects/projects.dart';
 import '../base/models_list_view.dart';
 
 class ProjectsList extends ConsumerWidget {

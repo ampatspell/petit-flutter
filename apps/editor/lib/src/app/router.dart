@@ -6,9 +6,9 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/base.dart';
-import '../providers/project.dart';
+import '../providers/project/project.dart';
 import '../widgets/base/fluent_screen.dart';
-import '../widgets/base/loaded_scope/loaded_scope.dart';
+import '../widgets/base/scope_overrides/scope_overrides.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
 import '../widgets/development/three.dart';
@@ -115,9 +115,9 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return LoadedScope(
+    return ScopeOverrides(
       parent: this,
-      loaders: (context, ref) => [
+      overrides: (context, ref) => [
         overrideProvider(projectIdProvider).withValue(id),
       ],
       child: const ProjectScreen(),

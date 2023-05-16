@@ -1,20 +1,20 @@
-part of 'loaded_scope.dart';
+part of 'scope_overrides.dart';
 
-class LoadedScope extends ConsumerWidget {
-  const LoadedScope({
+class ScopeOverrides extends ConsumerWidget {
+  const ScopeOverrides({
     super.key,
     this.parent,
-    required this.loaders,
+    required this.overrides,
     required this.child,
   });
 
-  final List<ScopeLoader<dynamic>> Function(BuildContext context, WidgetRef ref) loaders;
+  final List<ScopeLoader<dynamic>> Function(BuildContext context, WidgetRef ref) overrides;
   final Widget child;
   final Object? parent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final built = loaders(context, ref);
+    final built = overrides(context, ref);
 
     Widget ensureScaffold(String? title, Widget child) {
       final scaffold = context.findAncestorWidgetOfExactType<ScaffoldPage>();

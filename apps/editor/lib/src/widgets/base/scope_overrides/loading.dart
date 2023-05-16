@@ -1,4 +1,4 @@
-part of 'loaded_scope.dart';
+part of 'scope_overrides.dart';
 
 class ProviderScopeOverridesLoading extends StatelessWidget {
   const ProviderScopeOverridesLoading({super.key});

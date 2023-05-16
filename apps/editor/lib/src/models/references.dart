@@ -50,7 +50,7 @@ class FirestoreReferences with _$FirestoreReferences {
   }
 }
 
-@freezed
+@Freezed(toStringOverride: false)
 class Doc with _$Doc {
   const factory Doc({
     required MapDocumentReference reference,
@@ -93,5 +93,10 @@ class Doc with _$Doc {
 
   Future<void> delete() async {
     await reference.delete();
+  }
+
+  @override
+  String toString() {
+    return 'Doc{path: ${reference.path}, data: $data}';
   }
 }

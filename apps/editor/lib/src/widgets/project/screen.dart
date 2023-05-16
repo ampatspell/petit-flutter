@@ -1,19 +1,19 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../providers/generic.dart';
-import '../../providers/project.dart';
-import '../base/loaded_scope/loaded_scope.dart';
-import 'screen/scaffold.dart';
+import '../../providers/project/nodes.dart';
+import '../../providers/project/project.dart';
+import '../../providers/project/workspaces.dart';
+import '../base/scope_overrides/scope_overrides.dart';
 
 class ProjectScreen extends ConsumerWidget {
   const ProjectScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return LoadedScope(
+    return ScopeOverrides(
       parent: this,
-      loaders: (context, ref) => [
+      overrides: (context, ref) => [
         overrideProvider(projectModelProvider).withLoadedValue(
           ref.watch(projectModelStreamProvider),
         ),
@@ -23,9 +23,9 @@ class ProjectScreen extends ConsumerWidget {
         overrideProvider(projectNodeModelsProvider).withLoadedValue(
           ref.watch(projectNodeModelsStreamProvider),
         ),
-        // overrideProvider(projectWorkspaceModelsProvider).withLoadedValue(
-        //   ref.watch(projectWorkspaceModelsStreamProvider),
-        // ),
+        overrideProvider(projectWorkspaceModelsProvider).withLoadedValue(
+          ref.watch(projectWorkspaceModelsStreamProvider),
+        )
       ],
       child: Consumer(
         builder: (context, ref, child) {
@@ -33,6 +33,7 @@ class ProjectScreen extends ConsumerWidget {
             ref.watch(projectModelProvider),
             ref.watch(projectStateModelProvider),
             ref.watch(projectNodeModelsProvider),
+            ref.watch(projectWorkspaceModelsProvider),
           ].join('\n\n'));
         },
       ),

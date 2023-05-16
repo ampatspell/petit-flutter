@@ -2,9 +2,9 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../app/router.dart';
-import '../../providers/projects.dart';
-import '../base/loaded_scope/loaded_scope.dart';
+import '../../providers/projects/projects.dart';
 import '../base/order.dart';
+import '../base/scope_overrides/scope_overrides.dart';
 import 'list.dart';
 
 class ProjectsScreen extends ConsumerWidget {
@@ -37,10 +37,12 @@ class ProjectsScreen extends ConsumerWidget {
           ],
         ),
       ),
-      content: LoadedScope(
+      content: ScopeOverrides(
         parent: this,
-        loaders: (context, ref) => [
-          overrideProvider(projectModelsProvider).withLoadedValue(ref.watch(projectModelsStreamProvider)),
+        overrides: (context, ref) => [
+          overrideProvider(projectModelsProvider).withLoadedValue(
+            ref.watch(projectModelsStreamProvider),
+          ),
         ],
         child: ProjectsList(
           onSelect: (project) {

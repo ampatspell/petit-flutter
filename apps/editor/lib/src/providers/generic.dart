@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../models/project.dart';
 import '../models/project_node.dart';
+import '../models/project_workspace.dart';
 import '../models/repositories.dart';
 import '../models/typedefs.dart';
 import '../widgets/base/order.dart';
@@ -111,6 +112,17 @@ Raw<Stream<List<ProjectNodeModel>>> projectNodeModelsByProjectReference(
   required MapDocumentReference projectRef,
 }) {
   final repository = ref.watch(projectNodesRepositoryByProjectRefProvider(
+    projectRef: projectRef,
+  ));
+  return repository.all();
+}
+
+@Riverpod(dependencies: [projectWorkspacesRepositoryByProjectRef])
+Raw<Stream<List<ProjectWorkspaceModel>>> projectWorkspaceModelsStreamByProjectReference(
+  ProjectWorkspaceModelsStreamByProjectReferenceRef ref, {
+  required MapDocumentReference projectRef,
+}) {
+  final repository = ref.watch(projectWorkspacesRepositoryByProjectRefProvider(
     projectRef: projectRef,
   ));
   return repository.all();
