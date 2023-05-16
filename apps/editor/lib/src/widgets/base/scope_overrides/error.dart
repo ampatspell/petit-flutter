@@ -1,12 +1,11 @@
 part of 'scope_overrides.dart';
 
-class ProviderScopeOverridesError extends StatelessWidget {
-  const ProviderScopeOverridesError({
-    super.key,
+class _ProviderScopeOverridesError extends StatelessWidget {
+  const _ProviderScopeOverridesError({
     required this.errors,
   });
 
-  final List<ScopeLoader<dynamic>> errors;
+  final List<_AsyncValueLoader<dynamic>> errors;
 
   @override
   Widget build(BuildContext context) {
@@ -15,8 +14,8 @@ class ProviderScopeOverridesError extends StatelessWidget {
       children: [
         for (var error in errors) ...[
           Text([
-            error.value.error.toString(),
-            error.value.stackTrace.toString(),
+            error._value.error.toString(),
+            error._value.stackTrace.toString(),
           ].join('\n\n')),
           const Gap(20),
         ],

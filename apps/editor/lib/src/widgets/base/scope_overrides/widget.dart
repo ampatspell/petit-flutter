@@ -8,18 +8,20 @@ class ScopeOverrides extends ConsumerWidget {
     required this.child,
   });
 
-  final List<ScopeLoader<dynamic>> Function(BuildContext context, WidgetRef ref) overrides;
+  final List<OverrideLoader<dynamic>> Function(BuildContext context, WidgetRef ref) overrides;
   final Widget child;
   final Object? parent;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final built = overrides(context, ref);
+    final built = overrides(context, ref).map((e) {
+      return e._toAsyncValue(ref);
+    }).toList(growable: false);
 
     Widget ensureScaffold(String? title, Widget child) {
       final scaffold = context.findAncestorWidgetOfExactType<ScaffoldPage>();
       if (scaffold == null) {
-        child = ProviderScopeOverridesScaffold(
+        child = _ProviderScopeOverridesScaffold(
           title: title,
           child: child,
         );
@@ -32,28 +34,28 @@ class ScopeOverrides extends ConsumerWidget {
       return child;
     }
 
-    final errors = built.where((element) => element.value.hasError).toList(growable: false);
+    final errors = built.where((element) => element._value.hasError).toList(growable: false);
     if (errors.isNotEmpty) {
       return ensureScaffold(
         'Something went wrong',
-        ProviderScopeOverridesError(errors: errors),
+        _ProviderScopeOverridesError(errors: errors),
       );
     }
 
-    final loading = built.where((element) => !element.value.hasValue).toList(growable: false);
+    final loading = built.where((element) => !element._value.hasValue).toList(growable: false);
     if (loading.isNotEmpty) {
       return ensureScaffold(
         null,
-        const ProviderScopeOverridesLoading(),
+        const _ProviderScopeOverridesLoading(),
       );
     }
 
     final withProviders = built.where((e) {
-      return e.provider != null;
+      return e._provider != null;
     }).toList(growable: false);
 
     final created = withProviders.map((e) {
-      return e.provider!.overrideWithValue(e.value.requireValue);
+      return e._provider!.overrideWithValue(e._value.requireValue);
     }).toList(growable: false);
 
     if (created.isEmpty) {
@@ -68,8 +70,8 @@ class ScopeOverrides extends ConsumerWidget {
           final logging = ref.read(loggingObserverProvider);
           for (final override in withProviders) {
             logging.didOverrideProvider(
-              override.provider!,
-              override.value.requireValue,
+              override._provider!,
+              override._value.requireValue,
               container,
               parent?.runtimeType.toString(),
             );

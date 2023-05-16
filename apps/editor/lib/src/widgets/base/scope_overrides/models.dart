@@ -1,44 +1,88 @@
 part of 'scope_overrides.dart';
 
-class ScopeLoader<T> {
-  const ScopeLoader({
-    required this.provider,
-    required this.value,
-  });
+abstract class OverrideLoader<T> {
+  const OverrideLoader({
+    required AutoDisposeProvider<T>? provider,
+  }) : _provider = provider;
 
-  final AutoDisposeProvider<T>? provider;
-  final AsyncValue<T> value;
+  final AutoDisposeProvider<T>? _provider;
+
+  _AsyncValueLoader<T> _toAsyncValue(WidgetRef ref);
+}
+
+class _AsyncValueLoader<T> extends OverrideLoader<T> {
+  const _AsyncValueLoader({
+    required super.provider,
+    required AsyncValue<T> value,
+  }) : _value = value;
+
+  final AsyncValue<T> _value;
+
+  @override
+  _AsyncValueLoader<T> _toAsyncValue(WidgetRef ref) {
+    return this;
+  }
 
   @override
   String toString() {
-    return 'AsyncValueScopeOverride{provider: $provider, value: $value}';
+    return 'AsyncValueLoader{provider: $_provider, value: $_value}';
   }
 }
 
-class ScopeLoaderBuilder<T> {
-  ScopeLoaderBuilder(this.provider);
+class _ProviderListenableLoader<T> extends OverrideLoader<T> {
+  const _ProviderListenableLoader({
+    required super.provider,
+    required ProviderListenable<AsyncValue<T>> listenable,
+  }) : _listenable = listenable;
 
-  final AutoDisposeProvider<T> provider;
+  final ProviderListenable<AsyncValue<T>> _listenable;
 
-  ScopeLoader<T> withLoadedValue(AsyncValue<T> value) {
-    return ScopeLoader(
-      provider: provider,
+  @override
+  _AsyncValueLoader<T> _toAsyncValue(WidgetRef ref) {
+    final value = ref.watch(_listenable);
+    return _AsyncValueLoader(
+      provider: _provider,
       value: value,
     );
   }
 
-  ScopeLoader<T> withValue(T value) {
-    return ScopeLoader(
-      provider: provider,
+  @override
+  String toString() {
+    return 'ProviderListenableLoader{provider: $_provider, listenable: $_listenable}';
+  }
+}
+
+class ScopeOverrideBuilder<T> {
+  ScopeOverrideBuilder(this._provider);
+
+  final AutoDisposeProvider<T> _provider;
+
+  OverrideLoader<T> withAsyncValue(AsyncValue<T> value) {
+    return _AsyncValueLoader(
+      provider: _provider,
+      value: value,
+    );
+  }
+
+  OverrideLoader<T> withValue(T value) {
+    return _AsyncValueLoader(
+      provider: _provider,
       value: AsyncValue.data(value),
+    );
+  }
+
+  OverrideLoader<T> withListenable(ProviderListenable<AsyncValue<T>> listenable) {
+    return _ProviderListenableLoader(
+      provider: _provider,
+      listenable: listenable,
     );
   }
 }
 
-ScopeLoaderBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeLoaderBuilder(provider);
+ScopeOverrideBuilder<T> overrideProvider<T>(AutoDisposeProvider<T> provider) => ScopeOverrideBuilder(provider);
 
-ScopeLoader<T> loadAsyncValue<T>(AsyncValue<T> value) {
-  return ScopeLoader<T>(
+OverrideLoader<T> loadAsyncValue<T>(AsyncValue<T> value) {
+  return _AsyncValueLoader<T>(
     provider: null,
     value: value,
   );

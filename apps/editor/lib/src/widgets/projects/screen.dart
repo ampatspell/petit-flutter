@@ -40,9 +40,7 @@ class ProjectsScreen extends ConsumerWidget {
       content: ScopeOverrides(
         parent: this,
         overrides: (context, ref) => [
-          overrideProvider(projectModelsProvider).withLoadedValue(
-            ref.watch(projectModelsStreamProvider),
-          ),
+          overrideProvider(projectModelsProvider).withListenable(projectModelsStreamProvider),
         ],
         child: ProjectsList(
           onSelect: (project) {

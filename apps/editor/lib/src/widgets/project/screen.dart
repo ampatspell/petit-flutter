@@ -14,26 +14,18 @@ class ProjectScreen extends ConsumerWidget {
     return ScopeOverrides(
       parent: this,
       overrides: (context, ref) => [
-        overrideProvider(projectModelProvider).withLoadedValue(
-          ref.watch(projectModelStreamProvider),
-        ),
-        overrideProvider(projectStateModelProvider).withLoadedValue(
-          ref.watch(projectStateModelStreamProvider),
-        ),
-        overrideProvider(projectNodeModelsProvider).withLoadedValue(
-          ref.watch(projectNodeModelsStreamProvider),
-        ),
-        overrideProvider(projectWorkspaceModelsProvider).withLoadedValue(
-          ref.watch(projectWorkspaceModelsStreamProvider),
-        )
+        overrideProvider(projectModelProvider).withListenable(projectModelStreamProvider),
+        overrideProvider(projectStateModelProvider).withListenable(projectStateModelStreamProvider),
+        overrideProvider(projectNodeModelsProvider).withListenable(projectNodeModelsStreamProvider),
+        overrideProvider(projectWorkspaceModelsProvider).withListenable(projectWorkspaceModelsStreamProvider),
       ],
       child: Consumer(
         builder: (context, ref, child) {
           return Text([
             ref.watch(projectModelProvider),
-            ref.watch(projectStateModelProvider),
-            ref.watch(projectNodeModelsProvider),
-            ref.watch(projectWorkspaceModelsProvider),
+            // ref.watch(projectStateModelProvider),
+            // ref.watch(projectNodeModelsProvider),
+            // ref.watch(projectWorkspaceModelsProvider),
           ].join('\n\n'));
         },
       ),
