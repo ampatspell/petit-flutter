@@ -6,16 +6,15 @@ import 'references.dart';
 
 part 'project_node.freezed.dart';
 
-abstract class ProjectNodeModel {
+abstract class ProjectNodeModel implements HasDoc {
   const ProjectNodeModel();
-
-  Doc get doc;
 
   String get type => doc['type'] as String;
 }
 
 mixin ProjectNodeModelWithSize {
   int get width;
+
   int get height;
 
   Size get size {

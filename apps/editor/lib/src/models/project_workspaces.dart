@@ -5,7 +5,7 @@ import 'references.dart';
 part 'project_workspaces.freezed.dart';
 
 @freezed
-class ProjectWorkspaceStateModel with _$ProjectWorkspaceStateModel {
+class ProjectWorkspaceStateModel with _$ProjectWorkspaceStateModel implements HasDoc {
   const factory ProjectWorkspaceStateModel({
     required Doc doc,
   }) = _ProjectWorkspaceStateModel;

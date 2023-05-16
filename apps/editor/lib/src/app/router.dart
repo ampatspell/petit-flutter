@@ -35,9 +35,7 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
         TypedGoRoute<ProjectRoute>(
           path: ':projectId',
           routes: [
-            TypedGoRoute<ProjectWorkspaceRoute>(
-              path: 'workspaces/:workspaceId',
-            ),
+            TypedGoRoute<ProjectWorkspaceRoute>(path: 'workspaces/:workspaceId'),
           ],
         ),
       ],

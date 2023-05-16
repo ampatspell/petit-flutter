@@ -5,14 +5,14 @@ import 'references.dart';
 part 'project.freezed.dart';
 
 @freezed
-class ProjectModel with _$ProjectModel {
+class ProjectModel with _$ProjectModel implements HasDoc {
   const factory ProjectModel({
     required Doc doc,
   }) = _ProjectModel;
 
   const ProjectModel._();
 
-  String get name => doc['name'] as String;
+  String get name => doc['name'] as String; // ? ?? 'Untitled';
 
   String? get node => doc['node'] as String?;
 
@@ -31,7 +31,7 @@ class ProjectModel with _$ProjectModel {
 }
 
 @freezed
-class ProjectStateModel with _$ProjectStateModel {
+class ProjectStateModel with _$ProjectStateModel implements HasDoc {
   const factory ProjectStateModel({
     required Doc doc,
   }) = _ProjectStateModel;

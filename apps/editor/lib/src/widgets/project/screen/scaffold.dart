@@ -1,11 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:go_router/go_router.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../app/router.dart';
 import '../../../providers/project/delete.dart';
 import '../../../providers/project/project.dart';
 import '../../base/confirmation.dart';
-import '../workspaces.dart';
+import 'workspaces.dart';
 
 class ProjectScreenScaffold extends ConsumerWidget {
   const ProjectScreenScaffold({super.key});
@@ -13,7 +14,6 @@ class ProjectScreenScaffold extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final name = ref.watch(projectModelProvider.select((value) => value.name));
-    final delete = ref.watch(projectModelDeleteProvider);
     return ScaffoldPage(
       header: PageHeader(
         padding: 15,
@@ -26,10 +26,9 @@ class ProjectScreenScaffold extends ConsumerWidget {
               context,
               label: 'Delete project',
               message: 'Delete project?',
-              action: delete,
-              onCommit: (context, action) {
-                ProjectsRoute().go(context);
-                action();
+              onAction: (context) {
+                context.pop();
+                ref.read(projectDeleteProvider);
               },
             ),
           ],
@@ -38,7 +37,7 @@ class ProjectScreenScaffold extends ConsumerWidget {
       content: ProjectWorkspacesListView(
         onSelect: (model) {
           ProjectWorkspaceRoute(
-            projectId: ref.read(projectModelProvider).doc.id,
+            projectId: ref.read(projectIdProvider),
             workspaceId: model.doc.id,
           ).go(context);
         },

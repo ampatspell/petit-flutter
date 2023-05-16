@@ -1,25 +1,13 @@
-import 'dart:ui';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../generic.dart';
 import 'project.dart';
 
 part 'delete.g.dart';
 
-@Riverpod(dependencies: [projectModel])
-class ProjectModelDelete extends _$ProjectModelDelete {
-  @override
-  VoidCallback? build() {
-    return commit;
-  }
-
-  void commit() async {
-    final doc = ref.read(projectModelProvider);
-    state = null;
-    try {
-      await doc.delete();
-    } finally {
-      state = commit;
-    }
-  }
+@Riverpod(dependencies: [projectReference, projectsRepository])
+Future<void> projectDelete(ProjectDeleteRef ref) {
+  final reference = ref.watch(projectReferenceProvider);
+  final repository = ref.watch(projectsRepositoryProvider);
+  return repository.delete(reference);
 }

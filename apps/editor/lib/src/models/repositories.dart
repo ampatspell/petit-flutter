@@ -50,6 +50,10 @@ class ProjectsRepository with _$ProjectsRepository {
     });
     return ref;
   }
+
+  Future<void> delete(MapDocumentReference projectRef) async {
+    await projectRef.delete();
+  }
 }
 
 @freezed
@@ -160,5 +164,32 @@ class ProjectWorkspaceStatesRepository with _$ProjectWorkspaceStatesRepository {
         .doc(uid)
         .snapshots(includeMetadataChanges: true)
         .map(_asModel);
+  }
+}
+
+@freezed
+class ProjectWorkspaceItemsRepository with _$ProjectWorkspaceItemsRepository {
+  const factory ProjectWorkspaceItemsRepository({
+    required MapDocumentReference workspaceRef,
+    required FirestoreReferences references,
+  }) = _ProjectWorkspaceItemsRepository;
+
+  const ProjectWorkspaceItemsRepository._();
+
+  ProjectWorkspaceItemModel _asModel(MapDocumentSnapshot snapshot) {
+    return ProjectWorkspaceItemModel(
+      doc: references.asDoc(snapshot),
+    );
+  }
+
+  List<ProjectWorkspaceItemModel> _asModels(MapQuerySnapshot snapshot) {
+    return snapshot.docs.map(_asModel).toList(growable: false);
+  }
+
+  Stream<List<ProjectWorkspaceItemModel>> items() {
+    return references
+        .projectWorkspaceItemsCollection(workspaceRef)
+        .snapshots(includeMetadataChanges: true)
+        .map(_asModels);
   }
 }

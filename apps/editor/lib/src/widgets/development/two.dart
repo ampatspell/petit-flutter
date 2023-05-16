@@ -28,7 +28,7 @@ class Wrapped with _$Wrapped {
 
 @Riverpod(dependencies: [])
 Thing thingByName(ThingByNameRef ref, {required String name}) {
-  print('create thing $name');
+  // print('create thing $name');
   return Thing(
     name: name,
   );
@@ -40,7 +40,7 @@ Wrapped wrapByName(
   required String name,
   required String role,
 }) {
-  print('create wrap by name and role $name $role');
+  // print('create wrap by name and role $name $role');
   final thing = ref.watch(thingByNameProvider(name: name));
   return Wrapped(
     thing: thing,

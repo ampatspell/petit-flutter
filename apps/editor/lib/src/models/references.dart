@@ -100,3 +100,7 @@ class Doc with _$Doc {
     return 'Doc{path: ${reference.path}, data: $data}';
   }
 }
+
+abstract class HasDoc {
+  Doc get doc;
+}

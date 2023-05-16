@@ -23,6 +23,16 @@ class _AsyncValueLoader<T> extends OverrideLoader<T> {
     return this;
   }
 
+  bool get _containsDeletedDocs {
+    final value = _value.value;
+    if (value is HasDoc) {
+      return value.doc.isDeleted;
+    } else if (value is Iterable<HasDoc>) {
+      return value.firstWhereOrNull((element) => element.doc.isDeleted) != null;
+    }
+    return false;
+  }
+
   @override
   String toString() {
     return 'AsyncValueLoader{provider: $_provider, value: $_value}';

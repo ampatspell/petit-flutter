@@ -2,11 +2,11 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../app/utils.dart';
-import '../../models/project_workspace.dart';
-import '../../providers/base.dart';
-import '../../providers/project/workspaces.dart';
-import '../base/scope_overrides/scope_overrides.dart';
+import '../../../app/utils.dart';
+import '../../../models/project_workspace.dart';
+import '../../../providers/base.dart';
+import '../../../providers/project/workspaces.dart';
+import '../../base/scope_overrides/scope_overrides.dart';
 
 part 'workspaces.g.dart';
 

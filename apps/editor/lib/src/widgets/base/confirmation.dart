@@ -48,11 +48,10 @@ CommandBarButton buildDeleteCommandBarButton(
   BuildContext context, {
   required String label,
   required String message,
-  required VoidCallback? action,
-  required void Function(BuildContext context, VoidCallback onDelete) onCommit,
+  required void Function(BuildContext context)? onAction,
 }) {
   VoidCallback? delete() {
-    if (action == null) {
+    if (onAction == null) {
       return null;
     }
 
@@ -60,7 +59,7 @@ CommandBarButton buildDeleteCommandBarButton(
       await deleteConfirmation(
         context,
         message: message,
-        onAction: (context) => onCommit(context, action),
+        onAction: onAction,
       );
     };
   }
