@@ -10,6 +10,7 @@ import '../../../providers/project/workspace/editor.dart';
 import '../../../providers/project/workspace/items.dart';
 import '../../../providers/project/workspace/workspace.dart';
 import '../../base/scope_overrides/scope_overrides.dart';
+import '../../base/segmented.dart';
 
 class WorkspaceScreen extends ConsumerWidget {
   const WorkspaceScreen({
@@ -48,80 +49,71 @@ class WorkspaceScreenContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    return const Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: WorkspaceEditor()),
+        WorkspaceInspector(),
+      ],
+    );
+  }
+}
+
+class WorkspaceInspector extends ConsumerWidget {
+  const WorkspaceInspector({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
     final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
 
-    VoidCallback setWorkspacePixel(int value) {
-      return () => ref.read(workspaceStateModelProvider).updatePixel(value);
+    void setWorkspacePixel(int value) {
+      ref.read(workspaceStateModelProvider).updatePixel(value);
     }
 
     final item = ref.watch(selectedWorkspaceItemModelProvider);
     final node = ref.watch(selectedNodeModelProvider);
 
-    VoidCallback setItemPixel(int value) {
-      return () => item!.updatePixel(value);
+    void setItemPixel(int value) {
+      item!.updatePixel(value);
     }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Expanded(child: WorkspaceEditor()),
-        Container(
-          width: 200,
-          child: Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('Workspace: $workspacePixel'),
-                const Gap(10),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Button(
-                      child: const Text('1'),
-                      onPressed: setWorkspacePixel(1),
-                    ),
-                    Button(
-                      child: const Text('2'),
-                      onPressed: setWorkspacePixel(2),
-                    ),
-                    Button(
-                      child: const Text('4'),
-                      onPressed: setWorkspacePixel(4),
-                    ),
-                  ],
-                ),
-                if (item != null) ...[
-                  const Gap(20),
-                  Text('Item: $item'),
-                  const Gap(10),
-                  Text('Node: $node'),
-                  const Gap(10),
-                  Text('Pixel: ${item.pixel}'),
-                  const Gap(10),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Button(
-                        child: const Text('1'),
-                        onPressed: setItemPixel(1),
-                      ),
-                      Button(
-                        child: const Text('2'),
-                        onPressed: setItemPixel(2),
-                      ),
-                      Button(
-                        child: const Text('4'),
-                        onPressed: setItemPixel(4),
-                      ),
-                    ],
-                  )
-                ]
-              ],
-            ),
-          ),
+    Widget pixels(int value, ValueChanged<int> onChange) {
+      return Segmented<int>(
+        segments: [
+          const Segment(label: '1', value: 1),
+          const Segment(label: '2', value: 2),
+          const Segment(label: '4', value: 4),
+          const Segment(label: '8', value: 8),
+          const Segment(label: '16', value: 16),
+        ],
+        selected: value,
+        onSelect: (value) => onChange(value),
+      );
+    }
+
+    return Container(
+      width: 250,
+      child: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('Workspace: $workspacePixel'),
+            const Gap(10),
+            pixels(workspacePixel, setWorkspacePixel),
+            if (item != null) ...[
+              const Gap(20),
+              Text('Item: $item'),
+              const Gap(10),
+              Text('Node: $node'),
+              const Gap(10),
+              Text('Pixel: ${item.pixel}'),
+              const Gap(10),
+              pixels(item.pixel, setItemPixel),
+            ]
+          ],
         ),
-      ],
+      ),
     );
   }
 }
