@@ -6,7 +6,6 @@ import '../widgets/base/order.dart';
 import 'base.dart';
 import 'project.dart';
 import 'project_workspace.dart';
-import 'project_workspaces.dart';
 import 'typedefs.dart';
 
 part 'references.freezed.dart';
@@ -61,15 +60,6 @@ class FirestoreReferences with _$FirestoreReferences {
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {
     return workspaceRef.collection('items');
   }
-
-  Doc asDoc(MapDocumentSnapshot snapshot, {bool isOptional = false}) {
-    return Doc(
-      reference: snapshot.reference,
-      isDeleted: !snapshot.exists,
-      isOptional: isOptional,
-      data: snapshot.data() ?? {},
-    );
-  }
 }
 
 @freezed
@@ -80,9 +70,18 @@ class FirestoreStreams with _$FirestoreStreams {
 
   const FirestoreStreams._();
 
+  Doc _asDoc(MapDocumentSnapshot snapshot, {bool isOptional = false}) {
+    return Doc(
+      reference: snapshot.reference,
+      isDeleted: !snapshot.exists,
+      isOptional: isOptional,
+      data: snapshot.data() ?? {},
+    );
+  }
+
   ProjectModel _asProjectModel(MapDocumentSnapshot snapshot) {
     return ProjectModel(
-      doc: references.asDoc(snapshot),
+      doc: _asDoc(snapshot),
     );
   }
 
@@ -111,7 +110,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   ProjectStateModel _asProjectStateModel(MapDocumentSnapshot snapshot) {
-    return ProjectStateModel(doc: references.asDoc(snapshot, isOptional: true));
+    return ProjectStateModel(doc: _asDoc(snapshot, isOptional: true));
   }
 
   Stream<ProjectStateModel> projectStateByProjectReference({required MapDocumentReference projectRef}) {
@@ -129,7 +128,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   ProjectWorkspaceModel _asProjectWorkspaceModel(MapDocumentSnapshot snapshot) {
-    return ProjectWorkspaceModel(doc: references.asDoc(snapshot));
+    return ProjectWorkspaceModel(doc: _asDoc(snapshot));
   }
 
   List<ProjectWorkspaceModel> _asProjectWorkspaceModels(MapQuerySnapshot snapshot) {
@@ -150,7 +149,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   ProjectWorkspaceStateModel _asProjectWorkspaceStateModel(MapDocumentSnapshot snapshot) {
-    return ProjectWorkspaceStateModel(doc: references.asDoc(snapshot, isOptional: true));
+    return ProjectWorkspaceStateModel(doc: _asDoc(snapshot, isOptional: true));
   }
 
   Stream<ProjectWorkspaceStateModel> workspaceStateByWorkspaceReference({required MapDocumentReference workspaceRef}) {

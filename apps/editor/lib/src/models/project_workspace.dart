@@ -22,6 +22,15 @@ class ProjectWorkspaceModel with _$ProjectWorkspaceModel implements HasDoc {
 }
 
 @freezed
+class ProjectWorkspaceStateModel with _$ProjectWorkspaceStateModel implements HasDoc {
+  const factory ProjectWorkspaceStateModel({
+    required Doc doc,
+  }) = _ProjectWorkspaceStateModel;
+
+  const ProjectWorkspaceStateModel._();
+}
+
+@freezed
 class ProjectWorkspaceItemModel with _$ProjectWorkspaceItemModel implements HasDoc {
   const factory ProjectWorkspaceItemModel({
     required Doc doc,

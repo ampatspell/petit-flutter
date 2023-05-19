@@ -1,7 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../models/project_workspace.dart';
-import '../../../models/project_workspaces.dart';
 import '../../base.dart';
 import '../../references.dart';
 import '../project.dart';
