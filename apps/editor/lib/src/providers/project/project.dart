@@ -1,10 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/project.dart';
-import '../../models/typedefs.dart';
 import '../base.dart';
-import '../generic.dart';
 import '../references.dart';
 
 part 'project.g.dart';
@@ -12,28 +9,16 @@ part 'project.g.dart';
 @Riverpod(dependencies: [])
 String projectId(ProjectIdRef ref) => throw OverrideProviderException();
 
-@Riverpod(dependencies: [projectId, firestoreReferences])
-MapDocumentReference projectReference(ProjectReferenceRef ref) {
-  final id = ref.watch(projectIdProvider);
-  return ref.watch(firestoreReferencesProvider).projects().doc(id);
-}
-
-@Riverpod(dependencies: [projectReference, projectModelStreamByProjectReference])
+@Riverpod(dependencies: [projectId, firestoreStreams])
 Stream<ProjectModel> projectModelStream(ProjectModelStreamRef ref) {
-  final projectRef = ref.watch(projectReferenceProvider);
-  return ref.watch(projectModelStreamByProjectReferenceProvider(
-    projectRef: projectRef,
-  ));
+  final projectId = ref.watch(projectIdProvider);
+  return ref.watch(firestoreStreamsProvider).projectById(projectId: projectId);
 }
 
-@Riverpod(dependencies: [projectReference, uid, projectStateModelByProjectRefAndUser])
+@Riverpod(dependencies: [projectId, firestoreStreams])
 Stream<ProjectStateModel> projectStateModelStream(ProjectStateModelStreamRef ref) {
-  final projectRef = ref.watch(projectReferenceProvider);
-  final uid = ref.watch(uidProvider)!;
-  return ref.watch(projectStateModelByProjectRefAndUserProvider(
-    projectRef: projectRef,
-    uid: uid,
-  ));
+  final projectId = ref.watch(projectIdProvider);
+  return ref.watch(firestoreStreamsProvider).projectStateByProjectId(projectId: projectId);
 }
 
 //

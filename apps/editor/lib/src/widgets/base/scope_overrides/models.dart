@@ -25,10 +25,16 @@ class _AsyncValueLoader<T> extends OverrideLoader<T> {
 
   bool get _containsDeletedDocs {
     final value = _value.value;
+
+    bool isDeleted(HasDoc value) {
+      return value.doc.isDeleted && !value.doc.isOptional;
+    }
+
     if (value is HasDoc) {
-      return value.doc.isDeleted;
+      return isDeleted(value);
     } else if (value is Iterable<HasDoc>) {
-      return value.firstWhereOrNull((element) => element.doc.isDeleted) != null;
+      // ignore: unnecessary_cast
+      return value.firstWhereOrNull((value) => isDeleted(value as HasDoc)) != null;
     }
     return false;
   }

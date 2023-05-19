@@ -10,6 +10,7 @@ part 'projects.freezed.dart';
 class ProjectsReset with _$ProjectsReset {
   const factory ProjectsReset({
     required FirestoreReferences references,
+    required String uid,
   }) = _ProjectsReset;
 
   const ProjectsReset._();
@@ -61,7 +62,8 @@ class ProjectsReset with _$ProjectsReset {
     required List<Map<String, dynamic>> nodes,
     required List<Map<String, dynamic>> items,
   }) async {
-    final projectRef = references.projects().doc();
+    final projectRef = references.projectsCollection().doc();
+    final projectStateRef = references.projectStateCollection(projectRef).doc(uid);
     final nodesRef = references.projectNodesCollection(projectRef);
     final workspacesRef = references.projectWorkspacesCollection(projectRef);
     final workspaceRef = workspacesRef.doc();
@@ -71,6 +73,10 @@ class ProjectsReset with _$ProjectsReset {
       await projectRef.set({
         'name': name,
       });
+    }
+
+    Future<void> createProjectState() async {
+      await projectStateRef.set({});
     }
 
     Future<void> createNode(Map<String, dynamic> map) async {
@@ -101,6 +107,7 @@ class ProjectsReset with _$ProjectsReset {
 
     await Future.wait([
       createProject(),
+      createProjectState(),
       createWorkspace(),
       createNodes(),
       createItems(),
@@ -108,7 +115,7 @@ class ProjectsReset with _$ProjectsReset {
   }
 
   Future<void> _deleteProjects() async {
-    final projects = await references.projects().get();
+    final projects = await references.projectsCollection().get();
     await Future.wait(projects.docs.map((projectSnap) async {
       final projectRef = projectSnap.reference;
 

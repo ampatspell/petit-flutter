@@ -1,9 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../../models/typedefs.dart';
+import '../../../models/project_workspace.dart';
+import '../../../models/project_workspaces.dart';
 import '../../base.dart';
-import '../../generic.dart';
+import '../../references.dart';
 import '../project.dart';
 
 part 'workspace.g.dart';
@@ -11,9 +11,24 @@ part 'workspace.g.dart';
 @Riverpod(dependencies: [])
 String workspaceId(WorkspaceIdRef ref) => throw OverrideProviderException();
 
-@Riverpod(dependencies: [projectReference, workspaceId, workspacesRepositoryByProjectRef])
-MapDocumentReference workspaceReference(WorkspaceReferenceRef ref) {
-  final projectRef = ref.watch(projectReferenceProvider);
+@Riverpod(dependencies: [projectId, workspaceId, firestoreStreams])
+Stream<ProjectWorkspaceModel> workspaceModelStream(WorkspaceModelStreamRef ref) {
+  final projectId = ref.watch(projectIdProvider);
   final workspaceId = ref.watch(workspaceIdProvider);
-  return ref.watch(workspacesRepositoryByProjectRefProvider(projectRef: projectRef)).reference(workspaceId);
+  return ref.watch(firestoreStreamsProvider).workspaceById(projectId: projectId, workspaceId: workspaceId);
 }
+
+@Riverpod(dependencies: [projectId, workspaceId, firestoreStreams])
+Stream<ProjectWorkspaceStateModel> workspaceStateModelStream(WorkspaceStateModelStreamRef ref) {
+  final projectId = ref.watch(projectIdProvider);
+  final workspaceId = ref.watch(workspaceIdProvider);
+  return ref.watch(firestoreStreamsProvider).workspaceStateById(projectId: projectId, workspaceId: workspaceId);
+}
+
+//
+
+@Riverpod(dependencies: [])
+ProjectWorkspaceModel workspaceModel(WorkspaceModelRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
+ProjectWorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) => throw OverrideProviderException();

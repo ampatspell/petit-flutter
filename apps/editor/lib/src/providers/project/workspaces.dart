@@ -2,17 +2,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/project_workspace.dart';
 import '../base.dart';
-import '../generic.dart';
+import '../references.dart';
 import 'project.dart';
 
 part 'workspaces.g.dart';
 
-@Riverpod(dependencies: [projectReference, workspaceModelsStreamByProjectReference])
+@Riverpod(dependencies: [projectId, firestoreStreams])
 Stream<List<ProjectWorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamRef ref) {
-  final projectRef = ref.watch(projectReferenceProvider);
-  return ref.watch(workspaceModelsStreamByProjectReferenceProvider(
-    projectRef: projectRef,
-  ));
+  final projectId = ref.watch(projectIdProvider);
+  return ref.watch(firestoreStreamsProvider).workspacesByProjectId(projectId);
 }
 
 //

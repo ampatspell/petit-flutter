@@ -1,13 +1,13 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../generic.dart';
+import '../references.dart';
 import 'project.dart';
 
 part 'delete.g.dart';
 
-@Riverpod(dependencies: [projectReference, projectsRepository])
+@Riverpod(dependencies: [projectId, firestoreReferences])
 Future<void> projectDelete(ProjectDeleteRef ref) {
-  final reference = ref.watch(projectReferenceProvider);
-  final repository = ref.watch(projectsRepositoryProvider);
-  return repository.delete(reference);
+  final projectId = ref.watch(projectIdProvider);
+  final reference = ref.watch(firestoreReferencesProvider).projectById(projectId);
+  return reference.delete();
 }

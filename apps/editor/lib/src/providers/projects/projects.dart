@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../models/project.dart';
 import '../../widgets/base/order.dart';
 import '../base.dart';
-import '../generic.dart';
+import '../references.dart';
 
 part 'projects.g.dart';
 
@@ -19,10 +19,10 @@ class ProjectModelsOrder extends _$ProjectModelsOrder {
   }
 }
 
-@Riverpod(dependencies: [ProjectModelsOrder, projectModelsStreamByOrder])
+@Riverpod(dependencies: [ProjectModelsOrder, firestoreStreams])
 Stream<List<ProjectModel>> projectModelsStream(ProjectModelsStreamRef ref) {
   final order = ref.watch(projectModelsOrderProvider);
-  return ref.watch(projectModelsStreamByOrderProvider(orderDirection: order));
+  return ref.watch(firestoreStreamsProvider).projects(order: order);
 }
 
 //

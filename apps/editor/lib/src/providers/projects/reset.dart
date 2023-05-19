@@ -3,14 +3,19 @@ import 'dart:ui';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/projects.dart';
+import '../base.dart';
 import '../references.dart';
 
 part 'reset.g.dart';
 
-@Riverpod(dependencies: [firestoreReferences])
+@Riverpod(dependencies: [firestoreReferences, uid])
 ProjectsReset projectsReset(ProjectsResetRef ref) {
   final references = ref.watch(firestoreReferencesProvider);
-  return ProjectsReset(references: references);
+  final uid = ref.watch(uidProvider);
+  return ProjectsReset(
+    references: references,
+    uid: uid!,
+  );
 }
 
 @Riverpod(dependencies: [projectsReset])

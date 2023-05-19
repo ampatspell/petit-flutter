@@ -3,20 +3,17 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/base.dart';
-import '../providers/project/project.dart' hide projectId;
-import '../providers/project/workspace/workspace.dart' hide workspaceId;
 import '../widgets/base/fluent_screen.dart';
-import '../widgets/base/scope_overrides/scope_overrides.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
 import '../widgets/development/three.dart';
 import '../widgets/development/two.dart';
 import '../widgets/home.dart';
 import '../widgets/project/screen.dart';
+import '../widgets/project/workspace/screen.dart';
 import '../widgets/projects/new/screen.dart';
 import '../widgets/projects/screen.dart';
 
@@ -122,13 +119,7 @@ class ProjectRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ScopeOverrides(
-      parent: this,
-      overrides: (context, ref) => [
-        overrideProvider(projectIdProvider).withValue(projectId),
-      ],
-      child: const ProjectScreen(),
-    );
+    return ProjectScreen(projectId: projectId);
   }
 }
 
@@ -143,15 +134,9 @@ class ProjectWorkspaceRoute extends GoRouteData {
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return ScopeOverrides(
-      overrides: (context, ref) => [
-        overrideProvider(projectIdProvider).withValue(projectId),
-        overrideProvider(workspaceIdProvider).withValue(workspaceId),
-      ],
-      child: Consumer(builder: (context, ref, child) {
-        final reference = ref.watch(workspaceReferenceProvider);
-        return Text('Workspace $reference');
-      }),
+    return WorkspaceScreen(
+      projectId: projectId,
+      workspaceId: workspaceId,
     );
   }
 }
@@ -231,12 +216,19 @@ Raw<GoRouter> router(RouterRef ref) {
   );
 }
 
+class OnRouteChange {
+  @override
+  String toString() {
+    return 'OnRouteChange{}';
+  }
+}
+
 @Riverpod(keepAlive: true, dependencies: [router])
-Stream<Object> routerOnRouteChange(RouterOnRouteChangeRef ref) {
-  final controller = StreamController<Object>();
+Stream<OnRouteChange> routerOnRouteChange(RouterOnRouteChangeRef ref) {
+  final controller = StreamController<OnRouteChange>();
   void listener() {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      controller.add(Object());
+      controller.add(OnRouteChange());
     });
   }
 
@@ -247,4 +239,4 @@ Stream<Object> routerOnRouteChange(RouterOnRouteChangeRef ref) {
   return controller.stream;
 }
 
-const initialLocation = '/projects/3GzcIYdmK7rdUP3iLw9a/workspaces/NMCfmAPE0yZmhFc4vd68';
+const initialLocation = '/';

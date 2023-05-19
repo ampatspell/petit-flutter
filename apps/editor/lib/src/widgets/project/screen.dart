@@ -8,18 +8,29 @@ import '../base/scope_overrides/scope_overrides.dart';
 import 'screen/scaffold.dart';
 
 class ProjectScreen extends ConsumerWidget {
-  const ProjectScreen({super.key});
+  const ProjectScreen({
+    super.key,
+    required this.projectId,
+  });
+
+  final String projectId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ScopeOverrides(
       parent: this,
-      onDeleted: () => ProjectsRoute().go(context),
       overrides: (context, ref) => [
-        overrideProvider(projectModelProvider).withListenable(projectModelStreamProvider),
-        overrideProvider(workspaceModelsProvider).withListenable(workspaceModelsStreamProvider),
+        overrideProvider(projectIdProvider).withValue(projectId),
       ],
-      child: const ProjectScreenScaffold(),
+      child: ScopeOverrides(
+        parent: this,
+        onDeleted: () => ProjectsRoute().go(context),
+        overrides: (context, ref) => [
+          overrideProvider(projectModelProvider).withListenable(projectModelStreamProvider),
+          overrideProvider(workspaceModelsProvider).withListenable(workspaceModelsStreamProvider),
+        ],
+        child: const ProjectScreenScaffold(),
+      ),
     );
   }
 }

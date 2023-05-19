@@ -48,7 +48,7 @@ class ScopeOverrides extends ConsumerWidget {
     if (loading.isNotEmpty) {
       return ensureScaffold(
         null,
-        const _ProviderScopeOverridesLoading(),
+        _ProviderScopeOverridesLoading(loading: loading),
       );
     }
 

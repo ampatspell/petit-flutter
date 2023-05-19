@@ -4,11 +4,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/projects.dart';
 import '../../models/typedefs.dart';
-import '../generic.dart';
+import '../references.dart';
 
 part 'new.g.dart';
 
-@Riverpod(dependencies: [projectsRepository])
+@Riverpod(dependencies: [firestoreReferences])
 class NewProject extends _$NewProject {
   @override
   NewProjectModel build() {
@@ -26,7 +26,10 @@ class NewProject extends _$NewProject {
     return () async {
       state = state.copyWith(isBusy: true);
       try {
-        final reference = await ref.read(projectsRepositoryProvider).add(state);
+        final reference = ref.read(firestoreReferencesProvider).projectsCollection().doc();
+        await reference.set({
+          'name': state.name,
+        });
         cb(reference);
       } finally {
         state = state.copyWith(isBusy: false);
