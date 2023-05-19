@@ -1,13 +1,13 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../models/project_workspace.dart';
+import '../../models/workspace.dart';
 import '../base.dart';
 import 'project.dart';
 
 part 'workspaces.g.dart';
 
 @Riverpod(dependencies: [projectId, firestoreStreams])
-Stream<List<ProjectWorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamRef ref) {
+Stream<List<WorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamRef ref) {
   final projectId = ref.watch(projectIdProvider);
   return ref.watch(firestoreStreamsProvider).workspacesById(projectId);
 }
@@ -15,4 +15,4 @@ Stream<List<ProjectWorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamR
 //
 
 @Riverpod(dependencies: [])
-List<ProjectWorkspaceModel> workspaceModels(WorkspaceModelsRef ref) => throw OverrideProviderException();
+List<WorkspaceModel> workspaceModels(WorkspaceModelsRef ref) => throw OverrideProviderException();

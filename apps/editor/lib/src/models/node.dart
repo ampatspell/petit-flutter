@@ -4,15 +4,15 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'references.dart';
 
-part 'project_node.freezed.dart';
+part 'node.freezed.dart';
 
-abstract class ProjectNodeModel implements HasDoc {
-  const ProjectNodeModel();
+abstract class NodeModel implements HasDoc {
+  const NodeModel();
 
   String get type => doc['type'] as String;
 }
 
-mixin ProjectNodeModelWithSize {
+mixin NodeModelWithSize {
   int get width;
 
   int get height;
@@ -27,12 +27,12 @@ mixin ProjectNodeModelWithSize {
 }
 
 @freezed
-class ProjectBoxNodeModel extends ProjectNodeModel with _$ProjectBoxNodeModel, ProjectNodeModelWithSize {
-  const factory ProjectBoxNodeModel({
+class BoxNodeModel extends NodeModel with _$BoxNodeModel, NodeModelWithSize {
+  const factory BoxNodeModel({
     required Doc doc,
-  }) = _ProjectBoxNodeModel;
+  }) = _BoxNodeModel;
 
-  const ProjectBoxNodeModel._();
+  const BoxNodeModel._();
 
   @override
   int get width => doc['width'] as int;

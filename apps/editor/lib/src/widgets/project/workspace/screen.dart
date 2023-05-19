@@ -31,7 +31,7 @@ class WorkspaceScreen extends ConsumerWidget {
           overrideProvider(projectStateModelProvider).withListenable(projectStateModelStreamProvider),
           overrideProvider(workspaceModelProvider).withListenable(workspaceModelStreamProvider),
           overrideProvider(workspaceStateModelProvider).withListenable(workspaceStateModelStreamProvider),
-          overrideProvider(projectNodeModelsProvider).withListenable(projectNodeModelsStreamProvider),
+          overrideProvider(nodeModelsProvider).withListenable(nodeModelsStreamProvider),
           overrideProvider(workspaceItemModelsProvider).withListenable(workspaceItemModelsStreamProvider),
         ],
         child: const WorkspaceScreenContent(),
@@ -51,7 +51,7 @@ class WorkspaceScreenContent extends ConsumerWidget {
     final projectState = ref.watch(projectStateModelProvider);
     final workspace = ref.watch(workspaceModelProvider);
     final workspaceState = ref.watch(workspaceStateModelProvider);
-    final nodes = ref.watch(projectNodeModelsProvider);
+    final nodes = ref.watch(nodeModelsProvider);
     final items = ref.watch(workspaceItemModelsProvider);
 
     return Column(
