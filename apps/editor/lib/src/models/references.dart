@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../app/typedefs.dart';
 import '../widgets/base/order.dart';
 import 'base.dart';
 import 'node.dart';
 import 'project.dart';
-import 'typedefs.dart';
 import 'workspace.dart';
 
 part 'references.freezed.dart';

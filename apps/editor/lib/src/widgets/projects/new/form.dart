@@ -3,7 +3,7 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../app/router.dart';
-import '../../../models/typedefs.dart';
+import '../../../app/typedefs.dart';
 import '../../../providers/projects/new.dart';
 
 class NewProjectForm extends ConsumerWidget {

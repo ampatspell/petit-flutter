@@ -2,8 +2,8 @@ import 'dart:ui';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../app/typedefs.dart';
 import '../../models/projects.dart';
-import '../../models/typedefs.dart';
 import '../base.dart';
 
 part 'new.g.dart';
