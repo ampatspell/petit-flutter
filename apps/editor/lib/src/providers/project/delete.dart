@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../references.dart';
+import '../base.dart';
 import 'project.dart';
 
 part 'delete.g.dart';

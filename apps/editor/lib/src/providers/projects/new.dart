@@ -4,7 +4,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/projects.dart';
 import '../../models/typedefs.dart';
-import '../references.dart';
+import '../base.dart';
 
 part 'new.g.dart';
 

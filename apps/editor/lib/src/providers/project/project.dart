@@ -2,7 +2,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../models/project.dart';
 import '../base.dart';
-import '../references.dart';
 
 part 'project.g.dart';
 

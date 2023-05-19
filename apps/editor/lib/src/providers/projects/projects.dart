@@ -3,7 +3,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../models/project.dart';
 import '../../widgets/base/order.dart';
 import '../base.dart';
-import '../references.dart';
 
 part 'projects.g.dart';
 
