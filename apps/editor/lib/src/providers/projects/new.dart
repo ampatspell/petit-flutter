@@ -26,7 +26,7 @@ class NewProject extends _$NewProject {
     return () async {
       state = state.copyWith(isBusy: true);
       try {
-        final reference = ref.read(firestoreReferencesProvider).projectsCollection().doc();
+        final reference = ref.read(firestoreReferencesProvider).projects().doc();
         await reference.set({
           'name': state.name,
         });

@@ -17,7 +17,7 @@ Stream<ProjectModel> projectModelStream(ProjectModelStreamRef ref) {
 @Riverpod(dependencies: [projectId, firestoreStreams])
 Stream<ProjectStateModel> projectStateModelStream(ProjectStateModelStreamRef ref) {
   final projectId = ref.watch(projectIdProvider);
-  return ref.watch(firestoreStreamsProvider).projectStateByProjectId(projectId: projectId);
+  return ref.watch(firestoreStreamsProvider).projectStateById(projectId: projectId);
 }
 
 //

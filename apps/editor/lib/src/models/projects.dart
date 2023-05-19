@@ -62,10 +62,10 @@ class ProjectsReset with _$ProjectsReset {
     required List<Map<String, dynamic>> nodes,
     required List<Map<String, dynamic>> items,
   }) async {
-    final projectRef = references.projectsCollection().doc();
-    final projectStateRef = references.projectStateCollection(projectRef).doc(uid);
-    final nodesRef = references.projectNodesCollection(projectRef);
-    final workspacesRef = references.projectWorkspacesCollection(projectRef);
+    final projectRef = references.projects().doc();
+    final projectStateRef = references.projectStatesByRef(projectRef).doc(uid);
+    final nodesRef = references.projectNodesByRef(projectRef);
+    final workspacesRef = references.projectWorkspacesByRef(projectRef);
     final workspaceRef = workspacesRef.doc();
     final workspaceItemsRef = references.projectWorkspaceItemsCollection(workspaceRef);
 
@@ -115,12 +115,12 @@ class ProjectsReset with _$ProjectsReset {
   }
 
   Future<void> _deleteProjects() async {
-    final projects = await references.projectsCollection().get();
+    final projects = await references.projects().get();
     await Future.wait(projects.docs.map((projectSnap) async {
       final projectRef = projectSnap.reference;
 
       Future<void> deleteNodes() async {
-        final nodesRef = references.projectNodesCollection(projectRef);
+        final nodesRef = references.projectNodesByRef(projectRef);
         final nodes = await nodesRef.get();
         await Future.wait(nodes.docs.map((e) => e.reference.delete()));
       }
@@ -135,7 +135,7 @@ class ProjectsReset with _$ProjectsReset {
       }
 
       Future<void> deleteWorkspaces() async {
-        final workspacesRef = references.projectWorkspacesCollection(projectRef);
+        final workspacesRef = references.projectWorkspacesByRef(projectRef);
         final workspaces = await workspacesRef.get();
         await Future.wait(workspaces.docs.map((e) => deleteWorkspace(e.reference)));
       }

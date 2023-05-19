@@ -1,13 +1,18 @@
-// part 'nodes.g.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-// @Riverpod(dependencies: [projectReference, projectNodesRepositoryByProjectRef])
-// Stream<List<ProjectNodeModel>> projectNodeModelsStream(ProjectNodeModelsStreamRef ref) {
-//   final projectRef = ref.watch(projectReferenceProvider);
-//   final repository = ref.watch(projectNodesRepositoryByProjectRefProvider(projectRef: projectRef));
-//   return repository.all();
-// }
+import '../../models/project_node.dart';
+import '../base.dart';
+import 'project.dart';
+
+part 'nodes.g.dart';
+
+@Riverpod(dependencies: [projectId, firestoreStreams])
+Stream<List<ProjectNodeModel>> projectNodeModelsStream(ProjectNodeModelsStreamRef ref) {
+  final projectId = ref.watch(projectIdProvider);
+  return ref.watch(firestoreStreamsProvider).nodesById(projectId: projectId);
+}
+
 //
-// //
-//
-// @Riverpod()
-// List<ProjectNodeModel> projectNodeModels(ProjectNodeModelsRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
+List<ProjectNodeModel> projectNodeModels(ProjectNodeModelsRef ref) => throw OverrideProviderException();

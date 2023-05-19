@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../widgets/base/order.dart';
 import 'base.dart';
 import 'project.dart';
+import 'project_node.dart';
 import 'project_workspace.dart';
 import 'typedefs.dart';
 
@@ -21,44 +22,61 @@ class FirestoreReferences with _$FirestoreReferences {
 
   FirebaseFirestore get _firestore => services.firestore;
 
-  MapCollectionReference projectsCollection() {
+  MapCollectionReference projects() {
     return _firestore.collection('projects');
   }
 
   MapDocumentReference projectById(String projectId) {
-    return projectsCollection().doc(projectId);
+    return projects().doc(projectId);
   }
 
-  MapCollectionReference projectStateCollection(MapDocumentReference projectRef) {
+  MapCollectionReference projectStatesByRef(MapDocumentReference projectRef) {
     return projectRef.collection('state');
   }
 
-  MapDocumentReference projectStateReferenceByRef(MapDocumentReference projectRef) {
-    return projectStateCollection(projectRef).doc(uid!);
+  MapDocumentReference projectStateById({required String projectId}) {
+    final projectRef = projectById(projectId);
+    return projectStatesByRef(projectRef).doc(uid!);
   }
 
-  MapCollectionReference projectNodesCollection(MapDocumentReference projectRef) {
+  MapCollectionReference projectNodesByRef(MapDocumentReference projectRef) {
     return projectRef.collection('nodes');
   }
 
-  MapCollectionReference projectWorkspacesCollection(MapDocumentReference projectRef) {
+  MapCollectionReference projectWorkspacesByRef(MapDocumentReference projectRef) {
     return projectRef.collection('workspaces');
   }
 
-  MapDocumentReference projectWorkspaceById(MapDocumentReference projectRef, String workspaceId) {
-    return projectWorkspacesCollection(projectRef).doc(workspaceId);
+  MapDocumentReference projectWorkspaceById({required String projectId, required String workspaceId}) {
+    final projectRef = projectById(projectId);
+    return projectWorkspacesByRef(projectRef).doc(workspaceId);
   }
 
-  MapCollectionReference projectWorkspaceStateCollection(MapDocumentReference workspaceRef) {
+  MapCollectionReference projectWorkspaceStatesByRef(MapDocumentReference workspaceRef) {
     return workspaceRef.collection('state');
   }
 
   MapDocumentReference projectWorkspaceStateByRef(MapDocumentReference workspaceRef) {
-    return projectWorkspaceStateCollection(workspaceRef).doc(uid!);
+    return projectWorkspaceStatesByRef(workspaceRef).doc(uid!);
   }
 
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {
     return workspaceRef.collection('items');
+  }
+
+  MapCollectionReference nodesById({required String projectId}) {
+    final projectRef = projectById(projectId);
+    return projectNodesByRef(projectRef);
+  }
+
+  MapCollectionReference projectWorkspaceItemsById({required String projectId, required String workspaceId}) {
+    final workspaceRef = projectWorkspaceById(projectId: projectId, workspaceId: workspaceId);
+    return projectWorkspaceItemsCollection(workspaceRef);
+  }
+
+  MapCollectionReference projectWorkspacesById({required String projectId}) {
+    final projectRef = projectById(projectId);
+    return projectWorkspacesByRef(projectRef);
   }
 }
 
@@ -91,20 +109,14 @@ class FirestoreStreams with _$FirestoreStreams {
 
   Stream<List<ProjectModel>> projects({required OrderDirection order}) {
     return references
-        .projectsCollection()
+        .projects()
         .orderBy('name', descending: order.isDescending)
         .snapshots(includeMetadataChanges: true)
         .map(_asProjectModels);
   }
 
-  Stream<ProjectModel> projectByReference({required MapDocumentReference projectRef}) {
-    return projectRef.snapshots(includeMetadataChanges: true).map(_asProjectModel);
-  }
-
   Stream<ProjectModel> projectById({required String projectId}) {
-    return projectByReference(
-      projectRef: references.projectById(projectId),
-    );
+    return references.projectById(projectId).snapshots(includeMetadataChanges: true).map(_asProjectModel);
   }
 
   //
@@ -113,16 +125,11 @@ class FirestoreStreams with _$FirestoreStreams {
     return ProjectStateModel(doc: _asDoc(snapshot, isOptional: true));
   }
 
-  Stream<ProjectStateModel> projectStateByProjectReference({required MapDocumentReference projectRef}) {
+  Stream<ProjectStateModel> projectStateById({required String projectId}) {
     return references
-        .projectStateReferenceByRef(projectRef)
+        .projectStateById(projectId: projectId)
         .snapshots(includeMetadataChanges: true)
         .map(_asProjectStateModel);
-  }
-
-  Stream<ProjectStateModel> projectStateByProjectId({required String projectId}) {
-    final projectRef = references.projectsCollection().doc(projectId);
-    return projectStateByProjectReference(projectRef: projectRef);
   }
 
   //
@@ -135,15 +142,16 @@ class FirestoreStreams with _$FirestoreStreams {
     return snapshot.docs.map(_asProjectWorkspaceModel).toList(growable: false);
   }
 
-  Stream<List<ProjectWorkspaceModel>> workspacesByProjectReference(MapDocumentReference projectRef) {
+  Stream<List<ProjectWorkspaceModel>> workspacesById(String projectId) {
     return references
-        .projectWorkspacesCollection(projectRef)
+        .projectWorkspacesById(projectId: projectId)
         .snapshots(includeMetadataChanges: true)
         .map(_asProjectWorkspaceModels);
   }
 
-  Stream<List<ProjectWorkspaceModel>> workspacesByProjectId(String projectId) {
-    return workspacesByProjectReference(references.projectById(projectId));
+  Stream<ProjectWorkspaceModel> workspaceById({required String projectId, required String workspaceId}) {
+    final workspaceRef = references.projectWorkspaceById(projectId: projectId, workspaceId: workspaceId);
+    return workspaceRef.snapshots(includeMetadataChanges: true).map(_asProjectWorkspaceModel);
   }
 
   //
@@ -152,26 +160,46 @@ class FirestoreStreams with _$FirestoreStreams {
     return ProjectWorkspaceStateModel(doc: _asDoc(snapshot, isOptional: true));
   }
 
-  Stream<ProjectWorkspaceStateModel> workspaceStateByWorkspaceReference({required MapDocumentReference workspaceRef}) {
-    return references
-        .projectWorkspaceStateByRef(workspaceRef)
-        .snapshots(includeMetadataChanges: true)
-        .map(_asProjectWorkspaceStateModel);
-  }
-
-  Stream<ProjectWorkspaceModel> workspaceById({required String projectId, required String workspaceId}) {
-    final projectRef = references.projectById(projectId);
-    final workspaceRef = references.projectWorkspaceById(projectRef, workspaceId);
-    return workspaceRef.snapshots(includeMetadataChanges: true).map(_asProjectWorkspaceModel);
-  }
-
   Stream<ProjectWorkspaceStateModel> workspaceStateById({required String projectId, required String workspaceId}) {
-    final projectRef = references.projectById(projectId);
-    final workspaceRef = references.projectWorkspaceById(projectRef, workspaceId);
+    final workspaceRef = references.projectWorkspaceById(projectId: projectId, workspaceId: workspaceId);
     return references
         .projectWorkspaceStateByRef(workspaceRef)
         .snapshots(includeMetadataChanges: true)
         .map(_asProjectWorkspaceStateModel);
+  }
+
+  //
+
+  ProjectNodeModel _asProjectNodeModel(MapDocumentSnapshot snapshot) {
+    final data = snapshot.data()!;
+    final type = data['type'] as String;
+    if (type == 'box') {
+      return ProjectBoxNodeModel(doc: _asDoc(snapshot));
+    }
+    throw UnsupportedError(data.toString());
+  }
+
+  List<ProjectNodeModel> _asProjectNodeModels(QuerySnapshot<FirestoreMap> event) {
+    return event.docs.map(_asProjectNodeModel).toList(growable: false);
+  }
+
+  Stream<List<ProjectNodeModel>> nodesById({required String projectId}) {
+    return references.nodesById(projectId: projectId).snapshots(includeMetadataChanges: true).map(_asProjectNodeModels);
+  }
+
+  //
+
+  ProjectWorkspaceItemModel _asProjectWorkspaceItemModel(MapDocumentSnapshot snapshot) {
+    return ProjectWorkspaceItemModel(doc: _asDoc(snapshot));
+  }
+
+  List<ProjectWorkspaceItemModel> _asProjectWorkspaceItemModels(QuerySnapshot<FirestoreMap> event) {
+    return event.docs.map(_asProjectWorkspaceItemModel).toList(growable: false);
+  }
+
+  Stream<List<ProjectWorkspaceItemModel>> workspaceItemsById({required String projectId, required String workspaceId}) {
+    final reference = references.projectWorkspaceItemsById(projectId: projectId, workspaceId: workspaceId);
+    return reference.snapshots(includeMetadataChanges: true).map(_asProjectWorkspaceItemModels);
   }
 }
 

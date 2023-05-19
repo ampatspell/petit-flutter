@@ -2,7 +2,9 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../providers/project/nodes.dart';
 import '../../../providers/project/project.dart';
+import '../../../providers/project/workspace/items.dart';
 import '../../../providers/project/workspace/workspace.dart';
 import '../../base/scope_overrides/scope_overrides.dart';
 
@@ -29,6 +31,8 @@ class WorkspaceScreen extends ConsumerWidget {
           overrideProvider(projectStateModelProvider).withListenable(projectStateModelStreamProvider),
           overrideProvider(workspaceModelProvider).withListenable(workspaceModelStreamProvider),
           overrideProvider(workspaceStateModelProvider).withListenable(workspaceStateModelStreamProvider),
+          overrideProvider(projectNodeModelsProvider).withListenable(projectNodeModelsStreamProvider),
+          overrideProvider(workspaceItemModelsProvider).withListenable(workspaceItemModelsStreamProvider),
         ],
         child: const WorkspaceScreenContent(),
       ),
@@ -47,6 +51,8 @@ class WorkspaceScreenContent extends ConsumerWidget {
     final projectState = ref.watch(projectStateModelProvider);
     final workspace = ref.watch(workspaceModelProvider);
     final workspaceState = ref.watch(workspaceStateModelProvider);
+    final nodes = ref.watch(projectNodeModelsProvider);
+    final items = ref.watch(workspaceItemModelsProvider);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -60,6 +66,10 @@ class WorkspaceScreenContent extends ConsumerWidget {
         Text(workspace.toString()),
         const Gap(10),
         Text(workspaceState.toString()),
+        const Gap(10),
+        Text(nodes.toString()),
+        const Gap(10),
+        Text(items.toString()),
       ],
     );
 

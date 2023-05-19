@@ -9,7 +9,7 @@ part 'workspaces.g.dart';
 @Riverpod(dependencies: [projectId, firestoreStreams])
 Stream<List<ProjectWorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamRef ref) {
   final projectId = ref.watch(projectIdProvider);
-  return ref.watch(firestoreStreamsProvider).workspacesByProjectId(projectId);
+  return ref.watch(firestoreStreamsProvider).workspacesById(projectId);
 }
 
 //
