@@ -28,6 +28,18 @@ class WorkspaceStateModel with _$WorkspaceStateModel implements HasDoc {
   }) = _WorkspaceStateModel;
 
   const WorkspaceStateModel._();
+
+  String? get item => doc['item'] as String?;
+
+  int get pixel => doc['pixel'] as int? ?? 2;
+
+  Future<void> updateItem(String? value) async {
+    await doc.merge({'item': value});
+  }
+
+  Future<void> updatePixel(int? value) async {
+    await doc.merge({'pixel': value});
+  }
 }
 
 @freezed
@@ -48,7 +60,11 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
 
   Offset get position => Offset(x.toDouble(), y.toDouble());
 
-  Offset renderedPosition(int pixel) {
-    return position * pixel.toDouble();
+  Offset renderedPosition(int workspacePixel) {
+    return position * workspacePixel.toDouble();
+  }
+
+  Future<void> updatePixel(int? value) async {
+    await doc.merge({'pixel': value});
   }
 }

@@ -10,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final firebaseServices = await initializeFirebase();
   final loggingObserver = ProviderLoggingObserver(
-    enabled: true,
+    enabled: false,
   );
   runApp(ProviderScope(
     overrides: [

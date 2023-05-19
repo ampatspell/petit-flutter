@@ -16,5 +16,5 @@ Stream<List<WorkspaceItemModel>> workspaceItemModelsStream(WorkspaceItemModelsSt
 
 //
 
-@Riverpod()
+@Riverpod(dependencies: [])
 List<WorkspaceItemModel> workspaceItemModels(WorkspaceItemModelsRef ref) => throw OverrideProviderException();

@@ -21,8 +21,8 @@ mixin NodeModelWithSize {
     return Size(width.toDouble(), height.toDouble());
   }
 
-  Size renderedSize(int itemPixel, int projectPixel) {
-    return size * itemPixel.toDouble() * projectPixel.toDouble();
+  Size renderedSize(int itemPixel, int workspacePixel) {
+    return size * itemPixel.toDouble() * workspacePixel.toDouble();
   }
 }
 
