@@ -67,4 +67,11 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
   Future<void> updatePixel(int? value) async {
     await doc.merge({'pixel': value});
   }
+
+  void updatePosition(Offset offset) async {
+    await doc.merge({
+      'x': offset.dx.toInt(),
+      'y': offset.dy.toInt(),
+    });
+  }
 }

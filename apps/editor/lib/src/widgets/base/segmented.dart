@@ -74,13 +74,13 @@ class _Segment<T> extends StatelessWidget {
       style: ButtonStyle(
         shape: ButtonState.all(LinearBorder.none),
         backgroundColor: ButtonState.resolveWith((states) {
-          return isSelected ? Colors.black : Colors.white;
+          return isSelected ? Colors.black.withAlpha(240) : Colors.white;
         }),
       ),
       child: Text(
         model.label,
         style: TextStyle(
-          color: isSelected ? Colors.white : Colors.black,
+          color: isSelected ? Colors.white : Colors.black.withAlpha(240),
         ),
       ),
       onPressed: onSelect,

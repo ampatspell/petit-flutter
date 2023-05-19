@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
@@ -187,7 +188,7 @@ class WorkspaceItem extends ConsumerWidget {
   }
 }
 
-class WorkspaceItemContainer extends ConsumerWidget {
+class WorkspaceItemContainer extends HookConsumerWidget {
   const WorkspaceItemContainer({
     super.key,
     required this.child,
@@ -197,9 +198,27 @@ class WorkspaceItemContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isDragging = useState(false);
+
     void onSelect() {
+      if (isDragging.value) {
+        return;
+      }
       final id = ref.read(workspaceItemModelProvider.select((value) => value.doc.id));
       ref.read(workspaceStateModelProvider).updateItem(id);
+    }
+
+    void onDragStart() {
+      isDragging.value = true;
+    }
+
+    void onDragEnd(Offset delta) {
+      final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
+      final item = ref.read(workspaceItemModelProvider);
+      final scaled = delta / workspacePixel.toDouble();
+      final value = item.position + scaled;
+      item.updatePosition(value);
+      isDragging.value = false;
     }
 
     final isSelected = ref.watch(isWorkspaceItemModelSelectedProvider);
@@ -210,8 +229,49 @@ class WorkspaceItemContainer extends ConsumerWidget {
       ),
       child: GestureDetector(
         onTap: onSelect,
+        child: DraggableWorkspaceItem(
+          child: child,
+          onDragStart: onDragStart,
+          onDragEnd: onDragEnd,
+        ),
+      ),
+    );
+  }
+}
+
+class DraggableWorkspaceItem extends HookConsumerWidget {
+  const DraggableWorkspaceItem({
+    super.key,
+    required this.child,
+    required this.onDragEnd,
+    required this.onDragStart,
+  });
+
+  final Widget child;
+  final ValueChanged<Offset> onDragEnd;
+  final VoidCallback onDragStart;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final dragging = useState<Offset?>(null);
+    return Draggable(
+      childWhenDragging: const SizedBox.shrink(),
+      feedback: ProviderScope(
+        parent: ProviderScope.containerOf(context),
         child: child,
       ),
+      child: child,
+      onDragStarted: () {
+        dragging.value = Offset.zero;
+      },
+      onDragUpdate: (details) {
+        final delta = details.delta;
+        final value = dragging.value!;
+        dragging.value = value + delta;
+      },
+      onDragEnd: (details) {
+        onDragEnd(dragging.value!);
+      },
     );
   }
 }

@@ -1,10 +1,7 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../app/theme.dart';
-import '../../app/utils.dart';
 import '../base/segmented.dart';
 
 class DevelopmentTwoScreen extends HookConsumerWidget {
