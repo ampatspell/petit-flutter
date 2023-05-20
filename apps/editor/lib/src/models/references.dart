@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -201,6 +203,87 @@ class FirestoreStreams with _$FirestoreStreams {
     final reference = references.projectWorkspaceItemsById(projectId: projectId, workspaceId: workspaceId);
     return reference.snapshots(includeMetadataChanges: true).map(_asProjectWorkspaceItemModels);
   }
+
+  Stream<QueryModels<WorkspaceItemModel>> workspaceItems({required String projectId, required String workspaceId}) {
+    final reference = references.projectWorkspaceItemsById(projectId: projectId, workspaceId: workspaceId);
+    return QuerySnapshotStreamController<WorkspaceItemModel>(
+      reference: reference,
+      create: (snapshot) => WorkspaceItemModel(doc: _asDoc(snapshot)),
+    ).stream;
+  }
+}
+
+abstract class SnapshotStreamController<T> {}
+
+class QueryModels<T> {
+  QueryModels(this._controller, this.content);
+
+  final SnapshotStreamController<T> _controller;
+  final List<T> content;
+
+  @override
+  String toString() {
+    return 'QueryModels{content: $content}';
+  }
+}
+
+class QuerySnapshotStreamController<T> implements SnapshotStreamController<T> {
+  QuerySnapshotStreamController({
+    required this.reference,
+    required this.create,
+  }) {
+    _controller = StreamController<QueryModels<T>>(
+      onListen: _onListen,
+      onCancel: _onCancel,
+    );
+  }
+
+  final T Function(MapDocumentSnapshot snapshot) create;
+
+  final MapCollectionReference reference;
+  late final StreamController<QueryModels<T>> _controller;
+  StreamSubscription<MapQuerySnapshot>? _subscription;
+  QueryModels<T>? _last;
+
+  Stream<QueryModels<T>> get stream => _controller.stream;
+
+  void _onListen() {
+    _subscription = reference.snapshots(includeMetadataChanges: true).listen(_onSnapshot);
+  }
+
+  void _onCancel() {
+    _subscription!.cancel();
+    _last = null;
+  }
+
+  void _onSnapshot(MapQuerySnapshot snapshot) {
+    final last = _last;
+    late final List<T> content;
+    if (last == null) {
+      content = snapshot.docs.map(create).toList(growable: false);
+    } else {
+      content = [...last.content];
+      for (final change in snapshot.docChanges) {
+        final type = change.type;
+        final oldIndex = change.oldIndex;
+        final newIndex = change.newIndex;
+        final doc = change.doc;
+        if (type == DocumentChangeType.added) {
+          final model = create(doc);
+          content.insert(newIndex, model);
+        } else if (type == DocumentChangeType.modified) {
+          final model = create(doc);
+          content.removeAt(oldIndex);
+          content.insert(newIndex, model);
+        } else if (type == DocumentChangeType.removed) {
+          content.removeAt(oldIndex);
+        }
+      }
+    }
+    final models = QueryModels<T>(this, content);
+    _last = models;
+    _controller.add(models);
+  }
 }
 
 @Freezed(toStringOverride: false)
@@ -235,6 +318,7 @@ class Doc with _$Doc {
     if (_noChanges(map, force)) {
       return;
     }
+
     await reference.set(map, SetOptions(merge: true));
   }
 
