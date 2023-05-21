@@ -205,11 +205,8 @@ class WorkspaceItemContainer extends HookConsumerWidget {
       if (isDragging) {
         return;
       }
-
-      Future.delayed(Duration.zero, () {
-        final id = ref.read(workspaceItemModelProvider.select((value) => value.doc.id));
-        ref.read(workspaceStateModelProvider).updateItem(id);
-      });
+      final id = ref.read(workspaceItemModelProvider.select((value) => value.doc.id));
+      ref.read(workspaceStateModelProvider).updateItem(id);
     }
 
     void onDragStart() {
