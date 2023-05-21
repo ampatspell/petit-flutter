@@ -200,6 +200,8 @@ class WorkspaceItemContainer extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final isSelected = ref.watch(isWorkspaceItemModelSelectedProvider);
+
     final dragging = useState<Offset?>(null);
     final isDragging = dragging.value != null;
 
@@ -212,6 +214,7 @@ class WorkspaceItemContainer extends HookConsumerWidget {
     }
 
     void onDragStart() {
+      onSelect();
       final position = ref.read(workspaceItemModelProvider.select((value) => value.position));
       dragging.value = position;
     }
@@ -233,20 +236,18 @@ class WorkspaceItemContainer extends HookConsumerWidget {
       dragging.value = null;
     }
 
-    final isSelected = ref.watch(isWorkspaceItemModelSelectedProvider);
-
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(color: isSelected ? Colors.red : Colors.transparent),
-      ),
-      child: GestureDetector(
-        onTap: onSelect,
-        child: DraggableWorkspaceItem(
+    return GestureDetector(
+      onTap: onSelect,
+      child: DraggableWorkspaceItem(
+        child: Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: isSelected ? Colors.red : Colors.transparent),
+          ),
           child: child,
-          onDragStart: onDragStart,
-          onDragUpdate: onDragUpdate,
-          onDragEnd: onDragEnd,
         ),
+        onDragStart: onDragStart,
+        onDragUpdate: onDragUpdate,
+        onDragEnd: onDragEnd,
       ),
     );
   }

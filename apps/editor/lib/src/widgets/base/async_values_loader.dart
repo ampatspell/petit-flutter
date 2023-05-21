@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../models/doc.dart';
@@ -20,6 +21,13 @@ class AsyncValuesLoader extends ConsumerWidget {
 
     final errors = values.where((value) => value.hasError);
     if (errors.isNotEmpty) {
+      for (final e in errors) {
+        if (kDebugMode) {
+          print('Error: ${e.error}');
+          print(e.stackTrace!);
+          print('');
+        }
+      }
       return Text([
         'Errors',
         '',
@@ -29,6 +37,11 @@ class AsyncValuesLoader extends ConsumerWidget {
 
     final loading = values.where((value) => !value.hasValue);
     if (loading.isNotEmpty) {
+      if (kDebugMode) {
+        for (final e in loading) {
+          print('Loading: $e');
+        }
+      }
       return Text([
         'Loading',
         '',
@@ -53,6 +66,11 @@ class AsyncValuesLoader extends ConsumerWidget {
     });
 
     if (deleted.isNotEmpty) {
+      if (kDebugMode) {
+        for (final e in deleted) {
+          print('Deleted: $e');
+        }
+      }
       return Text([
         'Deleted',
         '',
