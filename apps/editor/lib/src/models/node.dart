@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'references.dart';
+import 'doc.dart';
 
 part 'node.freezed.dart';
 

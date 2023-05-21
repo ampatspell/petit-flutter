@@ -72,7 +72,7 @@ class WorkspaceInspector extends ConsumerWidget {
     }
 
     final item = ref.watch(selectedWorkspaceItemModelProvider);
-    final node = ref.watch(selectedNodeModelProvider);
+    // final node = ref.watch(selectedNodeModelProvider);
 
     void setItemPixel(int value) {
       item!.updatePixel(value);
@@ -104,10 +104,10 @@ class WorkspaceInspector extends ConsumerWidget {
             pixels(workspacePixel, setWorkspacePixel),
             if (item != null) ...[
               const Gap(20),
-              Text('Item: $item'),
-              const Gap(10),
-              Text('Node: $node'),
-              const Gap(10),
+              Text('${item.x} ${item.y}'),
+              // const Gap(10),
+              // Text('Node: $node'),
+              // const Gap(10),
               Text('Pixel: ${item.pixel}'),
               const Gap(10),
               pixels(item.pixel, setItemPixel),
@@ -198,27 +198,40 @@ class WorkspaceItemContainer extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final isDragging = useState(false);
+    final dragging = useState<Offset?>(null);
+    final isDragging = dragging.value != null;
 
     void onSelect() {
-      if (isDragging.value) {
+      if (isDragging) {
         return;
       }
-      final id = ref.read(workspaceItemModelProvider.select((value) => value.doc.id));
-      ref.read(workspaceStateModelProvider).updateItem(id);
+
+      Future.delayed(Duration.zero, () {
+        final id = ref.read(workspaceItemModelProvider.select((value) => value.doc.id));
+        ref.read(workspaceStateModelProvider).updateItem(id);
+      });
     }
 
     void onDragStart() {
-      isDragging.value = true;
+      final position = ref.read(workspaceItemModelProvider.select((value) => value.position));
+      dragging.value = position;
     }
 
-    void onDragEnd(Offset delta) {
+    void updatePosition(Offset delta, bool save) async {
       final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
       final item = ref.read(workspaceItemModelProvider);
       final scaled = delta / workspacePixel.toDouble();
-      final value = item.position + scaled;
-      item.updatePosition(value);
-      isDragging.value = false;
+      final absolute = dragging.value! + scaled;
+      await item.updatePosition(absolute, save);
+    }
+
+    void onDragUpdate(Offset delta) {
+      updatePosition(delta, false);
+    }
+
+    void onDragEnd(Offset delta) {
+      updatePosition(delta, true);
+      dragging.value = null;
     }
 
     final isSelected = ref.watch(isWorkspaceItemModelSelectedProvider);
@@ -232,6 +245,7 @@ class WorkspaceItemContainer extends HookConsumerWidget {
         child: DraggableWorkspaceItem(
           child: child,
           onDragStart: onDragStart,
+          onDragUpdate: onDragUpdate,
           onDragEnd: onDragEnd,
         ),
       ),
@@ -243,13 +257,15 @@ class DraggableWorkspaceItem extends HookConsumerWidget {
   const DraggableWorkspaceItem({
     super.key,
     required this.child,
-    required this.onDragEnd,
     required this.onDragStart,
+    required this.onDragUpdate,
+    required this.onDragEnd,
   });
 
   final Widget child;
-  final ValueChanged<Offset> onDragEnd;
   final VoidCallback onDragStart;
+  final ValueChanged<Offset> onDragUpdate;
+  final ValueChanged<Offset> onDragEnd;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -263,11 +279,13 @@ class DraggableWorkspaceItem extends HookConsumerWidget {
       child: child,
       onDragStarted: () {
         dragging.value = Offset.zero;
+        onDragStart();
       },
       onDragUpdate: (details) {
         final delta = details.delta;
         final value = dragging.value!;
         dragging.value = value + delta;
+        onDragUpdate(dragging.value!);
       },
       onDragEnd: (details) {
         onDragEnd(dragging.value!);

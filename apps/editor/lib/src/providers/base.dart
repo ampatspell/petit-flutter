@@ -8,6 +8,7 @@ import '../../firebase_options.dart';
 import '../app/provider_logging_observer.dart';
 import '../models/base.dart';
 import '../models/references.dart';
+import '../models/streams.dart';
 
 part 'base.g.dart';
 

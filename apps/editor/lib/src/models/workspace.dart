@@ -2,7 +2,8 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import 'references.dart';
+import 'controllers.dart';
+import 'doc.dart';
 
 part 'workspace.freezed.dart';
 
@@ -46,6 +47,7 @@ class WorkspaceStateModel with _$WorkspaceStateModel implements HasDoc {
 class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
   const factory WorkspaceItemModel({
     required Doc doc,
+    required SnapshotStreamController<WorkspaceItemModel> controller,
   }) = _WorkspaceItemModel;
 
   const WorkspaceItemModel._();
@@ -68,10 +70,14 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
     await doc.merge({'pixel': value});
   }
 
-  void updatePosition(Offset offset) async {
-    await doc.merge({
+  Future<void> updatePosition(Offset offset, bool save) async {
+    final map = {
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
-    });
+    };
+    controller.merge(this, map);
+    if (save) {
+      await doc.merge(map, force: true);
+    }
   }
 }
