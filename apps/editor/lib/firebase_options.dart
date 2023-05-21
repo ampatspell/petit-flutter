@@ -16,10 +16,11 @@ import 'package:flutter/foundation.dart' show defaultTargetPlatform, kIsWeb, Tar
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      throw UnsupportedError(
-        'DefaultFirebaseOptions have not been configured for web - '
-        'you can reconfigure this by running the FlutterFire CLI again.',
-      );
+      return macos;
+      // throw UnsupportedError(
+      //   'DefaultFirebaseOptions have not been configured for web - '
+      //   'you can reconfigure this by running the FlutterFire CLI again.',
+      // );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:

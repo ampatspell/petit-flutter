@@ -1,16 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../firebase_options.dart';
 import '../app/provider_logging_observer.dart';
 import '../models/base.dart';
+import '../models/references.dart';
+import '../models/streams.dart';
 
 part 'base.g.dart';
 
 class OverrideProviderException implements Exception {
-  OverrideProviderException();
+  OverrideProviderException() {
+    if (kDebugMode) {
+      print(StackTrace.current);
+    }
+  }
 
   @override
   String toString() {
@@ -61,4 +68,27 @@ AppState appState(AppStateRef ref) {
 
   final user = ref.read(authStateChangesProvider).value;
   return AppState(user: user);
+}
+
+@Riverpod(keepAlive: true, dependencies: [appState])
+String? uid(UidRef ref) {
+  return ref.watch(appStateProvider.select((value) => value.user?.uid));
+}
+
+@Riverpod(keepAlive: true, dependencies: [uid, firebaseServices])
+FirestoreReferences firestoreReferences(FirestoreReferencesRef ref) {
+  final services = ref.watch(firebaseServicesProvider);
+  final uid = ref.watch(uidProvider);
+  return FirestoreReferences(
+    services: services,
+    uid: uid,
+  );
+}
+
+@Riverpod(keepAlive: true, dependencies: [firestoreReferences])
+FirestoreStreams firestoreStreams(FirestoreStreamsRef ref) {
+  final references = ref.watch(firestoreReferencesProvider);
+  return FirestoreStreams(
+    references: references,
+  );
 }

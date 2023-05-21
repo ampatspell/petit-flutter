@@ -1,8 +1,7 @@
-part of 'loaded_scope.dart';
+part of 'scope_overrides.dart';
 
-class ProviderScopeOverridesScaffold extends StatelessWidget {
-  const ProviderScopeOverridesScaffold({
-    super.key,
+class _ProviderScopeOverridesScaffold extends StatelessWidget {
+  const _ProviderScopeOverridesScaffold({
     required this.title,
     required this.child,
   });

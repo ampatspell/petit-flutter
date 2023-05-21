@@ -6,15 +6,14 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../providers/base.dart';
-import '../providers/project.dart';
 import '../widgets/base/fluent_screen.dart';
-import '../widgets/base/loaded_scope/loaded_scope.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
 import '../widgets/development/three.dart';
 import '../widgets/development/two.dart';
 import '../widgets/home.dart';
 import '../widgets/project/screen.dart';
+import '../widgets/project/workspace/screen.dart';
 import '../widgets/projects/new/screen.dart';
 import '../widgets/projects/screen.dart';
 
@@ -32,7 +31,12 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
       path: '/projects',
       routes: <TypedGoRoute<GoRouteData>>[
         TypedGoRoute<NewProjectRoute>(path: 'new'),
-        TypedGoRoute<ProjectRoute>(path: ':id'),
+        TypedGoRoute<ProjectRoute>(
+          path: ':projectId',
+          routes: [
+            TypedGoRoute<ProjectWorkspaceRoute>(path: 'workspaces/:workspaceId'),
+          ],
+        ),
       ],
     ),
     TypedGoRoute<DevelopmentRoute>(
@@ -109,18 +113,30 @@ class NewProjectRoute extends GoRouteData {
 }
 
 class ProjectRoute extends GoRouteData {
-  ProjectRoute({required this.id});
+  const ProjectRoute({required this.projectId});
 
-  final String id;
+  final String projectId;
 
   @override
   Widget build(BuildContext context, GoRouterState state) {
-    return LoadedScope(
-      parent: this,
-      loaders: (context, ref) => [
-        overrideProvider(projectIdProvider).withValue(id),
-      ],
-      child: const ProjectScreen(),
+    return ProjectScreen(projectId: projectId);
+  }
+}
+
+class ProjectWorkspaceRoute extends GoRouteData {
+  const ProjectWorkspaceRoute({
+    required this.projectId,
+    required this.workspaceId,
+  });
+
+  final String projectId;
+  final String workspaceId;
+
+  @override
+  Widget build(BuildContext context, GoRouterState state) {
+    return WorkspaceScreen(
+      projectId: projectId,
+      workspaceId: workspaceId,
     );
   }
 }
@@ -179,7 +195,7 @@ List<Route> routes(RoutesRef ref) {
 Raw<GoRouter> router(RouterRef ref) {
   return GoRouter(
     debugLogDiagnostics: true,
-    initialLocation: '/',
+    initialLocation: initialLocation,
     routes: $appRoutes,
     navigatorKey: _rootKey,
     redirect: (context, state) async {
@@ -200,12 +216,19 @@ Raw<GoRouter> router(RouterRef ref) {
   );
 }
 
+class OnRouteChange {
+  @override
+  String toString() {
+    return 'OnRouteChange{}';
+  }
+}
+
 @Riverpod(keepAlive: true, dependencies: [router])
-Stream<Object> routerOnRouteChange(RouterOnRouteChangeRef ref) {
-  final controller = StreamController<Object>();
+Stream<OnRouteChange> routerOnRouteChange(RouterOnRouteChangeRef ref) {
+  final controller = StreamController<OnRouteChange>();
   void listener() {
     SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      controller.add(Object());
+      controller.add(OnRouteChange());
     });
   }
 
@@ -215,3 +238,5 @@ Stream<Object> routerOnRouteChange(RouterOnRouteChangeRef ref) {
 
   return controller.stream;
 }
+
+const initialLocation = '/';

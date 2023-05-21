@@ -1,10 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:collection/collection.dart';
 import 'package:flutter/foundation.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../app/typedefs.dart';
 import 'base.dart';
-import 'typedefs.dart';
 
 part 'references.freezed.dart';
 
@@ -12,6 +11,7 @@ part 'references.freezed.dart';
 class FirestoreReferences with _$FirestoreReferences {
   const factory FirestoreReferences({
     required FirebaseServices services,
+    required String? uid,
   }) = _FirestoreReferences;
 
   const FirestoreReferences._();
@@ -22,69 +22,56 @@ class FirestoreReferences with _$FirestoreReferences {
     return _firestore.collection('projects');
   }
 
-  MapCollectionReference projectNodesCollection(MapDocumentReference projectRef) {
+  MapDocumentReference projectById(String projectId) {
+    return projects().doc(projectId);
+  }
+
+  MapCollectionReference projectStatesByRef(MapDocumentReference projectRef) {
+    return projectRef.collection('state');
+  }
+
+  MapDocumentReference projectStateById({required String projectId}) {
+    final projectRef = projectById(projectId);
+    return projectStatesByRef(projectRef).doc(uid!);
+  }
+
+  MapCollectionReference projectNodesByRef(MapDocumentReference projectRef) {
     return projectRef.collection('nodes');
   }
 
-  MapCollectionReference projectWorkspacesCollection(MapDocumentReference projectRef) {
+  MapCollectionReference projectWorkspacesByRef(MapDocumentReference projectRef) {
     return projectRef.collection('workspaces');
+  }
+
+  MapDocumentReference projectWorkspaceById({required String projectId, required String workspaceId}) {
+    final projectRef = projectById(projectId);
+    return projectWorkspacesByRef(projectRef).doc(workspaceId);
+  }
+
+  MapCollectionReference projectWorkspaceStatesByRef(MapDocumentReference workspaceRef) {
+    return workspaceRef.collection('state');
+  }
+
+  MapDocumentReference projectWorkspaceStateByRef(MapDocumentReference workspaceRef) {
+    return projectWorkspaceStatesByRef(workspaceRef).doc(uid!);
   }
 
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {
     return workspaceRef.collection('items');
   }
 
-  Doc asDoc(MapDocumentSnapshot snapshot) {
-    return Doc(
-      reference: snapshot.reference,
-      isDeleted: !snapshot.exists,
-      data: snapshot.data() ?? {},
-    );
-  }
-}
-
-@freezed
-class Doc with _$Doc {
-  const factory Doc({
-    required MapDocumentReference reference,
-    required FirestoreMap data,
-    required bool isDeleted,
-  }) = _Doc;
-
-  const Doc._();
-
-  String get id => reference.id;
-
-  String get path => reference.path;
-
-  dynamic operator [](String key) => data[key];
-
-  bool _noChanges(FirestoreMap map, bool force) {
-    if (force) {
-      return false;
-    }
-    final current = <String, dynamic>{};
-    for (final key in map.keys) {
-      current[key] = data[key];
-    }
-    return mapEquals(current, map);
+  MapCollectionReference nodesById({required String projectId}) {
+    final projectRef = projectById(projectId);
+    return projectNodesByRef(projectRef);
   }
 
-  Future<void> merge(FirestoreMap map, [bool force = false]) async {
-    if (_noChanges(map, force)) {
-      return;
-    }
-    await reference.set(map, SetOptions(merge: true));
+  MapCollectionReference projectWorkspaceItemsById({required String projectId, required String workspaceId}) {
+    final workspaceRef = projectWorkspaceById(projectId: projectId, workspaceId: workspaceId);
+    return projectWorkspaceItemsCollection(workspaceRef);
   }
 
-  Future<void> set(FirestoreMap map, [bool force = false]) async {
-    if (_noChanges(map, force)) {
-      return;
-    }
-    await reference.set(map);
-  }
-
-  Future<void> delete() async {
-    await reference.delete();
+  MapCollectionReference projectWorkspacesById({required String projectId}) {
+    final projectRef = projectById(projectId);
+    return projectWorkspacesByRef(projectRef);
   }
 }

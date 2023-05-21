@@ -87,6 +87,7 @@ class _Leading extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     ref.watch(routerOnRouteChangeProvider);
+
     final canPop = ref.read(routerProvider.select((value) => value.canPop()));
     VoidCallback? onPressed() {
       if (canPop) {

@@ -3,20 +3,20 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../app/router.dart';
-import '../../../models/typedefs.dart';
-import '../../../providers/projects.dart';
+import '../../../app/typedefs.dart';
+import '../../../providers/projects/new.dart';
 
 class NewProjectForm extends ConsumerWidget {
   const NewProjectForm({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // FIXME: content is NewProjectData which I'm not accessing. watching just to keep it alive
+    // FIXME: content is NewProjectModel which I'm not accessing. watching just to keep it alive
     ref.watch(newProjectProvider);
 
     void didCreate(MapDocumentReference reference) {
       if (context.mounted) {
-        ProjectRoute(id: reference.id).go(context);
+        ProjectRoute(projectId: reference.id).go(context);
       }
     }
 

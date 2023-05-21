@@ -1,62 +1,16 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../widgets/base/order.dart';
-import 'project.dart';
+import '../app/typedefs.dart';
 import 'references.dart';
-import 'typedefs.dart';
 
 part 'projects.freezed.dart';
-
-@freezed
-class ProjectsRepository with _$ProjectsRepository {
-  const factory ProjectsRepository({
-    required FirestoreReferences references,
-  }) = _ProjectsRepository;
-
-  const ProjectsRepository._();
-
-  MapCollectionReference get collection => references.projects();
-
-  ProjectModel _asModel(MapDocumentSnapshot snapshot) {
-    return ProjectModel(
-      doc: references.asDoc(snapshot),
-    );
-  }
-
-  List<ProjectModel> _asModels(QuerySnapshot<FirestoreMap> event) {
-    return event.docs.map(_asModel).toList(growable: false);
-  }
-
-  Stream<List<ProjectModel>> all(OrderDirection order) {
-    return collection
-        .orderBy('name', descending: order.isDescending)
-        .snapshots(includeMetadataChanges: true)
-        .map(_asModels);
-  }
-
-  Stream<ProjectModel> byReference(MapDocumentReference projectRef) {
-    return projectRef.snapshots(includeMetadataChanges: true).map(_asModel);
-  }
-
-  Future<MapDocumentReference> add(NewProjectData data) async {
-    final ref = collection.doc();
-    await ref.set({
-      'name': data.name,
-    });
-    return ref;
-  }
-
-  MapDocumentReference referenceById(String id) {
-    return collection.doc(id);
-  }
-}
 
 @freezed
 class ProjectsReset with _$ProjectsReset {
   const factory ProjectsReset({
     required FirestoreReferences references,
+    required String uid,
   }) = _ProjectsReset;
 
   const ProjectsReset._();
@@ -109,8 +63,9 @@ class ProjectsReset with _$ProjectsReset {
     required List<Map<String, dynamic>> items,
   }) async {
     final projectRef = references.projects().doc();
-    final nodesRef = references.projectNodesCollection(projectRef);
-    final workspacesRef = references.projectWorkspacesCollection(projectRef);
+    final projectStateRef = references.projectStatesByRef(projectRef).doc(uid);
+    final nodesRef = references.projectNodesByRef(projectRef);
+    final workspacesRef = references.projectWorkspacesByRef(projectRef);
     final workspaceRef = workspacesRef.doc();
     final workspaceItemsRef = references.projectWorkspaceItemsCollection(workspaceRef);
 
@@ -118,6 +73,10 @@ class ProjectsReset with _$ProjectsReset {
       await projectRef.set({
         'name': name,
       });
+    }
+
+    Future<void> createProjectState() async {
+      await projectStateRef.set({});
     }
 
     Future<void> createNode(Map<String, dynamic> map) async {
@@ -148,6 +107,7 @@ class ProjectsReset with _$ProjectsReset {
 
     await Future.wait([
       createProject(),
+      createProjectState(),
       createWorkspace(),
       createNodes(),
       createItems(),
@@ -160,7 +120,7 @@ class ProjectsReset with _$ProjectsReset {
       final projectRef = projectSnap.reference;
 
       Future<void> deleteNodes() async {
-        final nodesRef = references.projectNodesCollection(projectRef);
+        final nodesRef = references.projectNodesByRef(projectRef);
         final nodes = await nodesRef.get();
         await Future.wait(nodes.docs.map((e) => e.reference.delete()));
       }
@@ -175,7 +135,7 @@ class ProjectsReset with _$ProjectsReset {
       }
 
       Future<void> deleteWorkspaces() async {
-        final workspacesRef = references.projectWorkspacesCollection(projectRef);
+        final workspacesRef = references.projectWorkspacesByRef(projectRef);
         final workspaces = await workspacesRef.get();
         await Future.wait(workspaces.docs.map((e) => deleteWorkspace(e.reference)));
       }
@@ -190,13 +150,13 @@ class ProjectsReset with _$ProjectsReset {
 }
 
 @freezed
-class NewProjectData with _$NewProjectData {
-  const factory NewProjectData({
+class NewProjectModel with _$NewProjectModel {
+  const factory NewProjectModel({
     @Default(false) bool isBusy,
     @Default('') String name,
-  }) = _NewProjectData;
+  }) = _NewProjectModel;
 
-  const NewProjectData._();
+  const NewProjectModel._();
 
   bool get isValid => name.isNotEmpty;
 }
