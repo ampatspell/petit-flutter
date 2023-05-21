@@ -25,8 +25,12 @@ Stream<WorkspaceStateModel> workspaceStateModelStream(WorkspaceStateModelStreamR
 
 //
 
-@Riverpod(dependencies: [])
-WorkspaceModel workspaceModel(WorkspaceModelRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [workspaceModelStream])
+WorkspaceModel workspaceModel(WorkspaceModelRef ref) {
+  return ref.watch(workspaceModelStreamProvider.select((value) => value.requireValue));
+}
 
-@Riverpod(dependencies: [])
-WorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [workspaceStateModelStream])
+WorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) {
+  return ref.watch(workspaceStateModelStreamProvider.select((value) => value.requireValue));
+}

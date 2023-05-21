@@ -10,7 +10,7 @@ import '../../../providers/project/project.dart';
 import '../../../providers/project/workspace/editor.dart';
 import '../../../providers/project/workspace/items.dart';
 import '../../../providers/project/workspace/workspace.dart';
-import '../../base/scope_overrides/scope_overrides.dart';
+import '../../base/async_values_loader.dart';
 import '../../base/segmented.dart';
 
 class WorkspaceScreen extends ConsumerWidget {
@@ -25,19 +25,19 @@ class WorkspaceScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ScopeOverrides(
-      overrides: (context, ref) => [
-        overrideProvider(projectIdProvider).withValue(projectId),
-        overrideProvider(workspaceIdProvider).withValue(workspaceId),
+    return ProviderScope(
+      overrides: [
+        projectIdProvider.overrideWith((ref) => projectId),
+        workspaceIdProvider.overrideWith((ref) => workspaceId),
       ],
-      child: ScopeOverrides(
-        overrides: (context, ref) => [
-          overrideProvider(projectModelProvider).withListenable(projectModelStreamProvider),
-          overrideProvider(projectStateModelProvider).withListenable(projectStateModelStreamProvider),
-          overrideProvider(workspaceModelProvider).withListenable(workspaceModelStreamProvider),
-          overrideProvider(workspaceStateModelProvider).withListenable(workspaceStateModelStreamProvider),
-          overrideProvider(nodeModelsProvider).withListenable(nodeModelsStreamProvider),
-          overrideProvider(workspaceItemModelsProvider).withListenable(workspaceItemModelsStreamProvider),
+      child: AsyncValuesLoader(
+        providers: [
+          projectModelStreamProvider,
+          projectStateModelStreamProvider,
+          workspaceModelStreamProvider,
+          workspaceStateModelStreamProvider,
+          nodeModelsStreamProvider,
+          workspaceItemModelsStreamProvider,
         ],
         child: const WorkspaceScreenContent(),
       ),
@@ -99,15 +99,17 @@ class WorkspaceInspector extends ConsumerWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Workspace: $workspacePixel'),
+            const Text('Workspace'),
+            const Gap(10),
+            Text('Pixel: $workspacePixel'),
             const Gap(10),
             pixels(workspacePixel, setWorkspacePixel),
             if (item != null) ...[
               const Gap(20),
-              Text('${item.x} ${item.y}'),
-              // const Gap(10),
-              // Text('Node: $node'),
-              // const Gap(10),
+              const Text('Item'),
+              const Gap(10),
+              Text('Position: ${item.x} ${item.y}'),
+              const Gap(10),
               Text('Pixel: ${item.pixel}'),
               const Gap(10),
               pixels(item.pixel, setItemPixel),

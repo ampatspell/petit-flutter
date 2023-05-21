@@ -1,5 +1,6 @@
 part of 'scope_overrides.dart';
 
+@Deprecated('yse AsyncValuesLoader')
 class ScopeOverrides extends ConsumerWidget {
   const ScopeOverrides({
     super.key,

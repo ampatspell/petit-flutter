@@ -12,7 +12,7 @@ Stream<List<NodeModel>> nodeModelsStream(NodeModelsStreamRef ref) {
   return ref.watch(firestoreStreamsProvider).nodesById(projectId: projectId);
 }
 
-//
-
-@Riverpod(dependencies: [])
-List<NodeModel> nodeModels(NodeModelsRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [nodeModelsStream])
+List<NodeModel> nodeModels(NodeModelsRef ref) {
+  return ref.watch(nodeModelsStreamProvider.select((value) => value.requireValue));
+}

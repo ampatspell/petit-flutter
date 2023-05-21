@@ -27,7 +27,7 @@ class _AsyncValueLoader<T> extends OverrideLoader<T> {
     final value = _value.value;
 
     bool isDeleted(HasDoc value) {
-      return value.doc.isDeleted && !value.doc.isOptional;
+      return !value.doc.exists && !value.doc.isOptional;
     }
 
     if (value is HasDoc) {

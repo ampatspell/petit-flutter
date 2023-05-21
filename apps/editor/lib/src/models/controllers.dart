@@ -46,7 +46,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
   T _createWithSnapshot(MapDocumentSnapshot snapshot) {
     final doc = Doc(
       reference: snapshot.reference,
-      isDeleted: !snapshot.exists,
+      exists: snapshot.exists,
       data: snapshot.data() ?? {},
     );
     return create(doc, this);
@@ -94,7 +94,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
       return;
     }
 
-    final doc = model.doc.copyWith(isDeleted: false, data: data);
+    final doc = model.doc.copyWith(exists: true, data: data);
     final next = create(doc, this);
 
     final models = [...last];

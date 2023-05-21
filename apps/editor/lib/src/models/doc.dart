@@ -11,7 +11,7 @@ class Doc with _$Doc {
   const factory Doc({
     required MapDocumentReference reference,
     required FirestoreMap data,
-    required bool isDeleted,
+    required bool exists,
     @Default(false) bool isOptional,
   }) = _Doc;
 

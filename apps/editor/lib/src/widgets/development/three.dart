@@ -8,7 +8,7 @@ import '../../providers/base.dart';
 
 part 'three.g.dart';
 
-@Riverpod()
+@Riverpod(dependencies: [firestoreStreams])
 Stream<List<WorkspaceItemModel>> workspaceItems(WorkspaceItemsRef ref) {
   return ref
       .watch(firestoreStreamsProvider)

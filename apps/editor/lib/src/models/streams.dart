@@ -22,7 +22,7 @@ class FirestoreStreams with _$FirestoreStreams {
   Doc _asDoc(MapDocumentSnapshot snapshot, {bool isOptional = false}) {
     return Doc(
       reference: snapshot.reference,
-      isDeleted: !snapshot.exists,
+      exists: snapshot.exists,
       isOptional: isOptional,
       data: snapshot.data() ?? {},
     );
