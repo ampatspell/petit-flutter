@@ -271,11 +271,8 @@ class DraggableWorkspaceItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dragging = useState<Offset?>(null);
     return Draggable(
-      childWhenDragging: const SizedBox.shrink(),
-      feedback: ProviderScope(
-        parent: ProviderScope.containerOf(context),
-        child: child,
-      ),
+      feedback: const SizedBox.shrink(),
+      childWhenDragging: child,
       child: child,
       onDragStarted: () {
         dragging.value = Offset.zero;

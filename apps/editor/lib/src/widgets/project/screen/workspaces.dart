@@ -51,6 +51,7 @@ class _Tile extends ConsumerWidget {
         child: Text(name),
       ),
       onPressed: () {
+        // TODO: override provider with callback as a value
         final list = context.findAncestorWidgetOfExactType<ProjectWorkspacesListView>()!;
         list.onSelect(ref.read(workspaceModelProvider));
       },
