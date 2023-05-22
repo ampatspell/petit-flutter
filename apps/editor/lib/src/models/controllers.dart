@@ -45,12 +45,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
   }
 
   T _createWithSnapshot(MapDocumentSnapshot snapshot) {
-    final doc = Doc(
-      reference: snapshot.reference,
-      exists: snapshot.exists,
-      data: snapshot.data() ?? {},
-    );
-    return create(doc, this);
+    return create(Doc.fromSnapshot(snapshot, isOptional: true), this);
   }
 
   void _onSnapshot(MapQuerySnapshot snapshot) async {

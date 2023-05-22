@@ -11,7 +11,7 @@ class ProjectsList extends ConsumerWidget {
     required this.onSelect,
   });
 
-  final void Function(ProjectModel project) onSelect;
+  final ValueChanged<ProjectModel> onSelect;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

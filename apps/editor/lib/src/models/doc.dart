@@ -12,10 +12,19 @@ class Doc with _$Doc {
     required MapDocumentReference reference,
     required FirestoreMap data,
     required bool exists,
-    @Default(false) bool isOptional,
+    required bool isOptional,
   }) = _Doc;
 
   const Doc._();
+
+  static Doc fromSnapshot(MapDocumentSnapshot snapshot, {bool isOptional = false}) {
+    return Doc(
+      reference: snapshot.reference,
+      data: snapshot.data() ?? {},
+      exists: snapshot.exists,
+      isOptional: isOptional,
+    );
+  }
 
   String get id => reference.id;
 
@@ -42,7 +51,7 @@ class Doc with _$Doc {
   }
 
   Future<void> set(FirestoreMap map, {bool force = false}) async {
-    if (hasNoChanges(map, force)) {
+    if (hasNoChanges(map, force) && map.keys.length == data.keys.length) {
       return;
     }
     await reference.set(map);
@@ -54,7 +63,7 @@ class Doc with _$Doc {
 
   @override
   String toString() {
-    return 'Doc{path: ${reference.path}, data: $data';
+    return 'Doc{path: ${reference.path}, data: $data, exists: $exists, isOptional: $isOptional}';
   }
 }
 

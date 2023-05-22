@@ -1,37 +1,102 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../base/segmented.dart';
+import '../../models/doc.dart';
+import '../../providers/base.dart';
+import '../base/async_values_loader.dart';
+
+part 'two.freezed.dart';
+
+part 'two.g.dart';
 
 class DevelopmentTwoScreen extends HookConsumerWidget {
   const DevelopmentTwoScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selected = useState<int?>(4);
     return ScaffoldPage.withPadding(
       header: const PageHeader(
         title: Text('Two'),
       ),
-      content: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(
-            width: 200,
-            child: Segmented<int>(
-              segments: [
-                const Segment(label: '1', value: 1),
-                const Segment(label: '2', value: 2),
-                const Segment(label: '4', value: 4),
-                const Segment(label: '8', value: 8),
-              ],
-              selected: selected.value,
-              onSelect: (value) => selected.value = value,
-            ),
-          ),
+      content: AsyncValuesLoader(
+        providers: [
+          thingModelStreamProvider,
         ],
+        child: const ThingContent(),
       ),
     );
   }
+}
+
+class ThingContent extends ConsumerWidget {
+  const ThingContent({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final thing = ref.watch(thingModelProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('Name: ${thing.name}'),
+        const Gap(10),
+        FilledButton(
+          child: const Text('Toggle name'),
+          onPressed: () {
+            late final String name;
+            if (thing.name == null || thing.name == 'One') {
+              name = 'Two';
+            } else {
+              name = 'One';
+            }
+            ref.read(thingModelProvider).updateName(name);
+          },
+        ),
+        const Gap(10),
+        FieldTextBox(),
+      ],
+    );
+  }
+}
+
+class FieldTextBox extends StatelessWidget {
+  const FieldTextBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormBox(
+      initialValue: value,
+      onFieldSubmitted: (value) => print('submitted'),
+    );
+  }
+}
+
+@freezed
+class ThingModel with _$ThingModel implements HasDoc {
+  const factory ThingModel({
+    required Doc doc,
+  }) = _ThingModel;
+
+  const ThingModel._();
+
+  String? get name => doc['name'] as String?;
+
+  Future<void> updateName(String name) async {
+    await doc.merge({'name': name});
+  }
+}
+
+@Riverpod(dependencies: [firebaseServices])
+Stream<ThingModel> thingModelStream(ThingModelStreamRef ref) {
+  final firestore = ref.watch(firebaseServicesProvider.select((value) => value.firestore));
+  return firestore.doc('development/thing').snapshots(includeMetadataChanges: true).map((event) {
+    return ThingModel(doc: Doc.fromSnapshot(event, isOptional: true));
+  });
+}
+
+@Riverpod(dependencies: [thingModelStream])
+ThingModel thingModel(ThingModelRef ref) {
+  return ref.watch(thingModelStreamProvider.select((value) => value.requireValue));
 }

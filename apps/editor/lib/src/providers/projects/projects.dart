@@ -24,7 +24,7 @@ Stream<List<ProjectModel>> projectModelsStream(ProjectModelsStreamRef ref) {
   return ref.watch(firestoreStreamsProvider).projects(order: order);
 }
 
-//
-
-@Riverpod(dependencies: [])
-List<ProjectModel> projectModels(ProjectModelsRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [projectModelsStream])
+List<ProjectModel> projectModels(ProjectModelsRef ref) {
+  return ref.watch(projectModelsStreamProvider.select((value) => value.requireValue));
+}
