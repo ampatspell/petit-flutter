@@ -27,8 +27,8 @@ class WorkspaceScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
       overrides: [
-        projectIdProvider.overrideWith((ref) => projectId),
-        workspaceIdProvider.overrideWith((ref) => workspaceId),
+        projectIdProvider.overrideWithValue(projectId),
+        workspaceIdProvider.overrideWithValue(workspaceId),
       ],
       child: AsyncValuesLoader(
         providers: [
