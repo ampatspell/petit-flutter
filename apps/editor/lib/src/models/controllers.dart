@@ -104,7 +104,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
 
   @override
   bool merge(T model, FirestoreMap map) {
-    if (model.doc.noChanges(map, false)) {
+    if (model.doc.hasNoChanges(map, false)) {
       return false;
     }
     final data = {...model.doc.data, ...map};

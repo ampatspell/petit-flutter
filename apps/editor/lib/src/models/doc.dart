@@ -23,7 +23,7 @@ class Doc with _$Doc {
 
   dynamic operator [](String key) => data[key];
 
-  bool noChanges(FirestoreMap map, bool force) {
+  bool hasNoChanges(FirestoreMap map, bool force) {
     if (force) {
       return false;
     }
@@ -35,14 +35,14 @@ class Doc with _$Doc {
   }
 
   Future<void> merge(FirestoreMap map, {bool force = false}) async {
-    if (noChanges(map, force)) {
+    if (hasNoChanges(map, force)) {
       return;
     }
     await reference.set(map, SetOptions(merge: true));
   }
 
   Future<void> set(FirestoreMap map, {bool force = false}) async {
-    if (noChanges(map, force)) {
+    if (hasNoChanges(map, force)) {
       return;
     }
     await reference.set(map);

@@ -75,6 +75,7 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
     };
+    // TODO: controller.scheduleSave
     controller.merge(this, map);
     if (save) {
       await doc.merge(map, force: true);
