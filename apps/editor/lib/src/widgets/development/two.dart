@@ -67,7 +67,7 @@ class FieldTextBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormBox(
-      initialValue: value,
+      initialValue: '',
       onFieldSubmitted: (value) => print('submitted'),
     );
   }
