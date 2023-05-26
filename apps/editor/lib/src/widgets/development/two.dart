@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../models/doc.dart';
 import '../../providers/base.dart';
 import '../base/async_values_loader.dart';
+import '../base/fields/fields.dart';
 
 part 'two.freezed.dart';
 
@@ -46,7 +47,7 @@ class ThingContent extends ConsumerWidget {
           child: const Text('Toggle name'),
           onPressed: () {
             late final String name;
-            if (thing.name == null || thing.name == 'One') {
+            if (thing.name == 'One') {
               name = 'Two';
             } else {
               name = 'One';
@@ -55,20 +56,24 @@ class ThingContent extends ConsumerWidget {
           },
         ),
         const Gap(10),
-        FieldTextBox(),
+        FilledButton(
+          child: const Text('Clear name'),
+          onPressed: () {
+            ref.read(thingModelProvider).updateName(null);
+          },
+        ),
+        const Gap(10),
+        FilledButton(
+          child: const Text('Toggle group disabled'),
+          onPressed: () {
+            ref.read(groupDisabledProvider.notifier).toggle();
+          },
+        ),
+        const Gap(10),
+        FieldTextBox(
+          provider: thingNameFieldProvider,
+        ),
       ],
-    );
-  }
-}
-
-class FieldTextBox extends StatelessWidget {
-  const FieldTextBox({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormBox(
-      initialValue: '',
-      onFieldSubmitted: (value) => print('submitted'),
     );
   }
 }
@@ -81,11 +86,38 @@ class ThingModel with _$ThingModel implements HasDoc {
 
   const ThingModel._();
 
-  String? get name => doc['name'] as String?;
+  String get name => doc['name'] as String? ?? '';
 
-  Future<void> updateName(String name) async {
+  int get x => doc['x'] as int? ?? 0;
+
+  String? get identifier => doc['identifier'] as String?;
+
+  Future<void> updateName(String? name) async {
     await doc.merge({'name': name});
   }
+
+  Future<void> updateIdentifier(String? identifier) async {
+    await doc.merge({'identifier': identifier});
+  }
+
+  Future<void> updateX(int x) async {
+    await doc.merge({'x': x});
+  }
+
+  Property<String, void> get nameProperty => Property(
+        name: 'name',
+        value: name,
+        update: updateName,
+        validate: (property, value) {
+          if (value.trim().isNotEmpty) {
+            if (value == 'One') {
+              return const PropertyValidation(error: "Can't be 'One'");
+            }
+            return PropertyValidation(value: value.trim());
+          }
+          return const PropertyValidation(error: 'Name is required');
+        },
+      );
 }
 
 @Riverpod(dependencies: [firebaseServices])
@@ -99,4 +131,31 @@ Stream<ThingModel> thingModelStream(ThingModelStreamRef ref) {
 @Riverpod(dependencies: [thingModelStream])
 ThingModel thingModel(ThingModelRef ref) {
   return ref.watch(thingModelStreamProvider.select((value) => value.requireValue));
+}
+
+@Riverpod(dependencies: [])
+class GroupDisabled extends _$GroupDisabled {
+  @override
+  bool build() {
+    return false;
+  }
+
+  void toggle() {
+    state = !state;
+  }
+}
+
+@Riverpod(dependencies: [GroupDisabled])
+FieldGroup thingFieldGroup(ThingFieldGroupRef ref) {
+  return FieldGroup(
+    isDisabled: ref.watch(groupDisabledProvider),
+  );
+}
+
+@Riverpod(dependencies: [thingModel, thingFieldGroup])
+Field<String, void> thingNameField(ThingNameFieldRef ref) {
+  return Field(
+    group: ref.watch(thingFieldGroupProvider),
+    property: ref.watch(thingModelProvider.select((value) => value.nameProperty)),
+  );
 }

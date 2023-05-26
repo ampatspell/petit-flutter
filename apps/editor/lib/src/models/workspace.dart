@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import '../widgets/base/fields/fields.dart';
 import 'controllers.dart';
 import 'doc.dart';
 
@@ -40,6 +41,16 @@ class WorkspaceStateModel with _$WorkspaceStateModel implements HasDoc {
 
   Future<void> updatePixel(int? value) async {
     await doc.merge({'pixel': value});
+  }
+
+  Property<int, PixelOptions> get pixelProperty {
+    return Property(
+      name: 'pixel',
+      value: pixel,
+      update: updatePixel,
+      validate: requiredInteger,
+      options: const PixelOptions(),
+    );
   }
 }
 
