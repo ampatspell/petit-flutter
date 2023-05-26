@@ -48,7 +48,7 @@ class WorkspaceStateModel with _$WorkspaceStateModel implements HasDoc {
       name: 'pixel',
       value: pixel,
       update: updatePixel,
-      validate: requiredInteger,
+      validate: requiredPixel,
       options: const PixelOptions(),
     );
   }
@@ -91,5 +91,15 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
     if (save) {
       await doc.merge(map, force: true);
     }
+  }
+
+  Property<int, PixelOptions> get pixelProperty {
+    return Property(
+      name: 'pixel',
+      value: pixel,
+      update: updatePixel,
+      validate: requiredPixel,
+      options: const PixelOptions(),
+    );
   }
 }

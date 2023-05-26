@@ -55,3 +55,14 @@ PropertyValidation<int> requiredInteger(Property<int, void> property, String val
   }
   return PropertyValidation(value: parsed);
 }
+
+PropertyValidation<int> requiredPixel(Property<int, PixelOptions> property, String value) {
+  final parsed = int.tryParse(value);
+  if (parsed == null) {
+    return const PropertyValidation(error: 'Pixel is required');
+  }
+  if (!property.options!.values.contains(parsed)) {
+    return const PropertyValidation(error: 'Pixel must be one of template options');
+  }
+  return PropertyValidation(value: parsed);
+}

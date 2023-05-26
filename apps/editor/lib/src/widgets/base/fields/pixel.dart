@@ -10,21 +10,25 @@ class FieldPixels extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final value = ref.watch(provider.select((value) => value.property.value));
+    final validation = ref.read(provider)._validate(value.toString());
+
     return FieldLabel(
       label: ref.watch(provider.select((value) => value.property.name)),
       child: FieldError<int>(
-        validation: null,
+        validation: validation,
         child: Segmented(
           segments: ref.watch(provider.select((value) {
             return value.property.options!.values.map((e) {
               return Segment(label: '${e}x', value: e);
             }).toList(growable: false);
           })),
-          selected: ref.watch(provider.select((value) => value.property.value)),
+          selected: value,
           onSelect: (value) {
-            final validated = ref.read(provider)._validate(value.toString());
+            final field = ref.read(provider);
+            final validated = field._validate(value.toString());
             if (validated.error == null) {
-              ref.read(provider).property.update(validated.value as int);
+              field.property.update(validated.value as int);
             }
           },
         ),
