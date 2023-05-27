@@ -2,7 +2,6 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../models/properties.dart';
 import '../../../../providers/project/workspace/editor.dart';
 import '../../../../providers/project/workspace/workspace.dart';
 import '../../../base/gaps.dart';
@@ -29,11 +28,10 @@ class WorkspaceInspector extends ConsumerWidget {
           Padding(
             padding: const EdgeInsets.all(10.0),
             child: PropertyPixelSegmented(
-              accessor: PropertyAccessor(
+              accessor: PropertyAccessor.integer(
                 properties: workspaceStateModelPropertiesProvider,
                 group: (properties) => properties.group,
                 property: (properties) => properties.pixel,
-                converter: intToIntConverter,
               ),
             ),
           ),
@@ -105,11 +103,12 @@ class WorkspaceInspectorContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasItem = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
+    final hasProperties = ref.watch(selectedWorkspaceItemModelPropertiesProvider.select((value) => value != null));
+    print('hasProperties $hasProperties');
 
     // final node = ref.watch(selectedNodeModelProvider);
     return InspectorContainer(children: [
-      if (hasItem) ...[
+      if (hasProperties) ...[
         const WorkspaceInspectorItemPosition(),
         const WorkspaceInspectorItemPixel(),
       ],
@@ -124,11 +123,10 @@ class WorkspaceInspectorItemPixel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return InspectorRow(
       child: PropertyPixelSegmented(
-        accessor: PropertyAccessor(
+        accessor: PropertyAccessor.integer(
           properties: selectedWorkspaceItemModelPropertiesProvider,
-          group: (properties) => properties.group,
-          property: (properties) => properties.pixel,
-          converter: intToIntConverter,
+          group: (properties) => properties!.group,
+          property: (properties) => properties!.pixel,
         ),
       ),
     );
@@ -144,19 +142,17 @@ class WorkspaceInspectorItemPosition extends ConsumerWidget {
       child: InspectorColumns(
         children: [
           PropertyTextBox(
-            accessor: PropertyAccessor(
+            accessor: PropertyAccessor.integerToString(
               properties: selectedWorkspaceItemModelPropertiesProvider,
-              group: (properties) => properties.group,
-              property: (properties) => properties.x,
-              converter: intToStringConverter,
+              group: (properties) => properties!.group,
+              property: (properties) => properties!.x,
             ),
           ),
           PropertyTextBox(
-            accessor: PropertyAccessor(
+            accessor: PropertyAccessor.integerToString(
               properties: selectedWorkspaceItemModelPropertiesProvider,
-              group: (properties) => properties.group,
-              property: (properties) => properties.y,
-              converter: intToStringConverter,
+              group: (properties) => properties!.group,
+              property: (properties) => properties!.y,
             ),
           )
         ],
