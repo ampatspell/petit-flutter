@@ -104,15 +104,16 @@ class WorkspaceInspectorContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasProperties = ref.watch(selectedWorkspaceItemModelPropertiesProvider.select((value) => value != null));
-    print('hasProperties $hasProperties');
 
     // final node = ref.watch(selectedNodeModelProvider);
-    return InspectorContainer(children: [
-      if (hasProperties) ...[
-        const WorkspaceInspectorItemPosition(),
-        const WorkspaceInspectorItemPixel(),
+    return InspectorContainer(
+      children: [
+        if (hasProperties) ...[
+          const WorkspaceInspectorItemPosition(),
+          const WorkspaceInspectorItemPixel(),
+        ],
       ],
-    ]);
+    );
   }
 }
 
