@@ -18,10 +18,10 @@ class PropertyLabel extends ConsumerWidget {
       children: [
         if (value != null) ...[
           DefaultFluentTextStyle(
-            resolve: (typography) => typography.bodyStrong,
+            resolve: (typography) => typography.caption,
             child: Text(value),
           ),
-          const Gap(1),
+          const Gap(3),
         ],
         child,
       ],

@@ -45,11 +45,11 @@ PropertyGroup workspacePropertyGroup(WorkspacePropertyGroupRef ref) {
 WorkspaceStateModelProperties workspaceStateModelProperties(WorkspaceStateModelPropertiesRef ref) {
   return WorkspaceStateModelProperties(
     group: ref.watch(workspacePropertyGroupProvider),
-    pixel: Property.withRef(
-      ref: ref,
-      provider: workspaceStateModelProvider,
-      value: (model) => model.pixel,
-      update: (model, value) => model.updatePixel(value),
+    pixel: Property(
+      label: 'Workspace pixel',
+      value: ref.watch(workspaceStateModelProvider.select((value) => value.pixel)),
+      update: (value) => ref.read(workspaceStateModelProvider).updatePixel(value),
+      validate: noopValidator,
       options: const PixelOptions(),
     ),
   );

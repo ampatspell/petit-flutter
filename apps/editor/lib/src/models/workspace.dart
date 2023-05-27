@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../widgets/base/fields/fields.dart';
 import 'controllers.dart';
 import 'doc.dart';
 import 'properties.dart';

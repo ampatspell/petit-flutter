@@ -1,11 +1,9 @@
 import 'package:collection/collection.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../models/node.dart';
 import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
-import '../../../widgets/base/fields/fields.dart';
 import '../../base.dart';
 import '../nodes.dart';
 import 'items.dart';
@@ -52,29 +50,28 @@ PropertyGroup selectedWorkspaceItemPropertyGroup(SelectedWorkspaceItemPropertyGr
   return const PropertyGroup();
 }
 
-@Riverpod()
+@Riverpod(dependencies: [selectedWorkspaceItemPropertyGroup, selectedWorkspaceItemModel])
 WorkspaceItemModelProperties selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
-  final provider = selectedWorkspaceItemModelProvider;
-
   return WorkspaceItemModelProperties(
     group: ref.watch(selectedWorkspaceItemPropertyGroupProvider),
-    x: Property.withRef(
-      ref: ref,
-      provider: provider,
-      value: (model) => model!.x,
-      update: (model, value) => model!.updateX(value),
+    x: Property(
+      label: 'X',
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.x)),
+      update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updateX(value),
+      validate: noopValidator,
     ),
-    y: Property.withRef(
-      ref: ref,
-      provider: provider,
-      value: (model) => model!.y,
-      update: (model, value) => model!.updateY(value),
+    y: Property(
+      label: 'Y',
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.y)),
+      update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updateY(value),
+      validate: noopValidator,
     ),
-    pixel: Property.withRef(
-      ref: ref,
-      provider: provider,
-      value: (model) => model!.pixel,
-      update: (model, value) => model!.updatePixel(value),
+    pixel: Property(
+      label: 'Item pixel',
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.pixel)),
+      update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updatePixel(value),
+      validate: noopValidator,
+      options: const PixelOptions(),
     ),
   );
 }
