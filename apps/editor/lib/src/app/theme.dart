@@ -2,6 +2,8 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 abstract class Grey {
+  static const Color grey020 = Color.fromARGB(255, 20, 20, 20);
+  static const Color grey100 = Color.fromARGB(255, 100, 100, 100);
   static const Color grey245 = Color.fromARGB(255, 245, 245, 245);
   static const Color grey250 = Color.fromARGB(255, 250, 250, 250);
 }

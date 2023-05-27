@@ -32,34 +32,31 @@ class Segmented<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(Radius.circular(4));
-    return Opacity(
-      opacity: disabled ? 0.5 : 1.0,
-      child: Container(
-        decoration: BoxDecoration(
+    return Container(
+      decoration: BoxDecoration(
+        color: Grey.grey245,
+        border: Border.all(
           color: Grey.grey245,
-          border: Border.all(
-            color: Grey.grey245,
-            strokeAlign: BorderSide.strokeAlignOutside,
-          ),
-          borderRadius: borderRadius,
+          strokeAlign: BorderSide.strokeAlignOutside,
         ),
-        child: ClipRRect(
-          borderRadius: borderRadius,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: withGapsBetween(
-              children: [
-                for (var segment in segments)
-                  Expanded(
-                    child: _Segment(
-                      model: segment,
-                      isSelected: segment.value == selected,
-                      onSelect: (onSelect != null && !disabled).ifTrue(() => onSelect!(segment.value)),
-                    ),
+        borderRadius: borderRadius,
+      ),
+      child: ClipRRect(
+        borderRadius: borderRadius,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: withGapsBetween(
+            children: [
+              for (var segment in segments)
+                Expanded(
+                  child: _Segment(
+                    model: segment,
+                    isSelected: segment.value == selected,
+                    onSelect: (onSelect != null && !disabled).ifTrue(() => onSelect!(segment.value)),
                   ),
-              ],
-              gap: const Gap(1),
-            ),
+                ),
+            ],
+            gap: const Gap(1),
           ),
         ),
       ),
@@ -84,7 +81,19 @@ class _Segment<T> extends StatelessWidget {
       style: ButtonStyle(
         shape: ButtonState.all(LinearBorder.none),
         backgroundColor: ButtonState.resolveWith((states) {
-          return isSelected ? Colors.black.withAlpha(240) : Colors.white;
+          if (isSelected) {
+            if (onSelect == null) {
+              return Grey.grey100;
+            } else {
+              return Grey.grey020;
+            }
+          } else {
+            if (onSelect == null) {
+              return Grey.grey250;
+            } else {
+              return Colors.white;
+            }
+          }
         }),
       ),
       child: Text(
