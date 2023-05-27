@@ -1,25 +1,29 @@
 part of 'fields.dart';
 
-class FieldLabel extends StatelessWidget {
+class FieldLabel extends ConsumerWidget {
   const FieldLabel({
     super.key,
     required this.label,
     required this.child,
+    this.show = true,
   });
 
-  final String label;
+  final ProviderListenable<String> label;
   final Widget child;
+  final bool show;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DefaultFluentTextStyle(
-          resolve: (typography) => typography.bodyStrong,
-          child: Text(label),
-        ),
-        const Gap(1),
+        if (show) ...[
+          DefaultFluentTextStyle(
+            resolve: (typography) => typography.bodyStrong,
+            child: Text(ref.watch(label)),
+          ),
+          const Gap(1),
+        ],
         child,
       ],
     );

@@ -45,7 +45,7 @@ class WorkspaceStateModel with _$WorkspaceStateModel implements HasDoc {
 
   Property<int, PixelOptions> get pixelProperty {
     return Property(
-      name: 'pixel',
+      name: 'Pixel',
       value: pixel,
       update: updatePixel,
       validate: requiredPixel,
@@ -81,6 +81,14 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
     await doc.merge({'pixel': value});
   }
 
+  Future<void> updateX(int value) async {
+    await doc.merge({'x': value});
+  }
+
+  Future<void> updateY(int value) async {
+    await doc.merge({'y': value});
+  }
+
   Future<void> updatePosition(Offset offset, bool save) async {
     final map = {
       'x': offset.dx.toInt(),
@@ -93,6 +101,24 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
     }
   }
 
+  Property<int, void> get xProperty {
+    return Property(
+      name: 'X',
+      value: x,
+      update: updateX,
+      validate: requiredInteger,
+    );
+  }
+
+  Property<int, void> get yProperty {
+    return Property(
+      name: 'Y',
+      value: y,
+      update: updateY,
+      validate: requiredInteger,
+    );
+  }
+
   Property<int, PixelOptions> get pixelProperty {
     return Property(
       name: 'pixel',
@@ -102,4 +128,11 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
       options: const PixelOptions(),
     );
   }
+}
+
+@freezed
+class PixelOptions with _$PixelOptions {
+  const factory PixelOptions({
+    @Default([1, 2, 4, 8, 16]) List<int> values,
+  }) = _PixelOptions;
 }

@@ -3,6 +3,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
+import '../../../../app/theme.dart';
 import '../../../../models/node.dart';
 import '../../../../providers/project/nodes.dart';
 import '../../../../providers/project/workspace/editor.dart';
@@ -22,7 +23,7 @@ class WorkspaceEditor extends ConsumerWidget {
     return GestureDetector(
       onTap: onDeselectItem,
       child: Container(
-        color: Colors.white,
+        color: Grey.grey250,
         child: Stack(
           fit: StackFit.expand,
           children: [

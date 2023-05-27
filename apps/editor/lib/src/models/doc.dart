@@ -70,10 +70,3 @@ class Doc with _$Doc {
 abstract class HasDoc {
   Doc get doc;
 }
-
-@freezed
-class PixelOptions with _$PixelOptions {
-  const factory PixelOptions({
-    @Default([1, 2, 4, 8, 16]) List<int> values,
-  }) = _PixelOptions;
-}

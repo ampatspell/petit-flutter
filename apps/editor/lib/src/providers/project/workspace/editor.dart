@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../models/node.dart';
 import '../../../models/workspace.dart';
+import '../../../widgets/base/fields/fields.dart';
 import '../../base.dart';
 import '../nodes.dart';
 import 'items.dart';
@@ -40,4 +41,35 @@ NodeModel? selectedNodeModel(SelectedNodeModelRef ref) {
   return ref.watch(nodeModelsProvider.select((value) {
     return value.firstWhereOrNull((element) => element.doc.id == id);
   }));
+}
+
+//
+
+@Riverpod(dependencies: [])
+FieldGroup selectedWorkspaceItemFieldGroup(SelectedWorkspaceItemFieldGroupRef ref) {
+  return const FieldGroup();
+}
+
+@Riverpod(dependencies: [selectedWorkspaceItemFieldGroup, selectedWorkspaceItemModel])
+Field<int, void> selectedWorkspaceItemXField(SelectedWorkspaceItemXFieldRef ref) {
+  return Field(
+    group: ref.watch(selectedWorkspaceItemFieldGroupProvider),
+    property: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.xProperty)),
+  );
+}
+
+@Riverpod(dependencies: [selectedWorkspaceItemFieldGroup, selectedWorkspaceItemModel])
+Field<int, void> selectedWorkspaceItemYField(SelectedWorkspaceItemYFieldRef ref) {
+  return Field(
+    group: ref.watch(selectedWorkspaceItemFieldGroupProvider),
+    property: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.yProperty)),
+  );
+}
+
+@Riverpod(dependencies: [selectedWorkspaceItemFieldGroup, selectedWorkspaceItemModel])
+Field<int, PixelOptions> selectedWorkspaceItemPixelField(SelectedWorkspaceItemPixelFieldRef ref) {
+  return Field(
+    group: ref.watch(selectedWorkspaceItemFieldGroupProvider),
+    property: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.pixelProperty)),
+  );
 }

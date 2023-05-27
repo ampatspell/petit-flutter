@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 abstract class Grey {
   static const Color grey245 = Color.fromARGB(255, 245, 245, 245);
+  static const Color grey250 = Color.fromARGB(255, 250, 250, 250);
 }
 
 // abstract class AppEdgeInsets {

@@ -16,40 +16,50 @@ class Segment<T> {
 }
 
 class Segmented<T> extends StatelessWidget {
-  const Segmented({super.key, required this.segments, this.selected, this.onSelect});
+  const Segmented({
+    super.key,
+    required this.segments,
+    required this.selected,
+    this.disabled = false,
+    this.onSelect,
+  });
 
   final List<Segment<T>> segments;
   final T? selected;
   final ValueChanged<T>? onSelect;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
     const borderRadius = BorderRadius.all(Radius.circular(4));
-    return Container(
-      decoration: BoxDecoration(
-        color: Grey.grey245,
-        border: Border.all(
+    return Opacity(
+      opacity: disabled ? 0.5 : 1.0,
+      child: Container(
+        decoration: BoxDecoration(
           color: Grey.grey245,
-          strokeAlign: BorderSide.strokeAlignOutside,
+          border: Border.all(
+            color: Grey.grey245,
+            strokeAlign: BorderSide.strokeAlignOutside,
+          ),
+          borderRadius: borderRadius,
         ),
-        borderRadius: borderRadius,
-      ),
-      child: ClipRRect(
-        borderRadius: borderRadius,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: withGapsBetween(
-            children: [
-              for (var segment in segments)
-                Expanded(
-                  child: _Segment(
-                    model: segment,
-                    isSelected: segment.value == selected,
-                    onSelect: (onSelect != null).ifTrue(() => onSelect!(segment.value)),
+        child: ClipRRect(
+          borderRadius: borderRadius,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: withGapsBetween(
+              children: [
+                for (var segment in segments)
+                  Expanded(
+                    child: _Segment(
+                      model: segment,
+                      isSelected: segment.value == selected,
+                      onSelect: (onSelect != null && !disabled).ifTrue(() => onSelect!(segment.value)),
+                    ),
                   ),
-                ),
-            ],
-            gap: const Gap(1),
+              ],
+              gap: const Gap(1),
+            ),
           ),
         ),
       ),

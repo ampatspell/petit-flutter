@@ -55,7 +55,7 @@ class FieldTextBox<T, O> extends HookConsumerWidget {
     });
 
     return FieldLabel(
-      label: ref.watch(provider.select((value) => value.property.name)),
+      label: provider.select((value) => value.property.name),
       child: FieldError<T>(
         validation: validation.value,
         child: Focus(
