@@ -103,7 +103,7 @@ class WorkspaceInspectorContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final hasProperties = ref.watch(selectedWorkspaceItemModelPropertiesProvider.select((value) => value != null));
+    final hasProperties = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
 
     // final node = ref.watch(selectedNodeModelProvider);
     return InspectorContainer(
@@ -126,8 +126,8 @@ class WorkspaceInspectorItemPixel extends ConsumerWidget {
       child: PropertyPixelSegmented(
         accessor: PropertyAccessor.integer(
           properties: selectedWorkspaceItemModelPropertiesProvider,
-          group: (properties) => properties!.group,
-          property: (properties) => properties!.pixel,
+          group: (properties) => properties.group,
+          property: (properties) => properties.pixel,
         ),
       ),
     );
@@ -145,15 +145,15 @@ class WorkspaceInspectorItemPosition extends ConsumerWidget {
           PropertyTextBox(
             accessor: PropertyAccessor.integerToString(
               properties: selectedWorkspaceItemModelPropertiesProvider,
-              group: (properties) => properties!.group,
-              property: (properties) => properties!.x,
+              group: (properties) => properties.group,
+              property: (properties) => properties.x,
             ),
           ),
           PropertyTextBox(
             accessor: PropertyAccessor.integerToString(
               properties: selectedWorkspaceItemModelPropertiesProvider,
-              group: (properties) => properties!.group,
-              property: (properties) => properties!.y,
+              group: (properties) => properties.group,
+              property: (properties) => properties.y,
             ),
           )
         ],

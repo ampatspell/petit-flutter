@@ -51,12 +51,7 @@ PropertyGroup selectedWorkspaceItemPropertyGroup(SelectedWorkspaceItemPropertyGr
 }
 
 @Riverpod(dependencies: [selectedWorkspaceItemPropertyGroup, selectedWorkspaceItemModel])
-WorkspaceItemModelProperties? selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
-  final hasSelected = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
-  if (!hasSelected) {
-    return null;
-  }
-
+WorkspaceItemModelProperties selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
   return WorkspaceItemModelProperties(
     group: ref.watch(selectedWorkspaceItemPropertyGroupProvider),
     x: Property(
