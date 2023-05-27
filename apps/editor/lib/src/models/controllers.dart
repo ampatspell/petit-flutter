@@ -19,6 +19,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
     required this.reference,
     required this.create,
   }) {
+    // TODO:  StreamController.broadcast()
     _controller = StreamController<List<T>>(
       onListen: _onListen,
       onCancel: _onCancel,
@@ -44,12 +45,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
   }
 
   T _createWithSnapshot(MapDocumentSnapshot snapshot) {
-    final doc = Doc(
-      reference: snapshot.reference,
-      isDeleted: !snapshot.exists,
-      data: snapshot.data() ?? {},
-    );
-    return create(doc, this);
+    return create(Doc.fromSnapshot(snapshot, isOptional: true), this);
   }
 
   void _onSnapshot(MapQuerySnapshot snapshot) async {
@@ -94,7 +90,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
       return;
     }
 
-    final doc = model.doc.copyWith(isDeleted: false, data: data);
+    final doc = model.doc.copyWith(exists: true, data: data);
     final next = create(doc, this);
 
     final models = [...last];
@@ -104,7 +100,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
 
   @override
   bool merge(T model, FirestoreMap map) {
-    if (model.doc.noChanges(map, false)) {
+    if (model.doc.hasNoChanges(map, false)) {
       return false;
     }
     final data = {...model.doc.data, ...map};

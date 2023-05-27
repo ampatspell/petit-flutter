@@ -16,11 +16,18 @@ class Segment<T> {
 }
 
 class Segmented<T> extends StatelessWidget {
-  const Segmented({super.key, required this.segments, this.selected, this.onSelect});
+  const Segmented({
+    super.key,
+    required this.segments,
+    required this.selected,
+    this.disabled = false,
+    this.onSelect,
+  });
 
   final List<Segment<T>> segments;
   final T? selected;
   final ValueChanged<T>? onSelect;
+  final bool disabled;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +52,7 @@ class Segmented<T> extends StatelessWidget {
                   child: _Segment(
                     model: segment,
                     isSelected: segment.value == selected,
-                    onSelect: (onSelect != null).ifTrue(() => onSelect!(segment.value)),
+                    onSelect: (onSelect != null && !disabled).ifTrue(() => onSelect!(segment.value)),
                   ),
                 ),
             ],
@@ -74,7 +81,19 @@ class _Segment<T> extends StatelessWidget {
       style: ButtonStyle(
         shape: ButtonState.all(LinearBorder.none),
         backgroundColor: ButtonState.resolveWith((states) {
-          return isSelected ? Colors.black.withAlpha(240) : Colors.white;
+          if (isSelected) {
+            if (onSelect == null) {
+              return Grey.grey100;
+            } else {
+              return Grey.grey020;
+            }
+          } else {
+            if (onSelect == null) {
+              return Grey.grey250;
+            } else {
+              return Colors.white;
+            }
+          }
         }),
       ),
       child: Text(

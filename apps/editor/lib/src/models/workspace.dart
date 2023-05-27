@@ -4,6 +4,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'controllers.dart';
 import 'doc.dart';
+import 'properties.dart';
 
 part 'workspace.freezed.dart';
 
@@ -70,14 +71,48 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
     await doc.merge({'pixel': value});
   }
 
+  Future<void> updateX(int value) async {
+    await doc.merge({'x': value});
+  }
+
+  Future<void> updateY(int value) async {
+    await doc.merge({'y': value});
+  }
+
   Future<void> updatePosition(Offset offset, bool save) async {
     final map = {
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
     };
+    // TODO: controller.scheduleSave
     controller.merge(this, map);
     if (save) {
       await doc.merge(map, force: true);
     }
   }
+}
+
+@freezed
+class PixelOptions with _$PixelOptions {
+  const factory PixelOptions({
+    @Default([1, 2, 4, 8, 16]) List<int> values,
+  }) = _PixelOptions;
+}
+
+@freezed
+class WorkspaceStateModelProperties with _$WorkspaceStateModelProperties {
+  const factory WorkspaceStateModelProperties({
+    required PropertyGroup group,
+    required Property<int, PixelOptions> pixel,
+  }) = _WorkspaceStateModelProperties;
+}
+
+@freezed
+class WorkspaceItemModelProperties with _$WorkspaceItemModelProperties {
+  const factory WorkspaceItemModelProperties({
+    required PropertyGroup group,
+    required Property<int, void> x,
+    required Property<int, void> y,
+    required Property<int, PixelOptions> pixel,
+  }) = _WorkspaceItemModelProperties;
 }

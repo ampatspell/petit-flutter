@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../models/node.dart';
+import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
 import '../../base.dart';
 import '../nodes.dart';
@@ -40,4 +41,42 @@ NodeModel? selectedNodeModel(SelectedNodeModelRef ref) {
   return ref.watch(nodeModelsProvider.select((value) {
     return value.firstWhereOrNull((element) => element.doc.id == id);
   }));
+}
+
+//
+
+@Riverpod(dependencies: [])
+PropertyGroup selectedWorkspaceItemPropertyGroup(SelectedWorkspaceItemPropertyGroupRef ref) {
+  return const PropertyGroup();
+}
+
+@Riverpod(dependencies: [selectedWorkspaceItemPropertyGroup, selectedWorkspaceItemModel])
+WorkspaceItemModelProperties? selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
+  final hasSelected = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
+  if (!hasSelected) {
+    return null;
+  }
+
+  return WorkspaceItemModelProperties(
+    group: ref.watch(selectedWorkspaceItemPropertyGroupProvider),
+    x: Property(
+      label: 'X',
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.x)),
+      update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updateX(value),
+      validate: noopValidator,
+    ),
+    y: Property(
+      label: 'Y',
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.y)),
+      update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updateY(value),
+      validate: noopValidator,
+    ),
+    pixel: Property(
+      label: 'Item pixel',
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.pixel)),
+      update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updatePixel(value),
+      validate: noopValidator,
+      options: const PixelOptions(),
+    ),
+  );
 }

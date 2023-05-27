@@ -19,18 +19,9 @@ class FirestoreStreams with _$FirestoreStreams {
 
   const FirestoreStreams._();
 
-  Doc _asDoc(MapDocumentSnapshot snapshot, {bool isOptional = false}) {
-    return Doc(
-      reference: snapshot.reference,
-      isDeleted: !snapshot.exists,
-      isOptional: isOptional,
-      data: snapshot.data() ?? {},
-    );
-  }
-
   ProjectModel _asProjectModel(MapDocumentSnapshot snapshot) {
     return ProjectModel(
-      doc: _asDoc(snapshot),
+      doc: Doc.fromSnapshot(snapshot),
     );
   }
 
@@ -53,7 +44,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   ProjectStateModel _asProjectStateModel(MapDocumentSnapshot snapshot) {
-    return ProjectStateModel(doc: _asDoc(snapshot, isOptional: true));
+    return ProjectStateModel(doc: Doc.fromSnapshot(snapshot, isOptional: true));
   }
 
   Stream<ProjectStateModel> projectStateById({required String projectId}) {
@@ -66,7 +57,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   WorkspaceModel _asProjectWorkspaceModel(MapDocumentSnapshot snapshot) {
-    return WorkspaceModel(doc: _asDoc(snapshot));
+    return WorkspaceModel(doc: Doc.fromSnapshot(snapshot));
   }
 
   List<WorkspaceModel> _asProjectWorkspaceModels(MapQuerySnapshot snapshot) {
@@ -88,7 +79,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   WorkspaceStateModel _asProjectWorkspaceStateModel(MapDocumentSnapshot snapshot) {
-    return WorkspaceStateModel(doc: _asDoc(snapshot, isOptional: true));
+    return WorkspaceStateModel(doc: Doc.fromSnapshot(snapshot, isOptional: true));
   }
 
   Stream<WorkspaceStateModel> workspaceStateById({required String projectId, required String workspaceId}) {
@@ -105,7 +96,7 @@ class FirestoreStreams with _$FirestoreStreams {
     final data = snapshot.data()!;
     final type = data['type'] as String;
     if (type == 'box') {
-      return BoxNodeModel(doc: _asDoc(snapshot));
+      return BoxNodeModel(doc: Doc.fromSnapshot(snapshot));
     }
     throw UnsupportedError(data.toString());
   }

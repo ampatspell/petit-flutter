@@ -22,8 +22,12 @@ Stream<ProjectStateModel> projectStateModelStream(ProjectStateModelStreamRef ref
 
 //
 
-@Riverpod(dependencies: [])
-ProjectModel projectModel(ProjectModelRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [projectModelStream])
+ProjectModel projectModel(ProjectModelRef ref) {
+  return ref.watch(projectModelStreamProvider.select((value) => value.requireValue));
+}
 
-@Riverpod(dependencies: [])
-ProjectStateModel projectStateModel(ProjectStateModelRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [projectStateModelStream])
+ProjectStateModel projectStateModel(ProjectStateModelRef ref) {
+  return ref.watch(projectStateModelStreamProvider.select((value) => value.requireValue));
+}

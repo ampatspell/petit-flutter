@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
 import '../../base.dart';
 import '../project.dart';
@@ -23,10 +24,33 @@ Stream<WorkspaceStateModel> workspaceStateModelStream(WorkspaceStateModelStreamR
   return ref.watch(firestoreStreamsProvider).workspaceStateById(projectId: projectId, workspaceId: workspaceId);
 }
 
+@Riverpod(dependencies: [workspaceModelStream])
+WorkspaceModel workspaceModel(WorkspaceModelRef ref) {
+  return ref.watch(workspaceModelStreamProvider.select((value) => value.requireValue));
+}
+
+@Riverpod(dependencies: [workspaceStateModelStream])
+WorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) {
+  return ref.watch(workspaceStateModelStreamProvider.select((value) => value.requireValue));
+}
+
 //
 
 @Riverpod(dependencies: [])
-WorkspaceModel workspaceModel(WorkspaceModelRef ref) => throw OverrideProviderException();
+PropertyGroup workspacePropertyGroup(WorkspacePropertyGroupRef ref) {
+  return const PropertyGroup();
+}
 
-@Riverpod(dependencies: [])
-WorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [workspacePropertyGroup, workspaceStateModel])
+WorkspaceStateModelProperties workspaceStateModelProperties(WorkspaceStateModelPropertiesRef ref) {
+  return WorkspaceStateModelProperties(
+    group: ref.watch(workspacePropertyGroupProvider),
+    pixel: Property(
+      label: 'Workspace pixel',
+      value: ref.watch(workspaceStateModelProvider.select((value) => value.pixel)),
+      update: (value) => ref.read(workspaceStateModelProvider).updatePixel(value),
+      validate: noopValidator,
+      options: const PixelOptions(),
+    ),
+  );
+}

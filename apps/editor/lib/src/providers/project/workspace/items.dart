@@ -14,7 +14,7 @@ Stream<List<WorkspaceItemModel>> workspaceItemModelsStream(WorkspaceItemModelsSt
   return ref.watch(firestoreStreamsProvider).workspaceItemsById(projectId: projectId, workspaceId: workspaceId);
 }
 
-//
-
-@Riverpod(dependencies: [])
-List<WorkspaceItemModel> workspaceItemModels(WorkspaceItemModelsRef ref) => throw OverrideProviderException();
+@Riverpod(dependencies: [workspaceItemModelsStream])
+List<WorkspaceItemModel> workspaceItemModels(WorkspaceItemModelsRef ref) {
+  return ref.watch(workspaceItemModelsStreamProvider.select((value) => value.requireValue));
+}
