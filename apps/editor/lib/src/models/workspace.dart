@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import '../widgets/base/fields/fields.dart';
 import 'controllers.dart';
 import 'doc.dart';
+import 'properties.dart';
 
 part 'workspace.freezed.dart';
 
@@ -41,16 +42,6 @@ class WorkspaceStateModel with _$WorkspaceStateModel implements HasDoc {
 
   Future<void> updatePixel(int? value) async {
     await doc.merge({'pixel': value});
-  }
-
-  Property<int, PixelOptions> get pixelProperty {
-    return Property(
-      name: 'Pixel',
-      value: pixel,
-      update: updatePixel,
-      validate: requiredPixel,
-      options: const PixelOptions(),
-    );
   }
 }
 
@@ -100,34 +91,6 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
       await doc.merge(map, force: true);
     }
   }
-
-  Property<int, void> get xProperty {
-    return Property(
-      name: 'X',
-      value: x,
-      update: updateX,
-      validate: requiredInteger,
-    );
-  }
-
-  Property<int, void> get yProperty {
-    return Property(
-      name: 'Y',
-      value: y,
-      update: updateY,
-      validate: requiredInteger,
-    );
-  }
-
-  Property<int, PixelOptions> get pixelProperty {
-    return Property(
-      name: 'pixel',
-      value: pixel,
-      update: updatePixel,
-      validate: requiredPixel,
-      options: const PixelOptions(),
-    );
-  }
 }
 
 @freezed
@@ -135,4 +98,22 @@ class PixelOptions with _$PixelOptions {
   const factory PixelOptions({
     @Default([1, 2, 4, 8, 16]) List<int> values,
   }) = _PixelOptions;
+}
+
+@freezed
+class WorkspaceStateModelProperties with _$WorkspaceStateModelProperties {
+  const factory WorkspaceStateModelProperties({
+    required PropertyGroup group,
+    required Property<int, PixelOptions> pixel,
+  }) = _WorkspaceStateModelProperties;
+}
+
+@freezed
+class WorkspaceItemModelProperties with _$WorkspaceItemModelProperties {
+  const factory WorkspaceItemModelProperties({
+    required PropertyGroup group,
+    required Property<int, void> x,
+    required Property<int, void> y,
+    required Property<int, PixelOptions> pixel,
+  }) = _WorkspaceItemModelProperties;
 }

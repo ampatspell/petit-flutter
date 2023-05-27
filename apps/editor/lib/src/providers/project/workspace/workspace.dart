@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
 import '../../../widgets/base/fields/fields.dart';
 import '../../base.dart';
@@ -37,14 +38,20 @@ WorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) {
 //
 
 @Riverpod(dependencies: [])
-FieldGroup workspaceFieldGroup(WorkspaceFieldGroupRef ref) {
-  return const FieldGroup();
+PropertyGroup workspacePropertyGroup(WorkspacePropertyGroupRef ref) {
+  return const PropertyGroup();
 }
 
-@Riverpod(dependencies: [workspaceFieldGroup, workspaceStateModel])
-Field<int, PixelOptions> workspacePixelField(WorkspacePixelFieldRef ref) {
-  return Field(
-    group: ref.watch(workspaceFieldGroupProvider),
-    property: ref.watch(workspaceStateModelProvider.select((value) => value.pixelProperty)),
+@Riverpod(dependencies: [workspacePropertyGroup, workspaceStateModel])
+WorkspaceStateModelProperties workspaceStateModelProperties(WorkspaceStateModelPropertiesRef ref) {
+  return WorkspaceStateModelProperties(
+    group: ref.watch(workspacePropertyGroupProvider),
+    pixel: Property(
+      label: 'Pixel',
+      value: ref.watch(workspaceStateModelProvider.select((value) => value.pixel)),
+      update: (value) => ref.read(workspaceStateModelProvider).updatePixel(value),
+      validate: (value) => PropertyValidationResult(value: value),
+      options: const PixelOptions(),
+    ),
   );
 }

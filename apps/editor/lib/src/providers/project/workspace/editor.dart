@@ -1,7 +1,9 @@
 import 'package:collection/collection.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../models/node.dart';
+import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
 import '../../../widgets/base/fields/fields.dart';
 import '../../base.dart';
@@ -46,30 +48,33 @@ NodeModel? selectedNodeModel(SelectedNodeModelRef ref) {
 //
 
 @Riverpod(dependencies: [])
-FieldGroup selectedWorkspaceItemFieldGroup(SelectedWorkspaceItemFieldGroupRef ref) {
-  return const FieldGroup();
+PropertyGroup selectedWorkspaceItemPropertyGroup(SelectedWorkspaceItemPropertyGroupRef ref) {
+  return const PropertyGroup();
 }
 
-@Riverpod(dependencies: [selectedWorkspaceItemFieldGroup, selectedWorkspaceItemModel])
-Field<int, void> selectedWorkspaceItemXField(SelectedWorkspaceItemXFieldRef ref) {
-  return Field(
-    group: ref.watch(selectedWorkspaceItemFieldGroupProvider),
-    property: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.xProperty)),
-  );
-}
+@Riverpod()
+WorkspaceItemModelProperties selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
+  final provider = selectedWorkspaceItemModelProvider;
 
-@Riverpod(dependencies: [selectedWorkspaceItemFieldGroup, selectedWorkspaceItemModel])
-Field<int, void> selectedWorkspaceItemYField(SelectedWorkspaceItemYFieldRef ref) {
-  return Field(
-    group: ref.watch(selectedWorkspaceItemFieldGroupProvider),
-    property: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.yProperty)),
-  );
-}
-
-@Riverpod(dependencies: [selectedWorkspaceItemFieldGroup, selectedWorkspaceItemModel])
-Field<int, PixelOptions> selectedWorkspaceItemPixelField(SelectedWorkspaceItemPixelFieldRef ref) {
-  return Field(
-    group: ref.watch(selectedWorkspaceItemFieldGroupProvider),
-    property: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.pixelProperty)),
+  return WorkspaceItemModelProperties(
+    group: ref.watch(selectedWorkspaceItemPropertyGroupProvider),
+    x: Property.withRef(
+      ref: ref,
+      provider: provider,
+      value: (model) => model!.x,
+      update: (model, value) => model!.updateX(value),
+    ),
+    y: Property.withRef(
+      ref: ref,
+      provider: provider,
+      value: (model) => model!.y,
+      update: (model, value) => model!.updateY(value),
+    ),
+    pixel: Property.withRef(
+      ref: ref,
+      provider: provider,
+      value: (model) => model!.pixel,
+      update: (model, value) => model!.updatePixel(value),
+    ),
   );
 }

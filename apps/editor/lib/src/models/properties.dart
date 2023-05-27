@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 part 'properties.freezed.dart';
 
@@ -40,6 +41,27 @@ class Property<Value, Options> with _$Property<Value, Options> {
     @Default(false) bool isDisabled,
     Options? options,
   }) = _Property<Value, Options>;
+
+  const Property._();
+
+  static Property<Value, Options> withRef<Model, Value, Options>({
+    String? label,
+    required AutoDisposeProviderRef<dynamic> ref,
+    required AutoDisposeProvider<Model> provider,
+    required Value Function(Model model) value,
+    required void Function(Model model, Value value) update,
+    Options? options,
+    bool isDisabled = false,
+  }) {
+    return Property(
+      label: label,
+      value: ref.watch(provider.select((model) => value(model))),
+      update: (value) => update(ref.read(provider), value),
+      validate: (value) => PropertyValidationResult(value: value),
+      options: options,
+      isDisabled: isDisabled,
+    );
+  }
 }
 
 PropertyValidationResult<int> stringToInt(String edit) {
