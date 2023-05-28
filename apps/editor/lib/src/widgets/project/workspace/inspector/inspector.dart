@@ -104,16 +104,39 @@ class WorkspaceInspectorContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasProperties = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
+    final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
 
-    // final node = ref.watch(selectedNodeModelProvider);
     return InspectorContainer(
       children: [
         if (hasProperties) ...[
           const WorkspaceInspectorItemPosition(),
           const WorkspaceInspectorItemPixel(),
         ],
+        if (hasNode) ...[
+          const WorkspaceInspectorNode(),
+        ]
       ],
     );
+  }
+}
+
+class WorkspaceInspectorNode extends ConsumerWidget {
+  const WorkspaceInspectorNode({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final type = ref.watch(selectedNodeModelProvider.select((value) => value?.type));
+    if (type == 'box') {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          InspectorRow(
+            child: Text(type ?? 'Nop'),
+          ),
+        ],
+      );
+    }
+    throw UnsupportedError(type.toString());
   }
 }
 

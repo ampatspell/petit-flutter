@@ -75,3 +75,18 @@ WorkspaceItemModelProperties selectedWorkspaceItemModelProperties(SelectedWorksp
     ),
   );
 }
+
+@Riverpod(dependencies: [])
+PropertyGroup selectedNodeModelPropertyGroup(SelectedNodeModelPropertyGroupRef ref) {
+  return const PropertyGroup();
+}
+
+@Riverpod(dependencies: [selectedNodeModel])
+NodeModelProperties? selectedNodeModelProperties(SelectedNodeModelPropertiesRef ref) {
+  final type = ref.watch(selectedNodeModelProvider.select((value) => value?.type));
+  if (type == null) {
+    return null;
+  }
+  if (type == 'box') {}
+  throw UnsupportedError(type);
+}

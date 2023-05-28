@@ -239,4 +239,4 @@ Stream<OnRouteChange> routerOnRouteChange(RouterOnRouteChangeRef ref) {
   return controller.stream;
 }
 
-const initialLocation = '/';
+const initialLocation = '/dev/2';
