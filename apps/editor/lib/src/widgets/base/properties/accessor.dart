@@ -63,11 +63,11 @@ class PropertyAccessor<Properties, Value, Edit, Options> {
   }
 
   ProviderListenable<Value> get selectValue {
-    return properties.select((value) => property(value).value);
+    return properties.select((value) => property(value).value ?? converter.value);
   }
 
   ProviderListenable<Edit> get selectEdit {
-    return properties.select((prop) => toEdit(property(prop).value));
+    return properties.select((prop) => toEdit(property(prop).value ?? converter.value));
   }
 
   ProviderListenable<String?> get selectLabel {

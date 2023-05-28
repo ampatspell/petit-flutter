@@ -27,6 +27,7 @@ class PropertyAccessorConverter<Value, Edit> with _$PropertyAccessorConverter<Va
   const factory PropertyAccessorConverter({
     required PropertyValueToEdit<Edit, Value> toEdit,
     required PropertyEditToValue<Edit, Value> toValue,
+    required Value value,
   }) = _PropertyAccessorConverter<Value, Edit>;
 }
 
@@ -34,7 +35,7 @@ class PropertyAccessorConverter<Value, Edit> with _$PropertyAccessorConverter<Va
 class Property<Value, Options> with _$Property<Value, Options> {
   const factory Property({
     String? label,
-    required Value value,
+    required Value? value,
     required PropertyValidator<Value> validate,
     required PropertyUpdate<Value> update,
     @Default(false) bool isDisabled,
@@ -94,14 +95,17 @@ final intToStringConverter = PropertyAccessorConverter<int, String>(
     }
     return PropertyValidationResult(value: parsed);
   },
+  value: 0,
 );
 
 final stringToStringConverter = PropertyAccessorConverter<String, String>(
   toEdit: (value) => value.trim().toString(),
   toValue: (edit) => PropertyValidationResult(value: edit.trim().toString()),
+  value: '',
 );
 
 final intToIntConverter = PropertyAccessorConverter<int, int>(
   toEdit: (value) => value,
   toValue: (edit) => PropertyValidationResult(value: edit),
+  value: 0,
 );

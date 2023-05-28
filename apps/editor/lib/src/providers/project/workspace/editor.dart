@@ -56,19 +56,19 @@ WorkspaceItemModelProperties selectedWorkspaceItemModelProperties(SelectedWorksp
     group: ref.watch(selectedWorkspaceItemPropertyGroupProvider),
     x: Property(
       label: 'X',
-      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.x)),
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value?.x)),
       update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updateX(value),
       validate: noopValidator,
     ),
     y: Property(
       label: 'Y',
-      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.y)),
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value?.y)),
       update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updateY(value),
       validate: noopValidator,
     ),
     pixel: Property(
       label: 'Item pixel',
-      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value!.pixel)),
+      value: ref.watch(selectedWorkspaceItemModelProvider.select((value) => value?.pixel)),
       update: (value) => ref.read(selectedWorkspaceItemModelProvider)!.updatePixel(value),
       validate: noopValidator,
       options: const PixelOptions(),
