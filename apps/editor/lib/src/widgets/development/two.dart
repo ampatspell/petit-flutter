@@ -160,20 +160,36 @@ Properties thingModelProperties(ThingModelPropertiesRef ref) {
     PropertyGroup(
       label: 'Position',
       properties: [
-        Property.integerTextBox(value: model.x, update: model.updateX),
-        Property.integerTextBox(value: model.y, update: model.updateY),
+        Property.integerTextBox(
+          value: model.x,
+          update: model.updateX,
+          validator: positiveInteger,
+        ),
+        Property.integerTextBox(
+          value: model.y,
+          update: model.updateY,
+          validator: positiveInteger,
+        ),
       ],
     ),
     PropertyGroup(
       label: 'Name',
       properties: [
-        Property.stringTextBox(value: model.name, update: model.updateName),
+        Property.stringTextBox(
+          value: model.name,
+          update: model.updateName,
+          validator: stringNotEmpty,
+        ),
       ],
     ),
     PropertyGroup(
       label: 'Identifier',
       properties: [
-        Property.stringTextBox(value: model.identifier, update: model.updateIdentifier),
+        Property.stringTextBox(
+          value: model.identifier,
+          update: model.updateIdentifier,
+          validator: stringNotEmpty,
+        ),
       ],
     ),
   ]);
@@ -207,6 +223,33 @@ class PropertyValidationResult<T> with _$PropertyValidationResult<T> {
 
 typedef PropertyValidator<T> = PropertyValidationResult<T> Function(T value);
 
+PropertyValidationResult<String> stringNotEmpty(String value) {
+  if (value.isEmpty) {
+    return const PropertyValidationResult(error: 'Must not be empty');
+  }
+  return PropertyValidationResult(value: value);
+}
+
+PropertyValidationResult<int> positiveInteger(int value) {
+  if (value < 0) {
+    return const PropertyValidationResult(error: 'Must be positive');
+  }
+  return PropertyValidationResult(value: value);
+}
+
+PropertyValidator<T> validators<T>(List<PropertyValidator<T>> validators) {
+  return (T value) {
+    for (final validator in validators) {
+      final result = validator(value);
+      if (result.error != null) {
+        return result;
+      }
+      value = result.value as T;
+    }
+    return PropertyValidationResult(value: value);
+  };
+}
+
 @freezed
 class PropertyPresentation<T, E> with _$PropertyPresentation<T, E> {
   const factory PropertyPresentation({
@@ -220,14 +263,6 @@ class PropertyPresentation<T, E> with _$PropertyPresentation<T, E> {
   E convertToEditor(Property<T, E> property) {
     final value = property.value;
     return toEditor(value);
-  }
-
-  PropertyValidationResult<T> updateWithEditorValue(Property<T, E> property, E editor) {
-    final result = toValue(editor);
-    if (result.error == null) {
-      property.update(result.value as T);
-    }
-    return result;
   }
 }
 
@@ -252,6 +287,7 @@ class Property<T, E> with _$Property<T, E> {
     required T value,
     required void Function(T value) update,
     required PropertyPresentation<T, E> presentation,
+    PropertyValidator<T>? validator,
   }) = _Property<T, E>;
 
   const Property._();
@@ -259,23 +295,46 @@ class Property<T, E> with _$Property<T, E> {
   static Property<int, String> integerTextBox({
     required int value,
     required void Function(int value) update,
+    PropertyValidator<int>? validator,
   }) {
     return Property(
       value: value,
       update: update,
       presentation: integerTextBoxPresentation,
+      validator: validator,
     );
   }
 
   static Property<String, String> stringTextBox({
     required String value,
     required void Function(String value) update,
+    PropertyValidator<String>? validator,
   }) {
     return Property(
       value: value,
       update: update,
       presentation: stringTextBoxPresentation,
+      validator: validator,
     );
+  }
+
+  PropertyValidationResult<T> validateEditorValue(E editor) {
+    final result = presentation.toValue(editor);
+    if (result.error != null) {
+      return result;
+    }
+    if (validator != null) {
+      return validator!(result.value as T);
+    }
+    return result;
+  }
+
+  PropertyValidationResult<T> updateWithEditorValue(E editor) {
+    final result = validateEditorValue(editor);
+    if (result.error == null) {
+      update(result.value as T);
+    }
+    return result;
   }
 }
 
@@ -341,8 +400,9 @@ class PropertyGroupWidget extends ConsumerWidget {
 
     return Container(
       decoration: const BoxDecoration(
+        color: Colors.white,
         border: Border(
-          bottom: BorderSide(color: Grey.grey100),
+          bottom: BorderSide(color: Grey.grey245),
         ),
       ),
       padding: const EdgeInsets.all(10),
@@ -416,15 +476,15 @@ class PropertyWidgetHelper<T, E> {
     return ref.read(selectEditorValue());
   }
 
-  PropertyValidationResult<dynamic> updateWithEditorValue(WidgetRef ref, E value) {
+  PropertyValidationResult<T> updateWithEditorValue(WidgetRef ref, E value) {
     return ref.read(select((property) {
-      return property.presentation.updateWithEditorValue(property, value);
+      return property.updateWithEditorValue(value);
     }));
   }
 
   PropertyValidationResult<T> validateEditorValue(WidgetRef ref, E value) {
     return ref.read(select((property) {
-      return property.presentation.toValue(value);
+      return property.validateEditorValue(value);
     }));
   }
 
@@ -465,25 +525,34 @@ class TextBoxPropertyWidget extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    print('build text box');
+
     final controller = useTextEditingController(text: helper.readEditorValue(ref));
+    late ValueNotifier<String?> error;
+
+    void update() {
+      final editor = helper.readEditorValue(ref);
+      controller.text = editor;
+      error.value = helper.validateEditorValue(ref, editor).error;
+    }
 
     ref.listen(helper.selectEditorValue(), (previous, next) {
       if (controller.text != next) {
-        controller.text = next;
+        update();
       }
     });
-
-    late ValueNotifier<String?> error;
 
     return Focus(
       onFocusChange: (value) {
         if (!value) {
-          controller.text = helper.readEditorValue(ref);
-          error.value = helper.validateEditorValue(ref, controller.text).error;
+          update();
         }
       },
       child: PropertyErrorWidget(
-        register: (next) => error = next,
+        register: (next) {
+          error = next;
+          error.value = helper.validateEditorValue(ref, controller.text).error;
+        },
         child: TextBox(
           placeholder: '',
           controller: controller,
@@ -495,6 +564,7 @@ class TextBoxPropertyWidget extends HookConsumerWidget {
             final result = helper.updateWithEditorValue(ref, value);
             error.value = result.error;
           },
+          textInputAction: TextInputAction.done,
         ),
       ),
     );
