@@ -4,7 +4,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 import 'controllers.dart';
 import 'doc.dart';
-import 'properties.dart';
 
 part 'workspace.freezed.dart';
 
@@ -97,22 +96,4 @@ class PixelOptions with _$PixelOptions {
   const factory PixelOptions({
     @Default([1, 2, 4, 8, 16]) List<int> values,
   }) = _PixelOptions;
-}
-
-@freezed
-class WorkspaceStateModelProperties with _$WorkspaceStateModelProperties {
-  const factory WorkspaceStateModelProperties({
-    required PropertyGroup group,
-    required Property<int, PixelOptions> pixel,
-  }) = _WorkspaceStateModelProperties;
-}
-
-@freezed
-class WorkspaceItemModelProperties with _$WorkspaceItemModelProperties {
-  const factory WorkspaceItemModelProperties({
-    required PropertyGroup group,
-    required Property<int, void> x,
-    required Property<int, void> y,
-    required Property<int, PixelOptions> pixel,
-  }) = _WorkspaceItemModelProperties;
 }

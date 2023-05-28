@@ -3,10 +3,8 @@ import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../../providers/project/workspace/editor.dart';
-import '../../../../providers/project/workspace/workspace.dart';
 import '../../../base/gaps.dart';
 import '../../../base/line.dart';
-import '../../../base/properties/properties.dart';
 
 class WorkspaceInspector extends ConsumerWidget {
   const WorkspaceInspector({super.key});
@@ -16,25 +14,25 @@ class WorkspaceInspector extends ConsumerWidget {
     return Container(
       width: 250,
       color: Colors.white,
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
               child: WorkspaceInspectorContent(),
             ),
           ),
-          const HorizontalLine(),
-          Padding(
-            padding: const EdgeInsets.all(10.0),
-            child: PropertyPixelSegmented(
-              accessor: PropertyAccessor.integer(
-                properties: workspaceStateModelPropertiesProvider,
-                group: (properties) => properties.group,
-                property: (properties) => properties.pixel,
-              ),
-            ),
-          ),
+          HorizontalLine(),
+          // Padding(
+          //   padding: const EdgeInsets.all(10.0),
+          //   child: PropertyPixelSegmented(
+          //     accessor: PropertyAccessor.integer(
+          //       properties: workspaceStateModelPropertiesProvider,
+          //       group: (properties) => properties.group,
+          //       property: (properties) => properties.pixel,
+          //     ),
+          //   ),
+          // ),
         ],
       ),
     );
@@ -109,8 +107,8 @@ class WorkspaceInspectorContent extends ConsumerWidget {
     return InspectorContainer(
       children: [
         if (hasProperties) ...[
-          const WorkspaceInspectorItemPosition(),
-          const WorkspaceInspectorItemPixel(),
+          // const WorkspaceInspectorItemPosition(),
+          // const WorkspaceInspectorItemPixel(),
         ],
         if (hasNode) ...[
           const WorkspaceInspectorNode(),
@@ -139,48 +137,48 @@ class WorkspaceInspectorNode extends ConsumerWidget {
     throw UnsupportedError(type.toString());
   }
 }
-
-class WorkspaceInspectorItemPixel extends ConsumerWidget {
-  const WorkspaceInspectorItemPixel({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InspectorRow(
-      child: PropertyPixelSegmented(
-        accessor: PropertyAccessor.integer(
-          properties: selectedWorkspaceItemModelPropertiesProvider,
-          group: (properties) => properties.group,
-          property: (properties) => properties.pixel,
-        ),
-      ),
-    );
-  }
-}
-
-class WorkspaceInspectorItemPosition extends ConsumerWidget {
-  const WorkspaceInspectorItemPosition({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return InspectorRow(
-      child: InspectorColumns(
-        children: [
-          PropertyTextBox(
-            accessor: PropertyAccessor.integerToString(
-              properties: selectedWorkspaceItemModelPropertiesProvider,
-              group: (properties) => properties.group,
-              property: (properties) => properties.x,
-            ),
-          ),
-          PropertyTextBox(
-            accessor: PropertyAccessor.integerToString(
-              properties: selectedWorkspaceItemModelPropertiesProvider,
-              group: (properties) => properties.group,
-              property: (properties) => properties.y,
-            ),
-          )
-        ],
-      ),
-    );
-  }
-}
+//
+// class WorkspaceInspectorItemPixel extends ConsumerWidget {
+//   const WorkspaceInspectorItemPixel({super.key});
+//
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return InspectorRow(
+//       child: PropertyPixelSegmented(
+//         accessor: PropertyAccessor.integer(
+//           properties: selectedWorkspaceItemModelPropertiesProvider,
+//           group: (properties) => properties.group,
+//           property: (properties) => properties.pixel,
+//         ),
+//       ),
+//     );
+//   }
+// }
+//
+// class WorkspaceInspectorItemPosition extends ConsumerWidget {
+//   const WorkspaceInspectorItemPosition({super.key});
+//
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     return InspectorRow(
+//       child: InspectorColumns(
+//         children: [
+//           PropertyTextBox(
+//             accessor: PropertyAccessor.integerToString(
+//               properties: selectedWorkspaceItemModelPropertiesProvider,
+//               group: (properties) => properties.group,
+//               property: (properties) => properties.x,
+//             ),
+//           ),
+//           PropertyTextBox(
+//             accessor: PropertyAccessor.integerToString(
+//               properties: selectedWorkspaceItemModelPropertiesProvider,
+//               group: (properties) => properties.group,
+//               property: (properties) => properties.y,
+//             ),
+//           )
+//         ],
+//       ),
+//     );
+//   }
+// }
