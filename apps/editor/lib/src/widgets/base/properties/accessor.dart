@@ -62,12 +62,16 @@ class PropertyAccessor<Properties, Value, Edit, Options> {
     return properties.select(group);
   }
 
+  Value _withDefaultValue(Value? value) {
+    return value ?? converter.value;
+  }
+
   ProviderListenable<Value> get selectValue {
-    return properties.select((value) => property(value).value ?? converter.value);
+    return properties.select((value) => _withDefaultValue(property(value).value));
   }
 
   ProviderListenable<Edit> get selectEdit {
-    return properties.select((prop) => toEdit(property(prop).value ?? converter.value));
+    return properties.select((prop) => toEdit(_withDefaultValue(property(prop).value)));
   }
 
   ProviderListenable<String?> get selectLabel {
