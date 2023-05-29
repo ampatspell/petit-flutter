@@ -12,8 +12,6 @@ Stream<List<WorkspaceModel>> workspaceModelsStream(WorkspaceModelsStreamRef ref)
   return ref.watch(firestoreStreamsProvider).workspacesById(projectId);
 }
 
-//
-
 @Riverpod(dependencies: [workspaceModelsStream])
 List<WorkspaceModel> workspaceModels(WorkspaceModelsRef ref) {
   return ref.watch(workspaceModelsStreamProvider.select((value) => value.requireValue));

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-import '../widgets/development/two.dart';
 import 'doc.dart';
 
 part 'node.freezed.dart';
@@ -50,14 +49,4 @@ class BoxNodeModel extends NodeModel with _$BoxNodeModel, NodeModelWithSize {
   Future<void> updateHeight(int value) async {
     await doc.merge({'height': value});
   }
-}
-
-abstract class NodeModelProperties {}
-
-@freezed
-class BoxNodeModelProperties with _$BoxNodeModelProperties implements NodeModelProperties {
-  const factory BoxNodeModelProperties({
-    required Property<int, void> width,
-    required Property<int, void> height,
-  }) = _BoxNodeModelProperties;
 }
