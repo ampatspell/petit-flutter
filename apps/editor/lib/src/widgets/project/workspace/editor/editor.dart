@@ -23,7 +23,7 @@ class WorkspaceEditor extends ConsumerWidget {
     return GestureDetector(
       onTap: onDeselectItem,
       child: Container(
-        color: Grey.grey250,
+        color: Grey.grey221,
         child: Stack(
           fit: StackFit.expand,
           children: [
@@ -108,20 +108,20 @@ class WorkspaceItemContainer extends HookConsumerWidget {
       dragging.value = position;
     }
 
-    void updatePosition(Offset delta, bool save) async {
+    void updatePosition(Offset delta) async {
       final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
       final item = ref.read(workspaceItemModelProvider);
       final scaled = delta / workspacePixel.toDouble();
       final absolute = dragging.value! + scaled;
-      await item.updatePosition(absolute, save);
+      await item.updatePosition(absolute);
     }
 
     void onDragUpdate(Offset delta) {
-      updatePosition(delta, false);
+      updatePosition(delta);
     }
 
     void onDragEnd(Offset delta) {
-      updatePosition(delta, true);
+      updatePosition(delta);
       dragging.value = null;
     }
 
@@ -130,7 +130,7 @@ class WorkspaceItemContainer extends HookConsumerWidget {
       child: DraggableWorkspaceItem(
         child: Container(
           decoration: BoxDecoration(
-            border: Border.all(color: isSelected ? Colors.red : Colors.transparent),
+            border: Border.all(color: isSelected ? Grey.blue : Grey.grey200),
           ),
           child: child,
         ),

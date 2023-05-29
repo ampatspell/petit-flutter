@@ -6,16 +6,12 @@ abstract class Grey {
   static const Color grey100 = Color.fromARGB(255, 100, 100, 100);
   static const Color grey245 = Color.fromARGB(255, 245, 245, 245);
   static const Color grey250 = Color.fromARGB(255, 250, 250, 250);
+
+  static const Color grey221 = Color.fromARGB(255, 221, 221, 221);
+  static const Color grey200 = Color.fromARGB(255, 200, 200, 200);
+  static const Color red = Color.fromARGB(255, 226, 124, 133);
+  static const Color blue = Color.fromARGB(255, 111, 190, 238);
 }
-
-// abstract class AppEdgeInsets {
-//   static const EdgeInsets symmetric15x7 = EdgeInsets.symmetric(horizontal: 15.0, vertical: 7.0);
-//   static const EdgeInsets all10 = EdgeInsets.all(10);
-// }
-
-// abstract class AppGaps {
-//   static const Gap gap10 = Gap(10);
-// }
 
 final fontFamily = GoogleFonts.ubuntuMono().fontFamily;
 final lightTheme = FluentThemeData.light();

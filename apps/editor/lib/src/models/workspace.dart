@@ -78,15 +78,14 @@ class WorkspaceItemModel with _$WorkspaceItemModel implements HasDoc {
     await doc.merge({'y': value});
   }
 
-  Future<void> updatePosition(Offset offset, bool save) async {
+  Future<void> updatePosition(Offset offset) async {
     final map = {
       'x': offset.dx.toInt(),
       'y': offset.dy.toInt(),
     };
-    // TODO: controller.scheduleSave
-    controller.merge(this, map);
-    if (save) {
-      await doc.merge(map, force: true);
+    final model = controller.merge(this, map);
+    if (model != null) {
+      controller.scheduleSave(model);
     }
   }
 }

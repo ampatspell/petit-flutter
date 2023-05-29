@@ -1,12 +1,15 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:collection/collection.dart';
 
 import '../app/typedefs.dart';
 import 'doc.dart';
 
 abstract class SnapshotStreamController<T extends HasDoc> {
-  bool merge(T model, FirestoreMap map);
+  T? merge(T model, FirestoreMap map);
+
+  void scheduleSave(T model, {Duration duration});
 }
 
 typedef ModelsStreamControllerCreate<T extends HasDoc> = T Function(
@@ -80,14 +83,14 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
     _controller.add(models);
   }
 
-  void replace(T model, FirestoreMap data) {
+  T replace(T model, FirestoreMap data) {
     final last = _last;
     if (last == null) {
-      return;
+      return model;
     }
     final index = last.indexOf(model);
     if (index == -1) {
-      return;
+      return model;
     }
 
     final doc = model.doc.copyWith(exists: true, data: data);
@@ -96,20 +99,79 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
     final models = [...last];
     models.setRange(index, index + 1, [next]);
     _emit(models);
+
+    return next;
   }
 
   @override
-  bool merge(T model, FirestoreMap map) {
+  T? merge(T model, FirestoreMap map) {
     if (model.doc.hasNoChanges(map, false)) {
-      return false;
+      return null;
     }
     final data = {...model.doc.data, ...map};
-    replace(model, data);
-    return true;
+    return replace(model, data);
+  }
+
+  final ScheduleSave<T> _scheduler = ScheduleSave();
+
+  @override
+  void scheduleSave(T model, {Duration duration = const Duration(milliseconds: 100)}) {
+    _scheduler.scheduleSave(model, duration);
   }
 
   @override
   String toString() {
     return 'QuerySnapshotStreamController{path: ${reference.path}}';
+  }
+}
+
+class ScheduleSave<T extends HasDoc> {
+  ScheduleSave();
+
+  final _scheduled = <_ScheduledSave<T>>[];
+
+  void scheduleSave(T model, Duration duration) {
+    final existing = _scheduled.firstWhereOrNull((element) {
+      return element.model.doc.reference == model.doc.reference;
+    });
+
+    if (existing != null) {
+      existing.cancel();
+      _scheduled.remove(existing);
+    }
+
+    _scheduled.add(_ScheduledSave(
+      model: model,
+      duration: duration,
+      onDone: _onDone,
+    ));
+  }
+
+  void _onDone(_ScheduledSave<T> scheduled) {
+    _scheduled.remove(scheduled);
+  }
+}
+
+class _ScheduledSave<T extends HasDoc> {
+  _ScheduledSave({
+    required this.model,
+    required this.onDone,
+    required Duration duration,
+  }) {
+    future = Future.delayed(duration, () async {
+      if (!isCancelled) {
+        await model.doc.merge(model.doc.data, force: true);
+      }
+      onDone(this);
+    });
+  }
+
+  final T model;
+  final void Function(_ScheduledSave<T> scheduled) onDone;
+  late final Future<void> future;
+  bool isCancelled = false;
+
+  void cancel() {
+    isCancelled = true;
   }
 }
