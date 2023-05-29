@@ -46,8 +46,11 @@ NodeModel? selectedNodeModel(SelectedNodeModelRef ref) {
 @Riverpod(dependencies: [selectedWorkspaceItemModel])
 Properties? selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
   final model = ref.watch(selectedWorkspaceItemModelProvider);
-  return Properties.maybe(model, (model) {
-    return [
+  if (model == null) {
+    return null;
+  }
+  return Properties(
+    groups: [
       PropertyGroup(
         label: 'Position',
         properties: [
@@ -61,6 +64,42 @@ Properties? selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPrope
           Property.integerTextBox(value: model.pixel, update: model.updatePixel),
         ],
       ),
-    ];
-  });
+    ],
+  );
+}
+
+@Riverpod(dependencies: [selectedNodeModel])
+Properties? selectedNodeModelProperties(SelectedNodeModelPropertiesRef ref) {
+  final model = ref.watch(selectedNodeModelProvider);
+  if (model == null) {
+    return null;
+  }
+
+  final groups = <PropertyGroup>[];
+
+  if (model is NodeModelWithSize) {
+    final sized = model as NodeModelWithSize;
+    groups.addAll([
+      PropertyGroup(
+        label: 'Size',
+        properties: [
+          Property.integerTextBox(value: sized.width, update: sized.updateWidth),
+          Property.integerTextBox(value: sized.height, update: sized.updateHeight),
+        ],
+      )
+    ]);
+  }
+
+  if (model is BoxNodeModel) {
+    groups.addAll([
+      PropertyGroup(
+        label: 'Color',
+        properties: [
+          Property.colorTextBox(value: model.color, update: model.updateColor),
+        ],
+      ),
+    ]);
+  }
+
+  return Properties(groups: groups);
 }

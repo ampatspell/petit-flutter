@@ -24,6 +24,10 @@ mixin NodeModelWithSize {
   Size renderedSize(int itemPixel, int workspacePixel) {
     return size * itemPixel.toDouble() * workspacePixel.toDouble();
   }
+
+  void updateWidth(int value);
+
+  void updateHeight(int value);
 }
 
 @freezed
@@ -42,11 +46,21 @@ class BoxNodeModel extends NodeModel with _$BoxNodeModel, NodeModelWithSize {
 
   Color get color => Color(doc['color'] as int);
 
+  @override
   Future<void> updateWidth(int value) async {
     await doc.merge({'width': value});
   }
 
+  @override
   Future<void> updateHeight(int value) async {
     await doc.merge({'height': value});
+  }
+
+  Future<void> updateColorValue(int value) async {
+    await doc.merge({'color': value});
+  }
+
+  Future<void> updateColor(Color value) async {
+    await updateColorValue(value.value);
   }
 }

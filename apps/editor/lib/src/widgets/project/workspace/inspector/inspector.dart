@@ -38,7 +38,7 @@ class WorkspaceInspectorContent extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final hasItem = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
-    // final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
+    final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -46,6 +46,10 @@ class WorkspaceInspectorContent extends ConsumerWidget {
         if (hasItem)
           PropertiesWidget(
             provider: selectedWorkspaceItemModelPropertiesProvider,
+          ),
+        if (hasNode)
+          PropertiesWidget(
+            provider: selectedNodeModelPropertiesProvider,
           ),
       ],
     );

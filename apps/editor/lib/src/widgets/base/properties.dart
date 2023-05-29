@@ -180,18 +180,15 @@ class PropertyWidget extends ConsumerWidget {
     final type = ref.watch(helper.select((property) => property.presentation.type));
     switch (type) {
       case PresentationType.textBox:
-        return TextBoxPropertyWidget(helper: helper.cast<String>());
+        return const TextBoxPropertyWidget();
     }
   }
 }
 
 class TextBoxPropertyWidget extends HookConsumerWidget {
-  const TextBoxPropertyWidget({
-    super.key,
-    required this.helper,
-  });
+  const TextBoxPropertyWidget({super.key});
 
-  final PropertyWidgetHelper<dynamic, String> helper;
+  final PropertyWidgetHelper<dynamic, String> helper = const PropertyWidgetHelper();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

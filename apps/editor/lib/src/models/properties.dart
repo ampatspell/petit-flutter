@@ -1,3 +1,6 @@
+import 'dart:ui';
+
+import 'package:fluent_ui/fluent_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'properties.freezed.dart';
@@ -35,7 +38,7 @@ class PropertyPresentation<T, E> with _$PropertyPresentation<T, E> {
 @freezed
 class PropertyGroup with _$PropertyGroup {
   const factory PropertyGroup({
-    String? label,
+    required String? label,
     required List<Property<dynamic, dynamic>> properties,
   }) = _PropertyGroup;
 }
@@ -84,6 +87,19 @@ class Property<T, E> with _$Property<T, E> {
     );
   }
 
+  static Property<Color, String> colorTextBox({
+    required Color value,
+    required void Function(Color value) update,
+    PropertyValidator<Color>? validator,
+  }) {
+    return Property(
+      value: value,
+      update: update,
+      presentation: colorTextBoxPresentation,
+      validator: validator,
+    );
+  }
+
   static Property<String, String> stringTextBox({
     required String value,
     required void Function(String value) update,
@@ -118,6 +134,24 @@ class Property<T, E> with _$Property<T, E> {
 }
 
 //
+
+final colorTextBoxPresentation = PropertyPresentation<Color, String>(
+  type: PresentationType.textBox,
+  toEditor: (value) {
+    return '#${value.value.toRadixString(16).toUpperCase()}';
+  },
+  toValue: (editor) {
+    if (!editor.startsWith('#')) {
+      return const PropertyValidationResult(error: 'Must start with a #');
+    }
+    final hex = editor.substring(1);
+    final value = int.tryParse(hex, radix: 16);
+    if (value == null) {
+      return const PropertyValidationResult(error: 'Must be valid color');
+    }
+    return PropertyValidationResult(value: Color(value));
+  },
+);
 
 final integerTextBoxPresentation = PropertyPresentation<int, String>(
   type: PresentationType.textBox,
