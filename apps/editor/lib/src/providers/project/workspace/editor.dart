@@ -44,7 +44,7 @@ NodeModel? selectedNodeModel(SelectedNodeModelRef ref) {
 }
 
 @Riverpod(dependencies: [selectedWorkspaceItemModel])
-Properties selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
+Properties? selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
   final model = ref.watch(selectedWorkspaceItemModelProvider);
   return Properties.maybe(model, (model) {
     return [

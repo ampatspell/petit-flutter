@@ -50,9 +50,9 @@ class Properties with _$Properties {
     return const Properties(groups: []);
   }
 
-  static Properties maybe<M>(M? model, List<PropertyGroup> Function(M model) cb) {
+  static Properties? maybe<M>(M? model, List<PropertyGroup> Function(M model) cb) {
     if (model == null) {
-      return empty();
+      return null;
     }
     return Properties(
       groups: cb(model),

@@ -2,49 +2,72 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../app/theme.dart';
 import '../../models/properties.dart';
+import '../../providers/base.dart';
 import 'gaps.dart';
 import 'text_style.dart';
+
+part 'properties.g.dart';
+
+@Riverpod(dependencies: [])
+Properties? widgetProperties(WidgetPropertiesRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
+PropertyGroup widgetPropertyGroup(WidgetPropertyGroupRef ref) => throw OverrideProviderException();
+
+@Riverpod(dependencies: [])
+Property<dynamic, dynamic> widgetProperty(WidgetPropertyRef ref) => throw OverrideProviderException();
 
 class PropertiesWidget extends ConsumerWidget {
   const PropertiesWidget({
     super.key,
-    required this.properties,
+    required this.provider,
   });
 
-  final AutoDisposeProvider<Properties> properties;
+  final AutoDisposeProvider<Properties?> provider;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final length = ref.watch(properties.select((value) => value.groups.length));
+    final properties = ref.watch(provider);
+    return ProviderScope(
+      overrides: [
+        widgetPropertiesProvider.overrideWithValue(properties),
+      ],
+      child: const PropertyGroupsWidget(),
+    );
+  }
+}
+
+class PropertyGroupsWidget extends ConsumerWidget {
+  const PropertyGroupsWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final groups = ref.watch(widgetPropertiesProvider.select((value) => value?.groups ?? []));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        for (var i = 0; i < length; i++)
-          PropertyGroupWidget(
-            properties: properties,
-            group: (properties) => properties.groups[i],
-          ),
+        ...groups.map((group) {
+          return ProviderScope(
+            overrides: [
+              widgetPropertyGroupProvider.overrideWithValue(group),
+            ],
+            child: const PropertyGroupWidget(),
+          );
+        }),
       ],
     );
   }
 }
 
 class PropertyWidgetHelper<T, E> {
-  const PropertyWidgetHelper({
-    required this.properties,
-    required this.property,
-  });
-
-  final ProviderListenable<Properties> properties;
-  final Property<T, E> Function(Properties properties) property;
+  const PropertyWidgetHelper();
 
   ProviderListenable<R> select<R>(R Function(Property<T, E> property) cb) {
-    return properties.select((value) {
-      return cb(property(value));
-    });
+    return widgetPropertyProvider.select((value) => cb(value as Property<T, E>));
   }
 
   ProviderListenable<E> selectEditorValue() {
@@ -80,27 +103,18 @@ class PropertyWidgetHelper<T, E> {
   }
 
   PropertyWidgetHelper<T, N> cast<N>() {
-    return PropertyWidgetHelper(
-      properties: properties,
-      property: (properties) => property(properties) as Property<T, N>,
-    );
+    return PropertyWidgetHelper<T, N>();
   }
 }
 
 class PropertyGroupWidget extends ConsumerWidget {
   const PropertyGroupWidget({
     super.key,
-    required this.properties,
-    required this.group,
   });
-
-  final ProviderListenable<Properties> properties;
-  final PropertyGroup Function(Properties properties) group;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final label = ref.watch(properties.select((value) => group(value).label));
-    final length = ref.watch(properties.select((value) => group(value).properties.length));
+    final label = ref.watch(widgetPropertyGroupProvider.select((value) => value.label));
 
     return Container(
       decoration: const BoxDecoration(
@@ -120,38 +134,46 @@ class PropertyGroupWidget extends ConsumerWidget {
             ),
             const Gap(3),
           ],
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ...withGapsBetween(
-                children: [
-                  for (var i = 0; i < length; i++)
-                    Expanded(
-                      child: PropertyWidget(
-                        helper: PropertyWidgetHelper<dynamic, dynamic>(
-                          properties: properties,
-                          property: (properties) => group(properties).properties[i],
-                        ),
-                      ),
-                    )
-                ],
-                gap: const Gap(10),
-              ),
-            ],
-          ),
+          const PropertyGroupPropertiesWidget(),
         ],
       ),
     );
   }
 }
 
-class PropertyWidget extends ConsumerWidget {
-  const PropertyWidget({
-    super.key,
-    required this.helper,
-  });
+class PropertyGroupPropertiesWidget extends ConsumerWidget {
+  const PropertyGroupPropertiesWidget({super.key});
 
-  final PropertyWidgetHelper<dynamic, dynamic> helper;
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final properties = ref.watch(widgetPropertyGroupProvider.select((value) => value.properties));
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        ...withGapsBetween(
+          children: [
+            ...properties.map((property) {
+              return ProviderScope(
+                overrides: [
+                  widgetPropertyProvider.overrideWithValue(property),
+                ],
+                child: const Expanded(
+                  child: PropertyWidget(),
+                ),
+              );
+            }),
+          ],
+          gap: const Gap(10),
+        ),
+      ],
+    );
+  }
+}
+
+class PropertyWidget extends ConsumerWidget {
+  const PropertyWidget({super.key});
+
+  final PropertyWidgetHelper<dynamic, dynamic> helper = const PropertyWidgetHelper();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {

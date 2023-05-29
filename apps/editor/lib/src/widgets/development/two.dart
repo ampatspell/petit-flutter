@@ -55,7 +55,7 @@ class ThingForm extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return PropertiesWidget(
-      properties: thingModelPropertiesProvider,
+      provider: thingModelPropertiesProvider,
     );
   }
 }

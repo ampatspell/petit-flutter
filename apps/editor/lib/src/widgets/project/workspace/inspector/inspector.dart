@@ -24,7 +24,7 @@ class WorkspaceInspector extends ConsumerWidget {
           ),
           const HorizontalLine(),
           PropertiesWidget(
-            properties: workspaceStateModelPropertiesProvider,
+            provider: workspaceStateModelPropertiesProvider,
           ),
         ],
       ),
@@ -45,7 +45,7 @@ class WorkspaceInspectorContent extends ConsumerWidget {
       children: [
         if (hasItem)
           PropertiesWidget(
-            properties: selectedWorkspaceItemModelPropertiesProvider,
+            provider: selectedWorkspaceItemModelPropertiesProvider,
           ),
       ],
     );
