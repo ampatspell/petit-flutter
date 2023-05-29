@@ -98,35 +98,44 @@ class WorkspaceItemContainer extends HookConsumerWidget {
       if (isDragging) {
         return;
       }
-      final id = ref.read(workspaceItemModelProvider.select((value) => value.doc.id));
-      ref.read(workspaceStateModelProvider).updateItem(id);
+      final item = ref.read(workspaceItemModelProvider);
+      ref.read(workspaceStateModelProvider).updateItem(item.doc.id);
+    }
+
+    void reorder() {
+      final item = ref.read(workspaceItemModelProvider);
+      final items = [...ref.read(workspaceItemModelsProvider)];
+      items.remove(item);
+      items.insert(0, item);
+      items.forEachIndexed((index, element) => element.updateIndex(index));
     }
 
     void onDragStart() {
-      onSelect();
       final position = ref.read(workspaceItemModelProvider.select((value) => value.position));
       dragging.value = position;
     }
 
-    void updatePosition(Offset delta) async {
+    void updatePosition(Offset delta, bool save) {
       final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
       final item = ref.read(workspaceItemModelProvider);
       final scaled = delta / workspacePixel.toDouble();
       final absolute = dragging.value! + scaled;
-      await item.updatePosition(absolute);
+      item.updatePosition(absolute, save);
     }
 
     void onDragUpdate(Offset delta) {
-      updatePosition(delta);
+      updatePosition(delta, false);
     }
 
     void onDragEnd(Offset delta) {
-      updatePosition(delta);
+      updatePosition(delta, true);
       dragging.value = null;
     }
 
     return GestureDetector(
-      onTap: onSelect,
+      onTapUp: (_) {
+        reorder();
+      },
       child: DraggableWorkspaceItem(
         child: Container(
           decoration: BoxDecoration(

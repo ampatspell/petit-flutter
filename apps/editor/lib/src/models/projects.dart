@@ -42,12 +42,14 @@ class ProjectsReset with _$ProjectsReset {
       items: [
         {
           'id': '1',
+          'index': 0,
           'node': 'box-1',
           'x': 5,
           'y': 5,
         },
         {
           'id': '2',
+          'index': 1,
           'node': 'box-2',
           'x': 40,
           'y': 5,

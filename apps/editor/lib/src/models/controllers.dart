@@ -31,7 +31,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
 
   final ModelsStreamControllerCreate<T> create;
 
-  final MapCollectionReference reference;
+  final MapQuery reference;
   late final StreamController<List<T>> _controller;
   StreamSubscription<MapQuerySnapshot>? _subscription;
   List<T>? _last;
@@ -115,13 +115,13 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
   final ScheduleSave<T> _scheduler = ScheduleSave();
 
   @override
-  void scheduleSave(T model, {Duration duration = const Duration(milliseconds: 100)}) {
+  void scheduleSave(T model, {Duration duration = const Duration(milliseconds: 300)}) {
     _scheduler.scheduleSave(model, duration);
   }
 
   @override
   String toString() {
-    return 'QuerySnapshotStreamController{path: ${reference.path}}';
+    return 'QuerySnapshotStreamController{}';
   }
 }
 

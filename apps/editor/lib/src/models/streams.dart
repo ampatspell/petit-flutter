@@ -112,7 +112,7 @@ class FirestoreStreams with _$FirestoreStreams {
   //
 
   Stream<List<T>> modelsStream<T extends HasDoc>({
-    required MapCollectionReference reference,
+    required MapQuery reference,
     required ModelsStreamControllerCreate<T> create,
   }) {
     final controller = ModelsStreamController<T>(
@@ -123,7 +123,13 @@ class FirestoreStreams with _$FirestoreStreams {
   }
 
   Stream<List<WorkspaceItemModel>> workspaceItemsById({required String projectId, required String workspaceId}) {
-    final reference = references.projectWorkspaceItemsById(projectId: projectId, workspaceId: workspaceId);
+    final reference = references
+        .projectWorkspaceItemsById(
+          projectId: projectId,
+          workspaceId: workspaceId,
+        )
+        .orderBy('index');
+
     return modelsStream(
       reference: reference,
       create: (doc, controller) => WorkspaceItemModel(
