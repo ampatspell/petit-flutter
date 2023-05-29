@@ -45,6 +45,19 @@ class Properties with _$Properties {
   const factory Properties({
     required List<PropertyGroup> groups,
   }) = _Properties;
+
+  static Properties empty() {
+    return const Properties(groups: []);
+  }
+
+  static Properties maybe<M>(M? model, List<PropertyGroup> Function(M model) cb) {
+    if (model == null) {
+      return empty();
+    }
+    return Properties(
+      groups: cb(model),
+    );
+  }
 }
 
 @freezed

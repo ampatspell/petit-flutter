@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../../../models/node.dart';
+import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
 import '../../base.dart';
 import '../nodes.dart';
@@ -40,4 +41,26 @@ NodeModel? selectedNodeModel(SelectedNodeModelRef ref) {
   return ref.watch(nodeModelsProvider.select((value) {
     return value.firstWhereOrNull((element) => element.doc.id == id);
   }));
+}
+
+@Riverpod(dependencies: [selectedWorkspaceItemModel])
+Properties selectedWorkspaceItemModelProperties(SelectedWorkspaceItemModelPropertiesRef ref) {
+  final model = ref.watch(selectedWorkspaceItemModelProvider);
+  return Properties.maybe(model, (model) {
+    return [
+      PropertyGroup(
+        label: 'Position',
+        properties: [
+          Property.integerTextBox(value: model.x, update: model.updateX),
+          Property.integerTextBox(value: model.y, update: model.updateY),
+        ],
+      ),
+      PropertyGroup(
+        label: 'Pixel',
+        properties: [
+          Property.integerTextBox(value: model.pixel, update: model.updatePixel),
+        ],
+      ),
+    ];
+  });
 }

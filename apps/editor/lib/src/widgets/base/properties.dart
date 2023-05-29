@@ -88,7 +88,11 @@ class PropertyWidgetHelper<T, E> {
 }
 
 class PropertyGroupWidget extends ConsumerWidget {
-  const PropertyGroupWidget({super.key, required this.properties, required this.group});
+  const PropertyGroupWidget({
+    super.key,
+    required this.properties,
+    required this.group,
+  });
 
   final ProviderListenable<Properties> properties;
   final PropertyGroup Function(Properties properties) group;

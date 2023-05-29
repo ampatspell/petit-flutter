@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../../../models/properties.dart';
 import '../../../models/workspace.dart';
 import '../../base.dart';
 import '../project.dart';
@@ -31,4 +32,19 @@ WorkspaceModel workspaceModel(WorkspaceModelRef ref) {
 @Riverpod(dependencies: [workspaceStateModelStream])
 WorkspaceStateModel workspaceStateModel(WorkspaceStateModelRef ref) {
   return ref.watch(workspaceStateModelStreamProvider.select((value) => value.requireValue));
+}
+
+@Riverpod(dependencies: [workspaceStateModel])
+Properties workspaceStateModelProperties(WorkspaceStateModelPropertiesRef ref) {
+  final model = ref.watch(workspaceStateModelProvider);
+  return Properties(
+    groups: [
+      PropertyGroup(
+        label: 'Workspace pixel',
+        properties: [
+          Property.integerTextBox(value: model.pixel, update: model.updatePixel),
+        ],
+      ),
+    ],
+  );
 }
