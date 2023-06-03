@@ -89,8 +89,8 @@ class ProjectDetails extends StatelessWidget {
             child: const Text('Project:'),
           ),
           const Gap(5),
-          Text('id: ${project.doc.reference?.id}'),
-          Text('Name: ${project.doc.content?.name}'),
+          Text('id: ${project.doc?.doc.id}'),
+          Text('Name: ${project.doc?.name}'),
         ],
       );
     });
@@ -112,8 +112,8 @@ class Nodes extends StatelessWidget {
             child: const Text('Nodes:'),
           ),
           const Gap(5),
-          for (final model in project.nodes.content) Text(model.toString()),
-          if (project.nodes.content.isEmpty) const Text('No nodes'),
+          for (final model in project.nodes) Text(model.toString()),
+          if (project.nodes.isEmpty) const Text('No nodes'),
         ],
       );
     });
@@ -189,21 +189,25 @@ abstract class _Project with Store, Mountable {
   }
 
   @override
-  Iterable<Mountable> get mountable => [doc, nodes];
+  Iterable<Mountable> get mountable => [_doc, _nodes];
 
-  bool get isLoaded => doc.isLoaded && nodes.isLoaded;
+  bool get isLoaded => _doc.isLoaded && _nodes.isLoaded;
 
-  late final ModelReference<ProjectDoc> doc = ModelReference(
+  late final ModelReference<ProjectDoc> _doc = ModelReference(
     name: 'project_doc',
     reference: () => projectRef,
     create: (doc) => ProjectDoc(doc: doc),
   );
 
-  late final ModelsQuery<ProjectNodeDoc> nodes = ModelsQuery(
+  ProjectDoc? get doc => _doc.content;
+
+  late final ModelsQuery<ProjectNodeDoc> _nodes = ModelsQuery(
     name: 'project_nodes',
     query: () => projectRef.collection('nodes'),
     create: (doc) => ProjectNodeDoc(doc: doc),
   );
+
+  List<ProjectNodeDoc> get nodes => _nodes.content;
 }
 
 class ProjectDoc extends _ProjectDoc with _$ProjectDoc {
