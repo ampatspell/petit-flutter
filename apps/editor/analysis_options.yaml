@@ -11,6 +11,7 @@ analyzer:
 
 linter:
   rules:
+    library_private_types_in_public_api: false
     lines_longer_than_80_chars: false
     sort_pub_dependencies: false
     cascade_invocations: false

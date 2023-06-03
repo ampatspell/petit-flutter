@@ -15,15 +15,19 @@ part 'properties.g.dart';
 
 part 'properties.freezed.dart';
 
+@Deprecated('use mobx')
 @Riverpod(dependencies: [])
 Properties? widgetProperties(WidgetPropertiesRef ref) => throw OverrideProviderException();
 
+@Deprecated('use mobx')
 @Riverpod(dependencies: [])
 PropertyGroup widgetPropertyGroup(WidgetPropertyGroupRef ref) => throw OverrideProviderException();
 
+@Deprecated('use mobx')
 @Riverpod(dependencies: [])
 Property<dynamic, dynamic> widgetProperty(WidgetPropertyRef ref) => throw OverrideProviderException();
 
+@Deprecated('use mobx')
 @freezed
 class WidgetPropertyStateData with _$WidgetPropertyStateData {
   const factory WidgetPropertyStateData({
@@ -55,6 +59,7 @@ class WidgetPropertyStateData with _$WidgetPropertyStateData {
 //   }
 // }
 
+@Deprecated('use mobx')
 class PropertiesWidget extends ConsumerWidget {
   const PropertiesWidget({
     super.key,
@@ -75,6 +80,7 @@ class PropertiesWidget extends ConsumerWidget {
   }
 }
 
+@Deprecated('use mobx')
 class PropertyGroupsWidget extends ConsumerWidget {
   const PropertyGroupsWidget({super.key});
 
@@ -97,6 +103,7 @@ class PropertyGroupsWidget extends ConsumerWidget {
   }
 }
 
+@Deprecated('use mobx')
 class PropertyWidgetHelper<T, E> {
   const PropertyWidgetHelper();
 
@@ -141,6 +148,7 @@ class PropertyWidgetHelper<T, E> {
   }
 }
 
+@Deprecated('use mobx')
 class PropertyGroupWidget extends ConsumerWidget {
   const PropertyGroupWidget({
     super.key,
@@ -175,6 +183,7 @@ class PropertyGroupWidget extends ConsumerWidget {
   }
 }
 
+@Deprecated('use mobx')
 class PropertyGroupPropertiesWidget extends ConsumerWidget {
   const PropertyGroupPropertiesWidget({super.key});
 
@@ -204,6 +213,7 @@ class PropertyGroupPropertiesWidget extends ConsumerWidget {
   }
 }
 
+@Deprecated('use mobx')
 class PropertyWidget extends ConsumerWidget {
   const PropertyWidget({super.key});
 
@@ -219,6 +229,7 @@ class PropertyWidget extends ConsumerWidget {
   }
 }
 
+@Deprecated('use mobx')
 class TextBoxPropertyWidget extends HookConsumerWidget {
   const TextBoxPropertyWidget({super.key});
 
@@ -274,6 +285,7 @@ class TextBoxPropertyWidget extends HookConsumerWidget {
   }
 }
 
+@Deprecated('use mobx')
 class PropertyErrorWidget extends HookWidget {
   const PropertyErrorWidget({
     super.key,

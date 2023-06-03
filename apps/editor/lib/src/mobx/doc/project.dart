@@ -1,17 +1,6 @@
 part of '../mobx.dart';
 
-class ProjectDoc extends _ProjectDoc with _$ProjectDoc {
-  ProjectDoc({required super.doc});
-
-  String get id => doc.id;
-
-  String get name => doc['name'] as String? ?? 'Untitled';
-
-  @override
-  String toString() {
-    return 'ProjectDoc{id: $id, data: ${doc.data}}';
-  }
-}
+class ProjectDoc = _ProjectDoc with _$ProjectDoc;
 
 @StoreConfig(hasToString: false)
 abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
@@ -20,8 +9,12 @@ abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
   });
 
   @override
-  final Document doc;
+  Iterable<Mountable> get mountable => [];
 
   @override
-  Iterable<Mountable> get mountable => [];
+  final Document doc;
+
+  String get id => doc.id;
+
+  String get name => doc['name'] as String;
 }

@@ -5,6 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../models/doc.dart';
 
+@Deprecated('use mobx')
 class AsyncValuesLoader extends ConsumerWidget {
   const AsyncValuesLoader({
     super.key,

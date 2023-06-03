@@ -4,6 +4,7 @@ import 'doc.dart';
 
 part 'project.freezed.dart';
 
+@Deprecated('use mobx')
 @freezed
 class ProjectModel with _$ProjectModel implements HasDoc {
   const factory ProjectModel({
@@ -19,6 +20,7 @@ class ProjectModel with _$ProjectModel implements HasDoc {
   }
 }
 
+@Deprecated('use mobx')
 @freezed
 class ProjectStateModel with _$ProjectStateModel implements HasDoc {
   const factory ProjectStateModel({

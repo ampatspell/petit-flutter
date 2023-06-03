@@ -2,14 +2,12 @@ import 'package:collection/collection.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../app/router.dart';
 import '../../get.dart';
 import '../../mobx/mobx.dart';
-import '../../providers/base.dart';
 
-class FluentScreen extends ConsumerWidget {
+class FluentScreen extends StatelessObserverWidget {
   const FluentScreen({
     super.key,
     required this.content,
@@ -19,19 +17,11 @@ class FluentScreen extends ConsumerWidget {
   final Widget content;
   final BuildContext? shellContext;
 
+  RouterHelper get helper => it.get();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final routes = ref.watch(routesProvider);
-
-    ref.listen(appStateProvider, (previous, next) {
-      if (next.user == null) {
-        HomeRoute().go(context);
-      } else {
-        ProjectsRoute().go(context);
-      }
-    });
-
-    final items = routes
+  Widget build(BuildContext context) {
+    final items = helper.routes
         .map((route) => PaneItem(
               key: ValueKey(route.location),
               icon: Icon(route.icon),

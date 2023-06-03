@@ -21,6 +21,9 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
 
   T? get content => _content.value;
 
+  @override
+  bool get isMissing => content == null;
+
   //
 
   MapQuery? get query => _streamSource;

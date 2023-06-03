@@ -1,6 +1,6 @@
-part of 'mobx.dart';
+part of '../mobx.dart';
 
-class Projects extends _Projects with _$Projects {}
+class Projects = _Projects with _$Projects;
 
 @StoreConfig(hasToString: false)
 abstract class _Projects with Store, Mountable implements Loadable {
@@ -27,6 +27,9 @@ abstract class _Projects with Store, Mountable implements Loadable {
 
   @override
   bool get isLoaded => _docs.isLoaded;
+
+  @override
+  final bool isMissing = false;
 
   void reset() async {
     await ProjectsReset().reset();

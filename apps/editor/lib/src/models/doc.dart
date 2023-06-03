@@ -5,6 +5,7 @@ import 'package:zug/zug.dart';
 
 part 'doc.freezed.dart';
 
+@Deprecated('use mobx')
 @Freezed(toStringOverride: false)
 class Doc with _$Doc {
   const factory Doc({
@@ -66,6 +67,7 @@ class Doc with _$Doc {
   }
 }
 
+@Deprecated('use mobx')
 abstract class HasDoc {
   Doc get doc;
 }

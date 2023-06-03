@@ -22,6 +22,15 @@ class ModelReference<T extends DocumentModel>
 
   T? get content => _content.value;
 
+  @override
+  bool get isMissing {
+    final content = this.content;
+    if (content == null) {
+      return true;
+    }
+    return content.doc.isDeleted;
+  }
+
   //
 
   MapDocumentReference? get reference => _streamSource;
@@ -53,6 +62,7 @@ class ModelReference<T extends DocumentModel>
       if (current.doc.reference == snapshot.reference) {
         if (snapshot.exists) {
           current.doc._onUpdated(data: snapshot.data()!, metadata: snapshot.metadata);
+          current._mount();
         } else {
           current.doc._onDeleted(metadata: snapshot.metadata);
           current._unmount();

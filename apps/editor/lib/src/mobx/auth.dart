@@ -1,6 +1,6 @@
 part of 'mobx.dart';
 
-class Auth extends _Auth with _$Auth {}
+class Auth = _Auth with _$Auth;
 
 abstract class _Auth with Store implements Loadable {
   _Auth() {
@@ -16,6 +16,9 @@ abstract class _Auth with Store implements Loadable {
   @override
   @observable
   bool isLoaded = false;
+
+  @override
+  final bool isMissing = false;
 
   @observable
   User? user;

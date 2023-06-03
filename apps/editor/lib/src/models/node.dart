@@ -6,12 +6,14 @@ import 'doc.dart';
 
 part 'node.freezed.dart';
 
+@Deprecated('use mobx')
 abstract class NodeModel implements HasDoc {
   const NodeModel();
 
   String get type => doc['type'] as String;
 }
 
+@Deprecated('use mobx')
 mixin NodeModelWithSize {
   int get width;
 
@@ -30,6 +32,7 @@ mixin NodeModelWithSize {
   void updateHeight(int value);
 }
 
+@Deprecated('use mobx')
 @freezed
 class BoxNodeModel extends NodeModel with _$BoxNodeModel, NodeModelWithSize {
   const factory BoxNodeModel({

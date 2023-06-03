@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'base.freezed.dart';
 
+@Deprecated('use mobx')
 @freezed
 class FirebaseServices with _$FirebaseServices {
   const factory FirebaseServices({
@@ -14,6 +15,7 @@ class FirebaseServices with _$FirebaseServices {
   }) = _FirebaseServices;
 }
 
+@Deprecated('use mobx')
 @freezed
 class AppState with _$AppState {
   const factory AppState({

@@ -50,7 +50,7 @@ class ProjectsScreenContent extends StatelessWidget {
           ],
         ),
       ),
-      content: const Loading<Projects>(
+      content: const Load<Projects>(
         child: ProjectsList(),
       ),
     );

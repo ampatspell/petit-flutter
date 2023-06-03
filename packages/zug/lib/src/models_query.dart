@@ -15,6 +15,9 @@ class ModelsQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<
   final String? name;
   final CreateModel<T> create;
 
+  @override
+  bool get isMissing => content.isEmpty;
+
   //
 
   final ObservableList<T> content = ObservableList(name: 'ModelsQuery.content');

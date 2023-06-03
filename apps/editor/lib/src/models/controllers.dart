@@ -6,6 +6,7 @@ import 'package:zug/zug.dart';
 
 import 'doc.dart';
 
+@Deprecated('use mobx')
 abstract class SnapshotStreamController<T extends HasDoc> {
   T? merge(T model, FirestoreMap map);
 
@@ -17,6 +18,7 @@ typedef ModelsStreamControllerCreate<T extends HasDoc> = T Function(
   ModelsStreamController<T> controller,
 );
 
+@Deprecated('use mobx')
 class ModelsStreamController<T extends HasDoc> implements SnapshotStreamController<T> {
   ModelsStreamController({
     required this.reference,
@@ -125,6 +127,7 @@ class ModelsStreamController<T extends HasDoc> implements SnapshotStreamControll
   }
 }
 
+@Deprecated('use mobx')
 class ScheduleSave<T extends HasDoc> {
   ScheduleSave();
 
@@ -152,6 +155,7 @@ class ScheduleSave<T extends HasDoc> {
   }
 }
 
+@Deprecated('use mobx')
 class _ScheduledSave<T extends HasDoc> {
   _ScheduledSave({
     required this.model,

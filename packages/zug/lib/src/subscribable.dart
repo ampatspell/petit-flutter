@@ -69,6 +69,8 @@ typedef SnapshotSubscribableStreamProvider<S, R> = StreamAndSource<S, R>? Functi
 mixin SnapshotSubscribable<T, S, R> {
   bool get isMounted;
 
+  bool get isMissing;
+
   void _mountContent();
 
   void _unmountContent();

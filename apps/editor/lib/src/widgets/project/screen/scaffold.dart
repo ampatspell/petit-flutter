@@ -1,22 +1,24 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:provider/provider.dart';
 
-import '../../../app/router.dart';
-import '../../../providers/project/delete.dart';
-import '../../../providers/project/project.dart';
+import '../../../mobx/mobx.dart';
 import '../../base/confirmation.dart';
-import 'workspaces.dart';
 
-class ProjectScreenScaffold extends ConsumerWidget {
+class ProjectScreenScaffold extends StatelessWidget {
   const ProjectScreenScaffold({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final name = ref.watch(projectModelProvider.select((value) => value.name));
+  Widget build(BuildContext context) {
+    final project = context.watch<Project>();
     return ScaffoldPage(
       header: PageHeader(
-        title: Text(name),
+        title: Observer(
+          builder: (context) {
+            return Text(project.name);
+          },
+        ),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [],
@@ -27,20 +29,21 @@ class ProjectScreenScaffold extends ConsumerWidget {
               message: 'Delete project?',
               onAction: (context) {
                 context.pop();
-                ref.read(projectDeleteProvider);
+                project.delete();
               },
             ),
           ],
         ),
       ),
-      content: ProjectWorkspacesListView(
-        onSelect: (model) {
-          ProjectWorkspaceRoute(
-            projectId: ref.read(projectIdProvider),
-            workspaceId: model.doc.id,
-          ).go(context);
-        },
-      ),
+      content: const Text('hello'),
+      // content: ProjectWorkspacesListView(
+      //   onSelect: (model) {
+      //     ProjectWorkspaceRoute(
+      //       projectId: ref.read(projectIdProvider),
+      //       workspaceId: model.doc.id,
+      //     ).go(context);
+      //   },
+      // ),
     );
   }
 }

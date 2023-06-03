@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:riverpod/riverpod.dart';
 
+@Deprecated('use mobx')
 class ProviderLoggingObserver implements ProviderObserver {
   ProviderLoggingObserver({
     required this.enabled,

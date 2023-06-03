@@ -3,11 +3,9 @@ import 'dart:async';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../get.dart';
 import '../mobx/mobx.dart';
-import '../providers/base.dart';
 import '../widgets/base/fluent_screen.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
@@ -21,8 +19,8 @@ import '../widgets/projects/screen.dart';
 
 part 'router.g.dart';
 
-final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
 @TypedShellRoute<FluentRoute>(
   routes: <TypedRoute<RouteData>>[
@@ -54,13 +52,13 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
 class FluentRoute extends ShellRouteData {
   const FluentRoute();
 
-  static final GlobalKey<NavigatorState> $navigatorKey = _shellKey;
+  static final GlobalKey<NavigatorState> $navigatorKey = shellNavigatorKey;
 
   @override
   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
     return FluentScreen(
       content: navigator,
-      shellContext: _shellKey.currentContext,
+      shellContext: shellNavigatorKey.currentContext,
     );
   }
 }
@@ -146,62 +144,16 @@ class ProjectWorkspaceRoute extends GoRouteData {
 // // Without this static key, the dialog will not cover the navigation rail.
 // static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-class Route {
-  const Route({
-    required this.location,
-    required this.icon,
-    required this.title,
-    required this.go,
-  });
-
-  final String location;
-  final IconData icon;
-  final String title;
-  final void Function(BuildContext context) go;
-}
-
-final home = Route(
-  location: HomeRoute().location,
-  icon: FluentIcons.calories,
-  title: 'Home',
-  go: (context) => HomeRoute().go(context),
-);
-
-final loggedIn = [
-  Route(
-    location: ProjectsRoute().location,
-    icon: FluentIcons.project_collection,
-    title: 'Projects',
-    go: (context) => ProjectsRoute().go(context),
-  ),
-  Route(
-    location: DevelopmentRoute().location,
-    icon: FluentIcons.code,
-    title: 'Development',
-    go: (context) => DevelopmentRoute().go(context),
-  ),
-];
-
-@Riverpod(keepAlive: true, dependencies: [appState])
-List<Route> routes(RoutesRef ref) {
-  final hasUser = ref.watch(appStateProvider.select((value) => value.user != null));
-  if (hasUser) {
-    return loggedIn;
-  }
-  return [
-    home,
-  ];
-}
-
 final router = GoRouter(
   debugLogDiagnostics: true,
   initialLocation: initialLocation,
   routes: $appRoutes,
-  navigatorKey: _rootKey,
-  redirect: (context, state) async {
-    return runInAction(() {
+  navigatorKey: rootNavigatorKey,
+  redirect: (context, state) {
+    final res = runInAction(() {
       final auth = it.get<Auth>();
       final user = auth.user;
+      print('redirect hasUser: ${user != null}');
       final location = state.location;
       if (location != '/') {
         if (user == null) {
@@ -214,7 +166,9 @@ final router = GoRouter(
       }
       return null;
     });
+    print('redirect $res');
+    return res;
   },
 );
 
-const initialLocation = '/';
+const initialLocation = '/projects/667zrbL5WElVhIVrJTe4';
