@@ -7,3 +7,4 @@ typedef MapDocumentReference = DocumentReference<FirestoreMap>;
 typedef MapDocumentSnapshot = DocumentSnapshot<FirestoreMap>;
 typedef MapDocumentReferenceProvider = MapDocumentReference? Function()?;
 typedef MapQueryProvider = MapQuery? Function()?;
+typedef MapCollectionReference = CollectionReference<FirestoreMap>;

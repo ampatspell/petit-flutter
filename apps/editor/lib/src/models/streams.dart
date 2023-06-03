@@ -1,6 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:zug/zug.dart';
 
-import '../app/typedefs.dart';
 import '../widgets/base/order.dart';
 import 'controllers.dart';
 import 'doc.dart';

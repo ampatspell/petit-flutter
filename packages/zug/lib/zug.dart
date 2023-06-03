@@ -25,3 +25,5 @@ part 'src/subscribable.dart';
 part 'src/typedefs.dart';
 
 part 'src/get.dart';
+
+part 'src/loadable.dart';

@@ -1,19 +1,12 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:zug/zug.dart';
 
-import 'references.dart';
+import '../firestore_references.dart';
 
-part 'projects.freezed.dart';
+class ProjectsReset {
+  FirestoreReferences get references => it.get();
 
-@freezed
-class ProjectsReset with _$ProjectsReset {
-  const factory ProjectsReset({
-    required FirestoreReferences references,
-    required String uid,
-  }) = _ProjectsReset;
-
-  const ProjectsReset._();
+  final String uid = 'none';
 
   Future<void> reset() async {
     await _deleteProjects();
@@ -149,16 +142,4 @@ class ProjectsReset with _$ProjectsReset {
       ]);
     }));
   }
-}
-
-@freezed
-class NewProjectModel with _$NewProjectModel {
-  const factory NewProjectModel({
-    @Default(false) bool isBusy,
-    @Default('') String name,
-  }) = _NewProjectModel;
-
-  const NewProjectModel._();
-
-  bool get isValid => name.isNotEmpty;
 }

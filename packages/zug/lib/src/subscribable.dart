@@ -178,7 +178,9 @@ mixin SnapshotSubscribable<T, S, R> {
     final source = streamWithSource.source;
 
     transaction(() {
-      _isLoading.value = true;
+      if (_isLoading.value == false) {
+        _isLoading.value = true;
+      }
       final subscription = stream.listen((snapshot) => transaction(() => __onSnapshot(snapshot)));
       final cancelRegistration = _registerSubscription(source);
       __streamSource.value = source;
@@ -206,6 +208,8 @@ mixin SnapshotSubscribable<T, S, R> {
     _mountContent();
     if (_isLoading.value == true) {
       _isLoading.value = false;
+    }
+    if (_isLoaded.value == false) {
       _isLoaded.value = true;
     }
   }

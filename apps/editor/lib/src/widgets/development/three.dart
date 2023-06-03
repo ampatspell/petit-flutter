@@ -7,6 +7,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
+import '../../mobx/mobx.dart';
 import '../base/text_style.dart';
 
 part 'three.g.dart';
@@ -208,48 +209,4 @@ abstract class _Project with Store, Mountable {
   );
 
   List<ProjectNodeDoc> get nodes => _nodes.content;
-}
-
-class ProjectDoc extends _ProjectDoc with _$ProjectDoc {
-  ProjectDoc({required super.doc});
-
-  String? get name => doc['name'] as String?;
-
-  @override
-  String toString() {
-    return 'ProjectDoc{doc: ${doc.id}, data: ${doc.data}}';
-  }
-}
-
-abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
-  _ProjectDoc({
-    required this.doc,
-  });
-
-  @override
-  final Document doc;
-
-  @override
-  Iterable<Mountable> get mountable => [];
-}
-
-class ProjectNodeDoc extends _ProjectNodeDoc with _$ProjectNodeDoc {
-  ProjectNodeDoc({required super.doc});
-
-  @override
-  String toString() {
-    return 'ProjectNodeDoc{doc: ${doc.id}, data: ${doc.data}}';
-  }
-}
-
-abstract class _ProjectNodeDoc with Store, Mountable implements DocumentModel {
-  _ProjectNodeDoc({
-    required this.doc,
-  });
-
-  @override
-  final Document doc;
-
-  @override
-  Iterable<Mountable> get mountable => [];
 }

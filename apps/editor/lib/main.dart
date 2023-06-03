@@ -10,7 +10,7 @@ import 'src/providers/base.dart';
 
 void main() async {
   mainContext.config = mainContext.config.clone(
-    isSpyEnabled: true,
+    isSpyEnabled: false,
     readPolicy: ReactiveReadPolicy.always,
     writePolicy: ReactiveWritePolicy.always,
   );

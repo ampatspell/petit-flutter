@@ -1,9 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:zug/zug.dart';
 
 import '../../../app/router.dart';
-import '../../../app/typedefs.dart';
 import '../../../providers/projects/new.dart';
 
 class NewProjectForm extends ConsumerWidget {

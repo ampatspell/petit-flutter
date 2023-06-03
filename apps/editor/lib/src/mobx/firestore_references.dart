@@ -1,22 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:zug/zug.dart';
 
-import 'base.dart';
+class FirestoreReferences {
+  FirebaseFirestore get _firestore => it.get();
 
-part 'references.freezed.dart';
-
-@freezed
-class FirestoreReferences with _$FirestoreReferences {
-  const factory FirestoreReferences({
-    required FirebaseServices services,
-    required String? uid,
-  }) = _FirestoreReferences;
-
-  const FirestoreReferences._();
-
-  FirebaseFirestore get _firestore => services.firestore;
+  String get uid => 'none';
 
   MapCollectionReference projects() {
     return _firestore.collection('projects');
@@ -32,7 +20,7 @@ class FirestoreReferences with _$FirestoreReferences {
 
   MapDocumentReference projectStateById({required String projectId}) {
     final projectRef = projectById(projectId);
-    return projectStatesByRef(projectRef).doc(uid!);
+    return projectStatesByRef(projectRef).doc(uid);
   }
 
   MapCollectionReference projectNodesByRef(MapDocumentReference projectRef) {
@@ -53,7 +41,7 @@ class FirestoreReferences with _$FirestoreReferences {
   }
 
   MapDocumentReference projectWorkspaceStateByRef(MapDocumentReference workspaceRef) {
-    return projectWorkspaceStatesByRef(workspaceRef).doc(uid!);
+    return projectWorkspaceStatesByRef(workspaceRef).doc(uid);
   }
 
   MapCollectionReference projectWorkspaceItemsCollection(MapDocumentReference workspaceRef) {

@@ -1,8 +1,8 @@
 import 'dart:ui';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:zug/zug.dart';
 
-import '../../app/typedefs.dart';
 import '../../models/projects.dart';
 import '../base.dart';
 

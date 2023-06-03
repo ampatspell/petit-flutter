@@ -1,52 +1,58 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
+import 'package:zug/zug.dart';
 
-import '../../app/router.dart';
-import '../../providers/projects/projects.dart';
-import '../../providers/projects/reset.dart';
-import '../base/async_values_loader.dart';
+import '../../mobx/mobx.dart';
 import '../base/order.dart';
+import '../loading.dart';
 import 'list.dart';
 
-class ProjectsScreen extends ConsumerWidget {
+class ProjectsScreen extends StatelessWidget {
   const ProjectsScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final order = ref.watch(projectModelsOrderProvider);
-    final reset = ref.watch(resetProjectsProvider);
+  Widget build(BuildContext context) {
+    return MountingProvider(
+      create: (context) => Projects(),
+      child: const ProjectsScreenContent(),
+    );
+  }
+}
 
+class ProjectsScreenContent extends StatelessObserverWidget {
+  const ProjectsScreenContent({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final projects = context.watch<Projects>();
     return ScaffoldPage(
       header: PageHeader(
         title: const Text('Projects'),
         commandBar: CommandBar(
           mainAxisAlignment: MainAxisAlignment.end,
           primaryItems: [
-            buildOrderCommandBarButton(order, () => ref.read(projectModelsOrderProvider.notifier).toggle()),
+            buildOrderCommandBarButton(
+              order: () => projects.order,
+              onPressed: projects.toggleOrder,
+            ),
             CommandBarButton(
               icon: const Icon(FluentIcons.add),
               label: const Text('New'),
               onPressed: () {
-                NewProjectRoute().go(context);
+                // NewProjectRoute().go(context);
               },
             ),
             CommandBarButton(
               icon: const Icon(FluentIcons.reset),
               label: const Text('Reset'),
-              onPressed: reset,
+              onPressed: projects.reset,
             ),
           ],
         ),
       ),
-      content: AsyncValuesLoader(
-        providers: [
-          projectModelsStreamProvider,
-        ],
-        child: ProjectsList(
-          onSelect: (project) {
-            ProjectRoute(projectId: project.doc.id).go(context);
-          },
-        ),
+      content: const Loading<Projects>(
+        child: ProjectsList(),
       ),
     );
   }

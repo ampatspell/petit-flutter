@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:collection/collection.dart';
+import 'package:zug/zug.dart';
 
-import '../app/typedefs.dart';
 import 'doc.dart';
 
 abstract class SnapshotStreamController<T extends HasDoc> {
