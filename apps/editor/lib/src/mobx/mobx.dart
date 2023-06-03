@@ -19,9 +19,17 @@ part 'doc/project_node.dart';
 
 part 'doc/workspace.dart';
 
+part 'doc/workspace_item.dart';
+
 part 'mobx.g.dart';
 
 part 'project/project.dart';
+
+part 'project/project_node.dart';
+
+part 'project/workspace.dart';
+
+part 'project/workspace_item.dart';
 
 part 'project/workspaces.dart';
 

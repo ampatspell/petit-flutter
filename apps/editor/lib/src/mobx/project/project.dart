@@ -9,7 +9,7 @@ abstract class _Project with Store, Mountable implements Loadable {
   });
 
   @override
-  Iterable<Mountable> get mountable => [__doc];
+  Iterable<Mountable> get mountable => [__doc, _nodes];
 
   final String id;
 
@@ -20,11 +20,17 @@ abstract class _Project with Store, Mountable implements Loadable {
   late final ModelReference<ProjectDoc> __doc = ModelReference(
     name: 'Project.__doc',
     reference: () => reference,
-    create: (doc) => ProjectDoc(doc: doc),
+    create: ProjectDoc.new,
+  );
+
+  late final ModelsQuery<ProjectNode> _nodes = ModelsQuery(
+    name: 'Project._nodes',
+    query: () => reference.collection('nodes'),
+    create: (doc) => ProjectNode(ProjectNodeDoc(doc)),
   );
 
   @override
-  bool get isLoaded => __doc.isLoaded;
+  bool get isLoaded => __doc.isLoaded && _nodes.isLoaded;
 
   @override
   bool get isMissing => __doc.isMissing;
@@ -42,8 +48,12 @@ abstract class _Project with Store, Mountable implements Loadable {
 
   //
 
+  List<ProjectNode> get nodes => _nodes.content;
+
+  //
+
   @override
   String toString() {
-    return 'Project{id: $id, data: ${__doc.content?.doc.data}}';
+    return 'Project{id: $id, doc: ${__doc.content}}';
   }
 }

@@ -7,34 +7,33 @@ import '../../../../app/theme.dart';
 import '../../../../models/node.dart';
 import '../../../../providers/project/nodes.dart';
 import '../../../../providers/project/workspace/editor.dart';
-import '../../../../providers/project/workspace/items.dart';
 import '../../../../providers/project/workspace/workspace.dart';
 
-class WorkspaceEditor extends ConsumerWidget {
+class WorkspaceEditor extends StatelessWidget {
   const WorkspaceEditor({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     void onDeselectItem() {
-      ref.read(workspaceStateModelProvider).updateItem(null);
+      // ref.read(workspaceStateModelProvider).updateItem(null);
     }
 
-    final items = ref.watch(workspaceItemModelsProvider);
+    // final items = ref.watch(workspaceItemModelsProvider);
     return GestureDetector(
       onTap: onDeselectItem,
       child: Container(
         color: Grey.grey221,
-        child: Stack(
+        child: const Stack(
           fit: StackFit.expand,
-          children: [
-            for (final item in items)
-              ProviderScope(
-                overrides: [
-                  workspaceItemModelProvider.overrideWithValue(item),
-                ],
-                child: const WorkspaceItem(),
-              ),
-          ],
+          // children: [
+          // for (final item in items)
+          //   ProviderScope(
+          //     overrides: [
+          //       workspaceItemModelProvider.overrideWithValue(item),
+          //     ],
+          //     child: const WorkspaceItem(),
+          //   ),
+          // ],
         ),
       ),
     );

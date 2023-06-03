@@ -16,7 +16,7 @@ abstract class _Workspaces with Store, Mountable implements Loadable {
   late final ModelsQuery<WorkspaceDoc> _docs = ModelsQuery(
     name: 'Workspaces._docs',
     query: () => project.reference.collection('workspaces').orderBy('name'),
-    create: (doc) => WorkspaceDoc(doc: doc),
+    create: WorkspaceDoc.new,
   );
 
   List<WorkspaceDoc> get docs => _docs.content;

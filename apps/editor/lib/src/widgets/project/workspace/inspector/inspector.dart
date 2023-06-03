@@ -1,57 +1,55 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 
-import '../../../../providers/project/workspace/editor.dart';
-import '../../../../providers/project/workspace/workspace.dart';
 import '../../../base/line.dart';
-import '../../../base/properties.dart';
 
-class WorkspaceInspector extends ConsumerWidget {
+class WorkspaceInspector extends StatelessWidget {
   const WorkspaceInspector({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       width: 250,
       color: Colors.white,
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
-              child: WorkspaceInspectorContent(),
-            ),
+                // child: WorkspaceInspectorContent(),
+                ),
           ),
-          const HorizontalLine(),
-          PropertiesWidget(
-            provider: workspaceStateModelPropertiesProvider,
-          ),
+          HorizontalLine(),
+          // PropertiesWidget(
+          //   provider: workspaceStateModelPropertiesProvider,
+          // ),
         ],
       ),
     );
   }
 }
 
-class WorkspaceInspectorContent extends ConsumerWidget {
+class WorkspaceInspectorContent extends StatelessWidget {
   const WorkspaceInspectorContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hasItem = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
-    final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
+  Widget build(BuildContext context) {
+    // final hasItem = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
+    // final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
 
-    return Column(
+    return const Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hasItem)
-          PropertiesWidget(
-            provider: selectedWorkspaceItemModelPropertiesProvider,
-          ),
-        if (hasNode)
-          PropertiesWidget(
-            provider: selectedNodeModelPropertiesProvider,
-          ),
+        Text('todo'),
       ],
     );
+
+    // if (hasItem)
+    //   PropertiesWidget(
+    //     provider: selectedWorkspaceItemModelPropertiesProvider,
+    //   ),
+    // if (hasNode)
+    //   PropertiesWidget(
+    //     provider: selectedNodeModelPropertiesProvider,
+    //   ),
   }
 }

@@ -20,7 +20,7 @@ abstract class _Projects with Store, Mountable implements Loadable {
   late final ModelsQuery<ProjectDoc> _docs = ModelsQuery(
     name: 'Projects._docs',
     query: () => _firestore.collection('projects').orderBy('name', descending: order.isDescending),
-    create: (doc) => ProjectDoc(doc: doc),
+    create: ProjectDoc.new,
   );
 
   List<ProjectDoc> get docs => _docs.content;

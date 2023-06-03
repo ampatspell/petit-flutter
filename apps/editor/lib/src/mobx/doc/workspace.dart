@@ -4,12 +4,7 @@ class WorkspaceDoc = _WorkspaceDoc with _$WorkspaceDoc;
 
 @StoreConfig(hasToString: false)
 abstract class _WorkspaceDoc with Store, Mountable implements DocumentModel {
-  _WorkspaceDoc({
-    required this.doc,
-  });
-
-  @override
-  Iterable<Mountable> get mountable => [];
+  _WorkspaceDoc(this.doc);
 
   @override
   final Document doc;
@@ -20,6 +15,6 @@ abstract class _WorkspaceDoc with Store, Mountable implements DocumentModel {
 
   @override
   String toString() {
-    return 'WorkspaceDoc{path: ${doc.path} data: ${doc.data}';
+    return 'WorkspaceDoc{id: ${doc.id} data: ${doc.data}';
   }
 }

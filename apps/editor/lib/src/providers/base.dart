@@ -1,11 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/foundation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../firebase_options.dart';
-import '../app/provider_logging_observer.dart';
 import '../models/base.dart';
 import '../models/references.dart';
 import '../models/streams.dart';
@@ -24,32 +20,6 @@ class OverrideProviderException implements Exception {
   String toString() {
     return 'OverrideProviderException{}';
   }
-}
-
-@Deprecated('use mobx')
-@Riverpod(dependencies: [])
-ProviderLoggingObserver loggingObserver(LoggingObserverRef ref) => throw UnimplementedError('override');
-
-Future<FirebaseServices> initializeFirebase() async {
-  final app = await Firebase.initializeApp(
-    name: 'default',
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  final firestore = FirebaseFirestore.instanceFor(
-    app: app,
-  );
-  firestore.settings = firestore.settings.copyWith(
-    persistenceEnabled: true,
-    cacheSizeBytes: Settings.CACHE_SIZE_UNLIMITED,
-  );
-  final auth = FirebaseAuth.instanceFor(
-    app: app,
-  );
-  return FirebaseServices(
-    app: app,
-    firestore: firestore,
-    auth: auth,
-  );
 }
 
 @Deprecated('use mobx')

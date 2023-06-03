@@ -19,7 +19,7 @@ mixin Mountable {
     debugPrint('unmount: $this');
   }
 
-  Iterable<Mountable> get mountable;
+  Iterable<Mountable> get mountable => [];
 
   void _mount() {
     transaction(() {

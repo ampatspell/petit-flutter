@@ -4,12 +4,7 @@ class ProjectDoc = _ProjectDoc with _$ProjectDoc;
 
 @StoreConfig(hasToString: false)
 abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
-  _ProjectDoc({
-    required this.doc,
-  });
-
-  @override
-  Iterable<Mountable> get mountable => [];
+  _ProjectDoc(this.doc);
 
   @override
   final Document doc;
