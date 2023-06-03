@@ -1,12 +1,16 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:mobx/mobx.dart';
 import 'package:zug/zug.dart';
 
-import '../firestore_references.dart';
+import '../mobx.dart';
+import '../references.dart';
 
 class ProjectsReset {
   FirestoreReferences get references => it.get();
 
-  final String uid = 'none';
+  Auth get auth => it.get();
+
+  String get uid => runInAction(() => auth.user!.uid);
 
   Future<void> reset() async {
     await _deleteProjects();

@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
@@ -20,7 +19,7 @@ class ProjectsScreen extends StatelessWidget {
   }
 }
 
-class ProjectsScreenContent extends StatelessObserverWidget {
+class ProjectsScreenContent extends StatelessWidget {
   const ProjectsScreenContent({super.key});
 
   @override

@@ -1,4 +1,5 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mobx/mobx.dart';
 
@@ -6,6 +7,7 @@ import 'src/app/provider_logging_observer.dart';
 import 'src/app/router.dart';
 import 'src/app/theme.dart';
 import 'src/get.dart';
+import 'src/mobx/mobx.dart';
 import 'src/providers/base.dart';
 
 void main() async {
@@ -39,16 +41,18 @@ void main() async {
   ));
 }
 
-class EditorApp extends ConsumerWidget {
+class EditorApp extends StatelessObserverWidget {
   const EditorApp({super.key});
 
+  Auth get _auth => it.get();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isLoaded = ref.watch(appStateProvider.select((value) => value.isLoaded));
+  Widget build(BuildContext context) {
+    final isLoaded = _auth.isLoaded;
     if (isLoaded) {
       return FluentApp.router(
         debugShowCheckedModeBanner: false,
-        routerConfig: ref.read(routerProvider),
+        routerConfig: router,
         theme: theme,
       );
     } else {

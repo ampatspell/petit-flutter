@@ -4,8 +4,6 @@ import 'package:zug/zug.dart';
 class FirestoreReferences {
   FirebaseFirestore get _firestore => it.get();
 
-  String get uid => 'none';
-
   MapCollectionReference projects() {
     return _firestore.collection('projects');
   }
@@ -18,7 +16,7 @@ class FirestoreReferences {
     return projectRef.collection('state');
   }
 
-  MapDocumentReference projectStateById({required String projectId}) {
+  MapDocumentReference projectStateById({required String projectId, required String uid}) {
     final projectRef = projectById(projectId);
     return projectStatesByRef(projectRef).doc(uid);
   }
@@ -40,7 +38,7 @@ class FirestoreReferences {
     return workspaceRef.collection('state');
   }
 
-  MapDocumentReference projectWorkspaceStateByRef(MapDocumentReference workspaceRef) {
+  MapDocumentReference projectWorkspaceStateByRef({required MapDocumentReference workspaceRef, required String uid}) {
     return projectWorkspaceStatesByRef(workspaceRef).doc(uid);
   }
 

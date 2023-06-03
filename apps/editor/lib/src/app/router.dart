@@ -1,10 +1,12 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
+import 'package:mobx/mobx.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+import '../get.dart';
+import '../mobx/mobx.dart';
 import '../providers/base.dart';
 import '../widgets/base/fluent_screen.dart';
 import '../widgets/development/one.dart';
@@ -191,52 +193,28 @@ List<Route> routes(RoutesRef ref) {
   ];
 }
 
-@Riverpod(keepAlive: true, dependencies: [appState])
-Raw<GoRouter> router(RouterRef ref) {
-  return GoRouter(
-    debugLogDiagnostics: true,
-    initialLocation: initialLocation,
-    routes: $appRoutes,
-    navigatorKey: _rootKey,
-    redirect: (context, state) async {
+final router = GoRouter(
+  debugLogDiagnostics: true,
+  initialLocation: initialLocation,
+  routes: $appRoutes,
+  navigatorKey: _rootKey,
+  redirect: (context, state) async {
+    return runInAction(() {
+      final auth = it.get<Auth>();
+      final user = auth.user;
       final location = state.location;
       if (location != '/') {
-        final signedOut = ref.read(appStateProvider.select((value) => value.user == null));
-        if (signedOut) {
+        if (user == null) {
           return '/';
         }
       } else if (location == '/') {
-        final signedIn = ref.read(appStateProvider.select((value) => value.user != null));
-        if (signedIn) {
+        if (user != null) {
           return '/projects';
         }
       }
       return null;
-    },
-  );
-}
-
-class OnRouteChange {
-  @override
-  String toString() {
-    return 'OnRouteChange{}';
-  }
-}
-
-@Riverpod(keepAlive: true, dependencies: [router])
-Stream<OnRouteChange> routerOnRouteChange(RouterOnRouteChangeRef ref) {
-  final controller = StreamController<OnRouteChange>();
-  void listener() {
-    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      controller.add(OnRouteChange());
     });
-  }
+  },
+);
 
-  final router = ref.read(routerProvider);
-  router.addListener(listener);
-  ref.onDispose(() => router.removeListener(listener));
-
-  return controller.stream;
-}
-
-const initialLocation = '/projects';
+const initialLocation = '/';

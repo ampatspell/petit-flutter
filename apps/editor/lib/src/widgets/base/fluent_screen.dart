@@ -1,10 +1,12 @@
 import 'package:collection/collection.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../app/router.dart';
+import '../../get.dart';
+import '../../mobx/mobx.dart';
 import '../../providers/base.dart';
 
 class FluentScreen extends ConsumerWidget {
@@ -19,7 +21,6 @@ class FluentScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final router = ref.read(routerProvider);
     final routes = ref.watch(routesProvider);
 
     ref.listen(appStateProvider, (previous, next) {
@@ -81,17 +82,17 @@ class FluentScreen extends ConsumerWidget {
   }
 }
 
-class _Leading extends HookConsumerWidget {
+class _Leading extends StatelessObserverWidget {
   const _Leading();
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(routerOnRouteChangeProvider);
+  RouterHelper get helper => it.get();
 
-    final canPop = ref.read(routerProvider.select((value) => value.canPop()));
+  @override
+  Widget build(BuildContext context) {
+    final canPop = helper.canPop;
     VoidCallback? onPressed() {
       if (canPop) {
-        ref.read(routerProvider).pop();
+        router.pop();
       }
       return null;
     }
@@ -110,48 +111,31 @@ class _Leading extends HookConsumerWidget {
   }
 }
 
-class _CurrentUser extends HookConsumerWidget {
+class _CurrentUser extends StatelessObserverWidget {
   const _CurrentUser();
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(authStateChangesProvider);
-    final auth = ref.watch(firebaseServicesProvider.select((services) => services.auth));
+  Auth get _auth => it.get();
 
-    return state.when(
-      data: (data) {
-        return Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: buildActions(context, auth, data),
-        );
-      },
-      error: (error, stackTrace) {
-        debugPrintStack(
-          label: 'CurrentUser',
-          stackTrace: stackTrace,
-        );
-        return const Text('Error');
-      },
-      loading: () {
-        return const SizedBox.shrink();
-      },
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: buildActions(context),
     );
   }
 
-  List<Widget> buildActions(
-    BuildContext context,
-    FirebaseAuth auth,
-    User? user,
-  ) {
+  List<Widget> buildActions(BuildContext context) {
+    final user = _auth.user;
+
     void signIn() async {
-      await auth.signInWithEmailAndPassword(
+      await _auth.signInWithEmailAndPassword(
         email: 'ampatspell@gmail.com',
         password: 'heythere',
       );
     }
 
     void signOut() async {
-      await auth.signOut();
+      await _auth.signOut();
     }
 
     Widget button({required IconData icon, required VoidCallback onPressed}) {
