@@ -14,6 +14,8 @@ abstract class _WorkspaceDoc with Store, Mountable implements DocumentModel {
   @override
   final Document doc;
 
+  String get id => doc.id;
+
   String get name => doc['name'] as String;
 
   @override

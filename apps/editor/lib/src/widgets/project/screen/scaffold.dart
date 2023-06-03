@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 
 import '../../../mobx/mobx.dart';
 import '../../base/confirmation.dart';
+import 'workspaces.dart';
 
 class ProjectScreenScaffold extends StatelessWidget {
   const ProjectScreenScaffold({super.key});
@@ -35,25 +36,7 @@ class ProjectScreenScaffold extends StatelessWidget {
           ],
         ),
       ),
-      content: Observer(builder: (context) {
-        final project = context.watch<Project>();
-        final workspaces = context.watch<Workspaces>();
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(project.toString()),
-            Text(workspaces.toString()),
-          ],
-        );
-      }),
-      // content: ProjectWorkspacesListView(
-      //   onSelect: (model) {
-      //     ProjectWorkspaceRoute(
-      //       projectId: ref.read(projectIdProvider),
-      //       workspaceId: model.doc.id,
-      //     ).go(context);
-      //   },
-      // ),
+      content: const ProjectWorkspacesListView(),
     );
   }
 }
