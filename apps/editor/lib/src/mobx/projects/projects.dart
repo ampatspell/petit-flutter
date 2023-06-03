@@ -18,7 +18,7 @@ abstract class _Projects with Store, Mountable implements Loadable {
   FirebaseFirestore get _firestore => it.get();
 
   late final ModelsQuery<ProjectDoc> _docs = ModelsQuery(
-    name: 'projects_docs',
+    name: 'Projects._docs',
     query: () => _firestore.collection('projects').orderBy('name', descending: order.isDescending),
     create: (doc) => ProjectDoc(doc: doc),
   );
@@ -37,6 +37,6 @@ abstract class _Projects with Store, Mountable implements Loadable {
 
   @override
   String toString() {
-    return '_Projects{}';
+    return 'Projects{}';
   }
 }

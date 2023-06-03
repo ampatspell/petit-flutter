@@ -20,6 +20,6 @@ abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
 
   @override
   String toString() {
-    return '_ProjectDoc{}';
+    return 'ProjectDoc{id: $id, data: ${doc.data}';
   }
 }

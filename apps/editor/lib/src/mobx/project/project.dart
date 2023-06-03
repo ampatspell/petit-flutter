@@ -18,6 +18,7 @@ abstract class _Project with Store, Mountable implements Loadable {
   MapDocumentReference get reference => _firestore.collection('projects').doc(id);
 
   late final ModelReference<ProjectDoc> __doc = ModelReference(
+    name: 'Project.__doc',
     reference: () => reference,
     create: (doc) => ProjectDoc(doc: doc),
   );

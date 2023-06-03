@@ -9,11 +9,12 @@ abstract class _Workspaces with Store, Mountable implements Loadable {
   });
 
   @override
-  Iterable<Mountable> get mountable => [_docs];
+  Iterable<Mountable> get mountable => [_docs, project];
 
   final Project project;
 
   late final ModelsQuery<WorkspaceDoc> _docs = ModelsQuery(
+    name: 'Workspaces._docs',
     query: () => project.reference.collection('workspaces').orderBy('name'),
     create: (doc) => WorkspaceDoc(doc: doc),
   );

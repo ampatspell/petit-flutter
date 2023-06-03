@@ -10,11 +10,13 @@ mixin Mountable {
   @mustCallSuper
   void onMounted() {
     transaction(() => mounted.add(this));
+    debugPrint('mount: $this');
   }
 
   @mustCallSuper
   void onUnmounted() {
     transaction(() => mounted.remove(this));
+    debugPrint('unmount: $this');
   }
 
   Iterable<Mountable> get mountable;
