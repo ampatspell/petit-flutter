@@ -118,10 +118,18 @@ class Property<T, E> with _$Property<T, E> {
     if (result.error != null) {
       return result;
     }
+    return validateValue(result.value as T);
+  }
+
+  PropertyValidationResult<T> validateValue(T value) {
     if (validator != null) {
-      return validator!(result.value as T);
+      return validator!(value);
     }
-    return result;
+    return PropertyValidationResult(value: value);
+  }
+
+  E get currentEditorValue {
+    return presentation.toEditor(value);
   }
 
   PropertyValidationResult<T> updateWithEditorValue(E editor) {

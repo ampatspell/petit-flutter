@@ -1,5 +1,6 @@
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:gap/gap.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,6 +13,8 @@ import 'text_style.dart';
 
 part 'properties.g.dart';
 
+part 'properties.freezed.dart';
+
 @Riverpod(dependencies: [])
 Properties? widgetProperties(WidgetPropertiesRef ref) => throw OverrideProviderException();
 
@@ -20,6 +23,37 @@ PropertyGroup widgetPropertyGroup(WidgetPropertyGroupRef ref) => throw OverrideP
 
 @Riverpod(dependencies: [])
 Property<dynamic, dynamic> widgetProperty(WidgetPropertyRef ref) => throw OverrideProviderException();
+
+@freezed
+class WidgetPropertyStateData with _$WidgetPropertyStateData {
+  const factory WidgetPropertyStateData({
+    required Property<dynamic, dynamic> property,
+    required PropertyValidationResult<dynamic> validation,
+    required dynamic editor,
+  }) = _WidgetPropertyStateData;
+}
+
+// @Riverpod(dependencies: [widgetProperty])
+// class WidgetPropertyState extends _$WidgetPropertyState {
+//   @override
+//   WidgetPropertyStateData build() {
+//     ref.listen(widgetPropertyProvider, (previous, next) {
+//       final editor = next.currentEditorValue;
+//       state = state.copyWith(
+//         property: next,
+//         editor: editor,
+//         validation: next.validateEditorValue(editor),
+//       );
+//     }, fireImmediately: true);
+//   }
+//
+//   void updateEditorValue(dynamic editor) {
+//     state = state.copyWith(
+//       editor: editor,
+//       validation: state.property.validateEditorValue(editor),
+//     );
+//   }
+// }
 
 class PropertiesWidget extends ConsumerWidget {
   const PropertiesWidget({
@@ -200,6 +234,10 @@ class TextBoxPropertyWidget extends HookConsumerWidget {
       controller.text = editor;
       error.value = helper.validateEditorValue(ref, editor).error;
     }
+
+    // ref.listen(widgetPropertyStateProvider, (previous, next) {
+    //   controller.text = next.editor as String;
+    // });
 
     ref.listen(helper.selectEditorValue(), (previous, next) {
       if (controller.text != next) {

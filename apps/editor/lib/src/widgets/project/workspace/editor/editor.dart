@@ -102,15 +102,16 @@ class WorkspaceItemContainer extends HookConsumerWidget {
       ref.read(workspaceStateModelProvider).updateItem(item.doc.id);
     }
 
-    void reorder() {
-      final item = ref.read(workspaceItemModelProvider);
-      final items = [...ref.read(workspaceItemModelsProvider)];
-      items.remove(item);
-      items.insert(0, item);
-      items.forEachIndexed((index, element) => element.updateIndex(index));
-    }
+    // void reorder() {
+    //   final item = ref.read(workspaceItemModelProvider);
+    //   final items = [...ref.read(workspaceItemModelsProvider)];
+    //   items.remove(item);
+    //   items.insert(0, item);
+    //   items.forEachIndexed((index, element) => element.updateIndex(index));
+    // }
 
     void onDragStart() {
+      onSelect();
       final position = ref.read(workspaceItemModelProvider.select((value) => value.position));
       dragging.value = position;
     }
@@ -133,9 +134,7 @@ class WorkspaceItemContainer extends HookConsumerWidget {
     }
 
     return GestureDetector(
-      onTapUp: (_) {
-        reorder();
-      },
+      onTap: onSelect,
       child: DraggableWorkspaceItem(
         child: Container(
           decoration: BoxDecoration(
@@ -169,8 +168,11 @@ class DraggableWorkspaceItem extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final dragging = useState<Offset?>(null);
     return Draggable(
-      feedback: const SizedBox.shrink(),
-      childWhenDragging: child,
+      feedback: ProviderScope(
+        parent: ProviderScope.containerOf(context),
+        child: child,
+      ),
+      childWhenDragging: const SizedBox.shrink(),
       child: child,
       onDragStarted: () {
         dragging.value = Offset.zero;
