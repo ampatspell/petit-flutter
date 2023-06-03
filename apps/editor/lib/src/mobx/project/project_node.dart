@@ -1,18 +1,24 @@
 part of '../mobx.dart';
 
-class ProjectNode = _ProjectNode with _$ProjectNode;
+abstract class ProjectNode implements DocumentModel {}
+
+class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc> implements ProjectNode;
+
+abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> {
+  _BoxProjectNode(super.nodeDoc);
+}
 
 @StoreConfig(hasToString: false)
-abstract class _ProjectNode with Store, Mountable implements DocumentModel {
+abstract class _ProjectNode<D extends ProjectNodeDoc> with Store, Mountable implements DocumentModel {
   _ProjectNode(this.nodeDoc);
 
-  final ProjectNodeDoc nodeDoc;
+  final D nodeDoc;
 
   @override
   Document get doc => nodeDoc.doc;
 
   @override
   String toString() {
-    return 'ProjectNode{nodeDoc: $nodeDoc}';
+    return '$runtimeType{nodeDoc: $nodeDoc}';
   }
 }

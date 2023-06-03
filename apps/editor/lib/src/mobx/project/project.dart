@@ -26,7 +26,17 @@ abstract class _Project with Store, Mountable implements Loadable {
   late final ModelsQuery<ProjectNode> _nodes = ModelsQuery(
     name: 'Project._nodes',
     query: () => reference.collection('nodes'),
-    create: (doc) => ProjectNode(ProjectNodeDoc(doc)),
+    create: (doc) {
+      final string = doc['type'] as String;
+      final type = ProjectNodeType.values.firstWhereOrNull((type) => type.name == string);
+      if (type == null) {
+        throw UnsupportedError('Project._nodes: $string');
+      }
+      switch (type) {
+        case ProjectNodeType.box:
+          return BoxProjectNode(BoxProjectNodeDoc(doc));
+      }
+    },
   );
 
   @override
