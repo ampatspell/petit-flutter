@@ -9,40 +9,38 @@ mixin Mountable {
 
   @mustCallSuper
   void onMounted() {
-    runInAction(() => mounted.add(this));
-    print('onMounted $this');
+    transaction(() => mounted.add(this));
   }
 
   @mustCallSuper
   void onUnmounted() {
-    print('onUnmounted $this');
-    runInAction(() => mounted.remove(this));
+    transaction(() => mounted.remove(this));
   }
 
   Iterable<Mountable> get mountable;
 
-  void mount() {
-    runInAction(() {
+  void _mount() {
+    transaction(() {
       if (isMounted) {
         return;
       }
       for (final child in mountable) {
-        child.mount();
+        child._mount();
       }
       _isMounted = true;
       onMounted();
     });
   }
 
-  void unmount() {
-    runInAction(() {
+  void _unmount() {
+    transaction(() {
       if (!isMounted) {
         return;
       }
       _isMounted = false;
       onUnmounted();
       for (final child in mountable) {
-        child.unmount();
+        child._unmount();
       }
     });
   }

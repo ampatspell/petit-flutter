@@ -52,7 +52,7 @@ class Document {
 
   //
 
-  final Observable<SnapshotMetadata?> _metadata = Observable(null);
+  final Observable<SnapshotMetadata?> _metadata = Observable(null, name: 'Document.metadata');
 
   SnapshotMetadata? get metadata => _metadata.value;
 
@@ -62,25 +62,30 @@ class Document {
 
   //
 
-  final Observable<ObservableMap<String, dynamic>> __data = Observable(ObservableMap.of({}));
+  final Observable<ObservableMap<String, dynamic>> __data = Observable(
+    name: 'Document.data',
+    ObservableMap.of({}, name: 'Document.data.map'),
+  );
 
   ObservableMap<String, dynamic> get _data => __data.value;
 
+  FirestoreMap get data => UnmodifiableMapView(_data);
+
   //
 
-  final Observable<bool> _isDirty = Observable(false);
+  final Observable<bool> _isDirty = Observable(false, name: 'Document.isDirty');
 
   bool get isDirty => _isDirty.value;
 
   //
 
-  final Observable<bool> _isNew = Observable(false);
+  final Observable<bool> _isNew = Observable(false, name: 'Document.isNew');
 
   bool get isNew => _isNew.value;
 
   //
 
-  final Observable<bool> _isDeleted = Observable(false);
+  final Observable<bool> _isDeleted = Observable(false, name: 'Document.isDeleted');
 
   bool get isDeleted => _isDeleted.value;
 
@@ -102,7 +107,7 @@ class Document {
     required FirestoreMap data,
     required SnapshotMetadata metadata,
   }) {
-    __data.value = ObservableMap.of(data);
+    __data.value = ObservableMap.of(data, name: 'Document.data.map');
     _isDirty.value = false;
     _isDeleted.value = false;
     _metadata.value = metadata;

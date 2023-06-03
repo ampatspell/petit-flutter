@@ -63,8 +63,12 @@ class Loaded extends StatelessWidget {
         ),
         const Gap(10),
         const ProjectDetails(),
-        const Gap(20),
+        const Gap(10),
+        const Nodes(),
+        const Gap(10),
         const Mounted(),
+        const Gap(10),
+        const Subscriptions(),
       ],
     );
   }
@@ -137,12 +141,33 @@ class Mounted extends StatelessWidget {
   }
 }
 
+class Subscriptions extends StatelessWidget {
+  const Subscriptions({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Observer(builder: (context) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          DefaultFluentTextStyle(
+            resolve: (typography) => typography.subtitle,
+            child: const Text('Subscriptions:'),
+          ),
+          const Gap(5),
+          for (final model in subscriptions) Text(model.toString()),
+        ],
+      );
+    });
+  }
+}
+
 class Project extends _Project with _$Project {
   Project({required super.projectRef});
 
   @override
   String toString() {
-    return 'Project{doc: ${doc.content}, nodes: ${nodes.content}}';
+    return 'Project{id: ${projectRef.id}}';
   }
 }
 
@@ -169,12 +194,13 @@ abstract class _Project with Store, Mountable {
   bool get isLoaded => doc.isLoaded && nodes.isLoaded;
 
   late final ModelReference<ProjectDoc> doc = ModelReference(
-    name: 'project-doc',
+    name: 'project_doc',
     reference: () => projectRef,
     create: (doc) => ProjectDoc(doc: doc),
   );
 
   late final ModelsQuery<ProjectNodeDoc> nodes = ModelsQuery(
+    name: 'project_nodes',
     query: () => projectRef.collection('nodes'),
     create: (doc) => ProjectNodeDoc(doc: doc),
   );
@@ -187,7 +213,7 @@ class ProjectDoc extends _ProjectDoc with _$ProjectDoc {
 
   @override
   String toString() {
-    return 'ProjectDoc{doc: $doc}';
+    return 'ProjectDoc{doc: ${doc.id}, data: ${doc.data}}';
   }
 }
 
@@ -208,7 +234,7 @@ class ProjectNodeDoc extends _ProjectNodeDoc with _$ProjectNodeDoc {
 
   @override
   String toString() {
-    return 'ProjectNodeDoc{doc: $doc}';
+    return 'ProjectNodeDoc{doc: ${doc.id}, data: ${doc.data}}';
   }
 }
 

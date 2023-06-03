@@ -1,9 +1,28 @@
 part of '../zug.dart';
 
-class StreamWithSource<S, R> {
-  const StreamWithSource({required this.stream, required this.source});
+ObservableList<SubscribableSubscription> subscriptions = ObservableList();
 
-  static StreamWithSource<MapDocumentSnapshot, MapDocumentReference>? fromDocumentReferenceProvider(
+class SubscribableSubscription {
+  const SubscribableSubscription(this.source);
+
+  final dynamic source;
+
+  @override
+  String toString() {
+    return source.toString();
+  }
+}
+
+void Function() _registerSubscription(dynamic source) {
+  final subscription = SubscribableSubscription(source);
+  transaction(() => subscriptions.add(subscription));
+  return () => transaction(() => subscriptions.remove(subscription));
+}
+
+class StreamAndSource<S, R> {
+  const StreamAndSource({required this.stream, required this.source});
+
+  static StreamAndSource<MapDocumentSnapshot, MapDocumentReference>? fromDocumentReferenceProvider(
       MapDocumentReferenceProvider? provider) {
     if (provider == null) {
       return null;
@@ -12,13 +31,13 @@ class StreamWithSource<S, R> {
     if (reference == null) {
       return null;
     }
-    return StreamWithSource(
+    return StreamAndSource(
       stream: reference.snapshots(includeMetadataChanges: false),
       source: reference,
     );
   }
 
-  static StreamWithSource<MapQuerySnapshot, MapQuery>? fromQueryProvider(MapQueryProvider? provider) {
+  static StreamAndSource<MapQuerySnapshot, MapQuery>? fromQueryProvider(MapQueryProvider? provider) {
     if (provider == null) {
       return null;
     }
@@ -26,7 +45,7 @@ class StreamWithSource<S, R> {
     if (reference == null) {
       return null;
     }
-    return StreamWithSource(
+    return StreamAndSource(
       stream: reference.snapshots(includeMetadataChanges: false),
       source: reference,
     );
@@ -38,14 +57,14 @@ class StreamWithSource<S, R> {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        other is StreamWithSource && runtimeType == other.runtimeType && source == other.source;
+        other is StreamAndSource && runtimeType == other.runtimeType && source == other.source;
   }
 
   @override
   int get hashCode => source.hashCode;
 }
 
-typedef SnapshotSubscribableStreamProvider<S, R> = StreamWithSource<S, R>? Function();
+typedef SnapshotSubscribableStreamProvider<S, R> = StreamAndSource<S, R>? Function();
 
 mixin SnapshotSubscribable<T, S, R> {
   bool get isMounted;
@@ -60,7 +79,11 @@ mixin SnapshotSubscribable<T, S, R> {
 
   //
 
-  final Observable<SnapshotMetadata?> _metadata = Observable(null);
+  bool _needsClear = false;
+
+  //
+
+  final Observable<SnapshotMetadata?> _metadata = Observable(null, name: 'Subscribable.metadata');
 
   SnapshotMetadata? get metadata => _metadata.value;
 
@@ -70,25 +93,24 @@ mixin SnapshotSubscribable<T, S, R> {
 
   //
 
-  final Observable<bool> _isLoading = Observable(false);
+  final Observable<bool> _isLoading = Observable(false, name: 'Subscribable.isLoading');
 
   bool get isLoading => _isLoading.value;
 
-  final Observable<bool> _isLoaded = Observable(false);
+  final Observable<bool> _isLoaded = Observable(false, name: 'Subscribable.isLoaded');
 
   bool get isLoaded => _isLoaded.value;
 
   //
 
-  bool _needsClear = false;
-
   SnapshotSubscribableStreamProvider<S, R>? __streamProvider;
 
-  final Observable<R?> __streamSource = Observable(null);
+  final Observable<R?> __streamSource = Observable(null, name: 'Subscribable.streamSource');
 
   R? get _streamSource => __streamSource.value;
 
   void Function()? _cancelStream;
+
   ReactionDisposer? _cancelReaction;
 
   set _streamProvider(SnapshotSubscribableStreamProvider<S, R> provider) {
@@ -109,7 +131,7 @@ mixin SnapshotSubscribable<T, S, R> {
 
   //
 
-  StreamWithSource<S, R>? get _streamWithSource {
+  StreamAndSource<S, R>? get _streamWithSource {
     final provider = __streamProvider;
     if (provider != null) {
       final model = provider();
@@ -131,6 +153,7 @@ mixin SnapshotSubscribable<T, S, R> {
         _subscribeToStream();
       },
       onError: (err, reaction) => debugPrint(err.toString()),
+      name: 'Subscribable.streamProvider.reaction',
     );
   }
 
@@ -145,20 +168,24 @@ mixin SnapshotSubscribable<T, S, R> {
   void _subscribeToStream() {
     assert(isMounted);
     assert(_cancelStream == null);
-    runInAction(() {
-      final streamWithSource = _streamWithSource;
-      print('subscribe $streamWithSource');
-      if (streamWithSource == null) {
-        return;
-      }
 
-      final stream = streamWithSource.stream;
-      final source = streamWithSource.source;
+    final streamWithSource = _streamWithSource;
+    if (streamWithSource == null) {
+      return;
+    }
 
+    final stream = streamWithSource.stream;
+    final source = streamWithSource.source;
+
+    transaction(() {
       _isLoading.value = true;
-      final subscription = stream.listen((snapshot) => runInAction(() => __onSnapshot(snapshot)));
+      final subscription = stream.listen((snapshot) => transaction(() => __onSnapshot(snapshot)));
+      final cancelRegistration = _registerSubscription(source);
       __streamSource.value = source;
-      _cancelStream = subscription.cancel;
+      _cancelStream = () {
+        subscription.cancel();
+        cancelRegistration();
+      };
     });
   }
 
@@ -182,21 +209,4 @@ mixin SnapshotSubscribable<T, S, R> {
       _isLoaded.value = true;
     }
   }
-
-// void _unsubscribe() {
-//   runInAction(() {
-//     final cancel = _cancelStream;
-//     if (cancel != null) {
-//       _cancelStream = null;
-//       cancel();
-//     }
-//     final cancelReaction = _cancelReaction;
-//     if (cancelReaction != null) {
-//       cancelReaction();
-//       _cancelReaction = null;
-//     }
-//     _isLoading.value = false;
-//     _unmountContent();
-//   });
-// }
 }

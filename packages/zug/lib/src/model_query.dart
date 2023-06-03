@@ -17,7 +17,7 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
 
   //
 
-  final Observable<T?> _content = Observable(null);
+  final Observable<T?> _content = Observable(null, name: 'ModelQuery.content');
 
   T? get content => _content.value;
 
@@ -28,7 +28,7 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
   set query(MapQuery? query) => _queryProvider = () => query;
 
   set _queryProvider(MapQueryProvider provider) {
-    _streamProvider = () => StreamWithSource.fromQueryProvider(provider);
+    _streamProvider = () => StreamAndSource.fromQueryProvider(provider);
   }
 
   //
@@ -54,7 +54,7 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
         if (current.doc.reference == first.reference) {
           current.doc._onUpdated(data: first.data(), metadata: first.metadata);
         } else {
-          current.unmount();
+          current._unmount();
           final model = create(Document.fromSnapshot(first));
           _content.value = model;
         }
@@ -64,7 +64,7 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
       }
     } else {
       if (current != null) {
-        current.unmount();
+        current._unmount();
       }
       _content.value = null;
     }
@@ -77,12 +77,12 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
 
   @override
   void _unmountContent() {
-    _content.value?.unmount();
+    _content.value?._unmount();
   }
 
   @override
   void _mountContent() {
-    _content.value?.mount();
+    _content.value?._mount();
   }
 
   @override

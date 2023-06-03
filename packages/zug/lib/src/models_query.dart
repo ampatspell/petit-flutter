@@ -17,7 +17,7 @@ class ModelsQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<
 
   //
 
-  final ObservableList<T> content = ObservableList();
+  final ObservableList<T> content = ObservableList(name: 'ModelsQuery.content');
 
   //
 
@@ -26,7 +26,7 @@ class ModelsQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<
   set query(MapQuery? query) => _queryProvider = () => query;
 
   set _queryProvider(MapQueryProvider provider) {
-    _streamProvider = () => StreamWithSource.fromQueryProvider(provider);
+    _streamProvider = () => StreamAndSource.fromQueryProvider(provider);
   }
 
   //
@@ -55,7 +55,7 @@ class ModelsQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<
       if (type == DocumentChangeType.added) {
         final model = create(Document.fromSnapshot(doc));
         content.insert(newIndex, model);
-        model.mount();
+        model._mount();
       } else if (type == DocumentChangeType.modified) {
         final current = content[oldIndex];
         current.doc._onUpdated(data: data!, metadata: metadata);
@@ -66,7 +66,7 @@ class ModelsQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<
       } else if (type == DocumentChangeType.removed) {
         final model = content[oldIndex];
         model.doc._onDeleted(metadata: metadata);
-        model.unmount();
+        model._unmount();
         content.removeAt(oldIndex);
       }
     }
@@ -75,14 +75,14 @@ class ModelsQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<
   @override
   void _unmountContent() {
     for (final model in content) {
-      model.unmount();
+      model._unmount();
     }
   }
 
   @override
   void _mountContent() {
     for (final model in content) {
-      model.mount();
+      model._mount();
     }
   }
 

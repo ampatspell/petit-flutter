@@ -17,8 +17,8 @@ class MountingProvider<T extends Mountable> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Provider<T>(
-      create: (context) => create(context)..mount(),
-      dispose: (context, value) => value.unmount(),
+      create: (context) => create(context).._mount(),
+      dispose: (context, value) => value._unmount(),
       lazy: lazy,
       builder: builder,
       child: child,

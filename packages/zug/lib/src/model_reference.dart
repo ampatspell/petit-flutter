@@ -18,7 +18,7 @@ class ModelReference<T extends DocumentModel>
 
   //
 
-  final Observable<T?> _content = Observable(null);
+  final Observable<T?> _content = Observable(null, name: 'ModelReference.content');
 
   T? get content => _content.value;
 
@@ -31,7 +31,7 @@ class ModelReference<T extends DocumentModel>
   }
 
   set _referenceProvider(MapDocumentReferenceProvider provider) {
-    _streamProvider = () => StreamWithSource.fromDocumentReferenceProvider(provider);
+    _streamProvider = () => StreamAndSource.fromDocumentReferenceProvider(provider);
   }
 
   @override
@@ -55,10 +55,10 @@ class ModelReference<T extends DocumentModel>
           current.doc._onUpdated(data: snapshot.data()!, metadata: snapshot.metadata);
         } else {
           current.doc._onDeleted(metadata: snapshot.metadata);
-          current.unmount();
+          current._unmount();
         }
       } else {
-        current.unmount();
+        current._unmount();
         final model = create(Document.fromSnapshot(snapshot));
         _content.value = model;
       }
@@ -70,12 +70,12 @@ class ModelReference<T extends DocumentModel>
 
   @override
   void _mountContent() {
-    _content.value?.mount();
+    _content.value?._mount();
   }
 
   @override
   void _unmountContent() {
-    _content.value?.unmount();
+    _content.value?._unmount();
   }
 
   @override
