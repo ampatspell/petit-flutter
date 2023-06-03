@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/widgets.dart';
+import 'package:get_it/get_it.dart';
 import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
@@ -20,3 +21,5 @@ part 'src/provider.dart';
 part 'src/subscribable.dart';
 
 part 'src/typedefs.dart';
+
+part 'src/get.dart';

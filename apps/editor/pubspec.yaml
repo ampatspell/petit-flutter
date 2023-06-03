@@ -26,6 +26,9 @@ dependencies:
   rxdart: ^0.27.7
   collection: ^1.17.1
   get_it: ^7.6.0
+  mobx: ^2.2.0
+  flutter_mobx: ^2.0.6+5
+  provider: ^6.0.5
 
 dev_dependencies:
   flutter_test:
@@ -33,8 +36,9 @@ dev_dependencies:
   flutter_lints: ^2.0.0
   go_router_builder: ^2.0.1
   riverpod_generator: ^2.2.1
-  build_runner: ^2.3.3
+  build_runner:
   freezed: ^2.3.3
+  mobx_codegen: ^2.3.0
   custom_lint:
   riverpod_lint:
   dart_flutter_team_lints:

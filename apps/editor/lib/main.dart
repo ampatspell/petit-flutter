@@ -4,11 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'src/app/provider_logging_observer.dart';
 import 'src/app/router.dart';
 import 'src/app/theme.dart';
+import 'src/get.dart';
 import 'src/providers/base.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   final firebaseServices = await initializeFirebase();
+  await registerEditor(firebaseServices);
+
   final loggingObserver = ProviderLoggingObserver(
     enabled: false,
   );

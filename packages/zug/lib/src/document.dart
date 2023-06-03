@@ -50,6 +50,8 @@ class Document {
 
   String get id => reference.id;
 
+  //
+
   final Observable<SnapshotMetadata?> _metadata = Observable(null);
 
   SnapshotMetadata? get metadata => _metadata.value;
@@ -58,21 +60,31 @@ class Document {
 
   bool? get hasPendingWrites => metadata?.hasPendingWrites;
 
+  //
+
   final Observable<ObservableMap<String, dynamic>> __data = Observable(ObservableMap.of({}));
 
   ObservableMap<String, dynamic> get _data => __data.value;
+
+  //
 
   final Observable<bool> _isDirty = Observable(false);
 
   bool get isDirty => _isDirty.value;
 
+  //
+
   final Observable<bool> _isNew = Observable(false);
 
   bool get isNew => _isNew.value;
 
+  //
+
   final Observable<bool> _isDeleted = Observable(false);
 
   bool get isDeleted => _isDeleted.value;
+
+  //
 
   dynamic operator [](String key) => _data[key];
 
@@ -83,6 +95,8 @@ class Document {
     _data[key] = value;
     _isDirty.value = true;
   }
+
+  //
 
   void _onUpdated({
     required FirestoreMap data,
@@ -99,6 +113,8 @@ class Document {
     _isDeleted.value = true;
     _isDirty.value = true;
   }
+
+  //
 
   Future<void>? _scheduledSave;
 
@@ -125,6 +141,8 @@ class Document {
     });
     _scheduledSave = future;
   }
+
+  //
 
   @override
   String toString() {

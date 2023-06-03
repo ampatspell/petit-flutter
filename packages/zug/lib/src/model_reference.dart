@@ -1,34 +1,37 @@
 part of '../zug.dart';
 
-class ModelReference<T extends DocumentModel> with Mountable, SnapshotSubscribable<T, MapDocumentSnapshot> {
+class ModelReference<T extends DocumentModel>
+    with Mountable, SnapshotSubscribable<T, MapDocumentSnapshot, MapDocumentReference> {
   ModelReference({
     this.name,
     required this.create,
-    MapDocumentReference? reference,
+    MapDocumentReferenceProvider reference,
   }) {
-    this.reference = reference;
+    this._referenceProvider = reference;
   }
-
-  final String? name;
 
   @override
   Iterable<Mountable> get mountable => [];
 
+  final String? name;
   final CreateModel<T> create;
-  final Observable<MapDocumentReference?> _reference = Observable(null);
+
+  //
+
   final Observable<T?> _content = Observable(null);
 
   T? get content => _content.value;
 
-  MapDocumentReference? get reference {
-    return _reference.value;
-  }
+  //
+
+  MapDocumentReference? get reference => _streamSource;
 
   set reference(MapDocumentReference? reference) {
-    runInAction(() {
-      _reference.value = reference;
-      _streamProvider = reference != null ? () => reference.snapshots(includeMetadataChanges: false) : null;
-    });
+    _referenceProvider = () => reference;
+  }
+
+  set _referenceProvider(MapDocumentReferenceProvider provider) {
+    _streamProvider = () => StreamWithSource.fromDocumentReferenceProvider(provider);
   }
 
   @override
