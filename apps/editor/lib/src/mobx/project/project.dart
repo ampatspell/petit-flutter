@@ -2,6 +2,7 @@ part of '../mobx.dart';
 
 class Project = _Project with _$Project;
 
+@StoreConfig(hasToString: false)
 abstract class _Project with Store, Mountable implements Loadable {
   _Project({
     required this.id,
@@ -12,9 +13,9 @@ abstract class _Project with Store, Mountable implements Loadable {
 
   final String id;
 
-  FirestoreReferences get _references => it.get();
+  FirebaseFirestore get _firestore => it.get();
 
-  MapDocumentReference get reference => _references.projectById(id);
+  MapDocumentReference get reference => _firestore.collection('projects').doc(id);
 
   late final ModelReference<ProjectDoc> __doc = ModelReference(
     reference: () => reference,

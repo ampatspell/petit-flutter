@@ -34,4 +34,9 @@ abstract class _Projects with Store, Mountable implements Loadable {
   void reset() async {
     await ProjectsReset().reset();
   }
+
+  @override
+  String toString() {
+    return '_Projects{}';
+  }
 }

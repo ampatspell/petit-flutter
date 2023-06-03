@@ -2,6 +2,7 @@ part of 'mobx.dart';
 
 class Auth = _Auth with _$Auth;
 
+@StoreConfig(hasToString: false)
 abstract class _Auth with Store implements Loadable {
   _Auth() {
     _subscribe();
@@ -38,5 +39,10 @@ abstract class _Auth with Store implements Loadable {
 
   Future<void> signOut() async {
     await _auth.signOut();
+  }
+
+  @override
+  String toString() {
+    return '_Auth{isLoaded: $isLoaded, user: $user}';
   }
 }

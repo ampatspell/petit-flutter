@@ -35,7 +35,17 @@ class ProjectScreenScaffold extends StatelessWidget {
           ],
         ),
       ),
-      content: const Text('hello'),
+      content: Observer(builder: (context) {
+        final project = context.watch<Project>();
+        final workspaces = context.watch<Workspaces>();
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(project.toString()),
+            Text(workspaces.toString()),
+          ],
+        );
+      }),
       // content: ProjectWorkspacesListView(
       //   onSelect: (model) {
       //     ProjectWorkspaceRoute(

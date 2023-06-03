@@ -13,4 +13,9 @@ abstract class _ProjectNodeDoc with Store, Mountable implements DocumentModel {
 
   @override
   final Document doc;
+
+  @override
+  String toString() {
+    return '_ProjectNodeDoc{}';
+  }
 }

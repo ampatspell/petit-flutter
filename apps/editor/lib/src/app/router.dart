@@ -150,10 +150,9 @@ final router = GoRouter(
   routes: $appRoutes,
   navigatorKey: rootNavigatorKey,
   redirect: (context, state) {
-    final res = runInAction(() {
+    return runInAction(() {
       final auth = it.get<Auth>();
       final user = auth.user;
-      print('redirect hasUser: ${user != null}');
       final location = state.location;
       if (location != '/') {
         if (user == null) {
@@ -166,9 +165,7 @@ final router = GoRouter(
       }
       return null;
     });
-    print('redirect $res');
-    return res;
   },
 );
 
-const initialLocation = '/projects/667zrbL5WElVhIVrJTe4';
+const initialLocation = '/projects';

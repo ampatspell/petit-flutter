@@ -38,6 +38,7 @@ final loggedIn = [
 
 class RouterHelper = _RouterHelper with _$RouterHelper;
 
+@StoreConfig(hasToString: false)
 abstract class _RouterHelper with Store {
   _RouterHelper() {
     _subscribe();
@@ -78,5 +79,10 @@ abstract class _RouterHelper with Store {
     return [
       home,
     ];
+  }
+
+  @override
+  String toString() {
+    return '_RouterHelper{}';
   }
 }

@@ -1,10 +1,10 @@
 part of '../mobx.dart';
 
-class ProjectDoc = _ProjectDoc with _$ProjectDoc;
+class WorkspaceDoc = _WorkspaceDoc with _$WorkspaceDoc;
 
 @StoreConfig(hasToString: false)
-abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
-  _ProjectDoc({
+abstract class _WorkspaceDoc with Store, Mountable implements DocumentModel {
+  _WorkspaceDoc({
     required this.doc,
   });
 
@@ -14,12 +14,10 @@ abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
   @override
   final Document doc;
 
-  String get id => doc.id;
-
   String get name => doc['name'] as String;
 
   @override
   String toString() {
-    return '_ProjectDoc{}';
+    return 'WorkspaceDoc{path: ${doc.path} data: ${doc.data}';
   }
 }

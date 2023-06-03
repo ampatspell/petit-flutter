@@ -6,31 +6,37 @@ import 'package:zug/zug.dart';
 
 import '../app/router.dart';
 
-class Load<T extends Loadable> extends StatelessObserverWidget {
+const placeholder = SizedBox.shrink();
+
+class Load<T extends Loadable> extends StatelessWidget {
   const Load({
     super.key,
-    required this.child,
+    this.child,
     this.onMissing,
   });
 
-  final Widget child;
+  final Widget? child;
   final void Function(BuildContext context)? onMissing;
 
   @override
   Widget build(BuildContext context) {
-    final model = context.watch<T>();
-    final isLoaded = model.isLoaded;
-    if (isLoaded) {
-      if (model.isMissing && onMissing != null) {
-        SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
-          final context = rootNavigatorKey.currentContext!;
-          onMissing!(context);
-        });
-        return const SizedBox.shrink();
-      } else {
-        return child;
-      }
-    }
-    return const SizedBox.shrink();
+    return Observer(
+      builder: (context) {
+        final model = context.watch<T>();
+        final isLoaded = model.isLoaded;
+        if (isLoaded) {
+          if (model.isMissing && onMissing != null) {
+            SchedulerBinding.instance.addPostFrameCallback((timeStamp) {
+              final context = rootNavigatorKey.currentContext!;
+              onMissing!(context);
+            });
+            return placeholder;
+          } else {
+            return child ?? placeholder;
+          }
+        }
+        return placeholder;
+      },
+    );
   }
 }

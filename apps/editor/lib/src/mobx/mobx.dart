@@ -10,18 +10,21 @@ import 'package:zug/zug.dart';
 import '../app/router.dart';
 import '../widgets/base/order.dart';
 import 'projects/reset.dart';
-import 'references.dart';
+
+part 'auth.dart';
 
 part 'doc/project.dart';
 
 part 'doc/project_node.dart';
 
-part 'mobx.g.dart';
+part 'doc/workspace.dart';
 
-part 'projects/projects.dart';
+part 'mobx.g.dart';
 
 part 'project/project.dart';
 
-part 'auth.dart';
+part 'project/workspaces.dart';
+
+part 'projects/projects.dart';
 
 part 'router.dart';
