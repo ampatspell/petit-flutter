@@ -4,6 +4,8 @@ abstract class ProjectNode implements DocumentModel {
   ProjectNodeType get type;
 
   String get id;
+
+  PropertyGroups get properties;
 }
 
 mixin SizedProjectNode {
@@ -32,6 +34,25 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
   int get height => doc['height'] as int;
 
   Color get color => Color(doc['color'] as int);
+
+  late final PropertyGroups properties = PropertyGroups([
+    PropertyGroup(name: 'Size', properties: [
+      Property<int, String>.documentModel(
+        this,
+        key: 'width',
+        initial: 1,
+        validator: intIsPositiveValidator,
+        presentation: integerTextBoxPresentation,
+      ),
+      Property<int, String>.documentModel(
+        this,
+        key: 'height',
+        initial: 1,
+        validator: intIsPositiveValidator,
+        presentation: integerTextBoxPresentation,
+      )
+    ]),
+  ]);
 
   @override
   String toString() {

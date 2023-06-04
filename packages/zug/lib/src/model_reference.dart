@@ -62,13 +62,13 @@ class ModelReference<T extends DocumentModel>
       if (current.doc.reference == snapshot.reference) {
         if (snapshot.exists) {
           current.doc._onUpdated(data: snapshot.data()!, metadata: snapshot.metadata);
-          current._mount();
+          current.mount();
         } else {
           current.doc._onDeleted(metadata: snapshot.metadata);
-          current._unmount();
+          current.unmount();
         }
       } else {
-        current._unmount();
+        current.unmount();
         final model = create(Document.fromSnapshot(snapshot));
         _content.value = model;
       }
@@ -80,12 +80,12 @@ class ModelReference<T extends DocumentModel>
 
   @override
   void _mountContent() {
-    _content.value?._mount();
+    _content.value?.mount();
   }
 
   @override
   void _unmountContent() {
-    _content.value?._unmount();
+    _content.value?.unmount();
   }
 
   @override

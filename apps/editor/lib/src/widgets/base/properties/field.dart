@@ -9,7 +9,10 @@ class PropertyGroupField extends StatelessWidget {
     final type = property.presentation.type;
     switch (type) {
       case PropertyPresentationType.textBox:
-        return const PropertyTextBox();
+        return MountingProxyProvider<PropertyState>(
+          create: (context) => PropertyTextBoxState(property: property),
+          child: const PropertyTextBox(),
+        );
     }
   }
 }

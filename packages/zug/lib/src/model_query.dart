@@ -57,7 +57,7 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
         if (current.doc.reference == first.reference) {
           current.doc._onUpdated(data: first.data(), metadata: first.metadata);
         } else {
-          current._unmount();
+          current.unmount();
           final model = create(Document.fromSnapshot(first));
           _content.value = model;
         }
@@ -67,7 +67,7 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
       }
     } else {
       if (current != null) {
-        current._unmount();
+        current.unmount();
       }
       _content.value = null;
     }
@@ -80,12 +80,12 @@ class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T
 
   @override
   void _unmountContent() {
-    _content.value?._unmount();
+    _content.value?.unmount();
   }
 
   @override
   void _mountContent() {
-    _content.value?._mount();
+    _content.value?.mount();
   }
 
   @override

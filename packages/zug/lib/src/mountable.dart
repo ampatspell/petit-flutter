@@ -21,20 +21,20 @@ mixin Mountable {
 
   Iterable<Mountable> get mountable => [];
 
-  void _mount() {
+  void mount() {
     transaction(() {
       if (isMounted) {
         return;
       }
       _isMounted = true;
       for (final child in mountable) {
-        child._mount();
+        child.mount();
       }
       onMounted();
     });
   }
 
-  void _unmount() {
+  void unmount() {
     transaction(() {
       if (!isMounted) {
         return;
@@ -42,7 +42,7 @@ mixin Mountable {
       _isMounted = false;
       onUnmounted();
       for (final child in mountable) {
-        child._unmount();
+        child.unmount();
       }
     });
   }

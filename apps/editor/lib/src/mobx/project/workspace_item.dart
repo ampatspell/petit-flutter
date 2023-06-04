@@ -40,6 +40,40 @@ abstract class _WorkspaceItem with Store, Mountable implements DocumentModel {
     return workspace.project.nodes.firstWhereOrNull((node) => node.id == nodeId);
   }
 
+  late final PropertyGroups properties = PropertyGroups([
+    PropertyGroup(
+      name: 'Position',
+      properties: [
+        Property<int, String>.documentModel(
+          this,
+          key: 'x',
+          initial: 1,
+          validator: intIsPositiveValidator,
+          presentation: integerTextBoxPresentation,
+        ),
+        Property<int, String>.documentModel(
+          this,
+          key: 'y',
+          initial: 1,
+          validator: intIsPositiveValidator,
+          presentation: integerTextBoxPresentation,
+        )
+      ],
+    ),
+    PropertyGroup(
+      name: 'Pixel',
+      properties: [
+        Property<int, String>.documentModel(
+          this,
+          key: 'pixel',
+          initial: 1,
+          validator: intIsPositiveValidator,
+          presentation: integerTextBoxPresentation,
+        )
+      ],
+    ),
+  ]);
+
   @override
   String toString() {
     return 'WorkspaceItem{id: $id, x: $x, y: $y, pixel: $pixel, node: $node}';

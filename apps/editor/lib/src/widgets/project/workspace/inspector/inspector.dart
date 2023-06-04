@@ -19,8 +19,8 @@ class WorkspaceInspector extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-                // child: WorkspaceInspectorContent(),
-                ),
+              child: WorkspaceInspectorContent(),
+            ),
           ),
           HorizontalLine(),
           _Footer(),
@@ -43,18 +43,31 @@ class _Footer extends StatelessObserverWidget {
   }
 }
 
-class WorkspaceInspectorContent extends StatelessWidget {
+class WorkspaceInspectorContent extends StatelessObserverWidget {
   const WorkspaceInspectorContent({super.key});
 
   @override
   Widget build(BuildContext context) {
-    // final hasItem = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
-    // final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
+    final workspace = context.watch<Workspace>();
+    final item = workspace.selection.item;
+    final node = item?.node;
 
-    return const Column(
+    final itemProperties = item?.properties;
+    final nodeProperties = node?.properties;
+
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('todo'),
+        if (itemProperties != null)
+          ProxyProvider0(
+            update: (context, value) => itemProperties,
+            child: const PropertyGroupsForm(),
+          ),
+        if (nodeProperties != null)
+          ProxyProvider0(
+            update: (context, value) => nodeProperties,
+            child: const PropertyGroupsForm(),
+          ),
       ],
     );
 
