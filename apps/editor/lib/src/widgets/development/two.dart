@@ -34,7 +34,9 @@ class DevelopmentTwoScreen extends StatelessWidget {
   }
 }
 
-class DevelopmentTwoScreenContent extends StatelessWidget {
+Observable<bool> show = Observable(true);
+
+class DevelopmentTwoScreenContent extends StatelessObserverWidget {
   const DevelopmentTwoScreenContent({super.key});
 
   @override
@@ -44,7 +46,16 @@ class DevelopmentTwoScreenContent extends StatelessWidget {
       children: [
         _Description(),
         const Gap(10),
-        _Form(),
+        FilledButton(
+          child: const Text('Toggle form'),
+          onPressed: () {
+            runInAction(() {
+              show.value = !show.value;
+            });
+          },
+        ),
+        const Gap(10),
+        if (show.value) _Form(),
       ],
     );
   }
@@ -53,19 +64,15 @@ class DevelopmentTwoScreenContent extends StatelessWidget {
 class _Form extends StatelessObserverWidget {
   @override
   Widget build(BuildContext context) {
-    final main = context.watch<Main>();
+    final groups = context.watch<Main>().thing.propertyGroups;
     return Provider(
-      create: (context) => main.thing.propertyGroups,
+      create: (context) => groups,
       child: const PropertyGroupsForm(),
     );
-    // return Provider<Property<dynamic, dynamic>>(
-    //   create: (context) => main.thing.name,
-    //   child: const PropertyTextBox(),
-    // );
   }
 }
 
-class PropertyGroupsForm extends StatelessObserverWidget {
+class PropertyGroupsForm extends StatelessWidget {
   const PropertyGroupsForm({super.key});
 
   @override
@@ -84,12 +91,13 @@ class PropertyGroupsForm extends StatelessObserverWidget {
   }
 }
 
-class PropertyGroupForm extends StatelessObserverWidget {
+class PropertyGroupForm extends StatelessWidget {
   const PropertyGroupForm({super.key});
 
   @override
   Widget build(BuildContext context) {
     final group = context.watch<PropertyGroup>();
+    final name = group.name;
 
     return Container(
       decoration: const BoxDecoration(
@@ -102,10 +110,10 @@ class PropertyGroupForm extends StatelessObserverWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (group.name != null) ...[
+          if (name != null) ...[
             DefaultFluentTextStyle(
               resolve: (typography) => typography.caption,
-              child: Text(group.name!),
+              child: Text(name),
             ),
             const Gap(3),
           ],
@@ -130,7 +138,7 @@ class PropertyGroupForm extends StatelessObserverWidget {
   }
 }
 
-class PropertyGroupField extends StatelessObserverWidget {
+class PropertyGroupField extends StatelessWidget {
   const PropertyGroupField({super.key});
 
   @override
@@ -219,14 +227,12 @@ abstract class _PropertyState<E> with Store, Mountable {
   @override
   void onMounted() {
     super.onMounted();
-    print('onMounted');
     _cancelReaction = reaction((reaction) => property.editorValue, onEditorValueChanged);
   }
 
   @override
   void onUnmounted() {
     super.onUnmounted();
-    print('onUnmounted');
     _cancelReaction!();
     _cancelReaction = null;
   }
@@ -247,7 +253,7 @@ class PropertyTextBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return MountingProvider<PropertyState>(
       create: (context) => PropertyTextBoxState(property: context.read()),
-      child: Observer(builder: (context) {
+      child: Builder(builder: (context) {
         final state = context.watch<PropertyState>() as PropertyTextBoxState;
         return PropertyError(
           child: Focus(
@@ -319,7 +325,6 @@ class _Description extends StatelessObserverWidget {
 
 class Main = _Main with _$Main;
 
-@StoreConfig(hasToString: false)
 abstract class _Main with Store, Mountable implements Loadable {
   _Main({
     required this.reference,
