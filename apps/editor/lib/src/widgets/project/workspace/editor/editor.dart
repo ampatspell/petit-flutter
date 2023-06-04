@@ -17,7 +17,7 @@ class WorkspaceEditor extends StatelessObserverWidget {
     return GestureDetector(
       onTap: () => workspace.selection.clear(),
       child: Container(
-        color: Grey.grey221,
+        color: Grey.grey250,
         child: Stack(
           fit: StackFit.expand,
           children: [

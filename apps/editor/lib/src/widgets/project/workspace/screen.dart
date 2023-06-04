@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
 import '../../../app/router.dart';
+import '../../../app/theme.dart';
 import '../../../mobx/mobx.dart';
 import '../../loading.dart';
 import 'editor/editor.dart';
@@ -38,11 +39,20 @@ class WorkspaceScreenContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(child: WorkspaceEditor()),
-        WorkspaceInspector(),
+        const Expanded(child: WorkspaceEditor()),
+        Container(
+          decoration: const BoxDecoration(
+            border: Border(
+              left: BorderSide(
+                color: Grey.grey245,
+              ),
+            ),
+          ),
+          child: const WorkspaceInspector(),
+        ),
       ],
     );
   }
