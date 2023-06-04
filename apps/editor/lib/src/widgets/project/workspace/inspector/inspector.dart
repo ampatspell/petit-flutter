@@ -31,7 +31,7 @@ class WorkspaceInspector extends StatelessWidget {
 }
 
 class _Footer extends StatelessObserverWidget {
-  const _Footer({super.key});
+  const _Footer();
 
   @override
   Widget build(BuildContext context) {

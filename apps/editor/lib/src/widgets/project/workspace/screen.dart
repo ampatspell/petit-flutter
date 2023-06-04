@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
@@ -34,11 +33,11 @@ class WorkspaceScreen extends StatelessWidget {
   }
 }
 
-class WorkspaceScreenContent extends ConsumerWidget {
+class WorkspaceScreenContent extends StatelessWidget {
   const WorkspaceScreenContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

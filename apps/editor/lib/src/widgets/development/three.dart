@@ -1,15 +1,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:zug/zug.dart';
 
 // part 'three.g.dart';
 
-class DevelopmentThreeScreen extends HookConsumerWidget {
+class DevelopmentThreeScreen extends StatelessWidget {
   const DevelopmentThreeScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ScaffoldPage.withPadding(
       header: const PageHeader(
         title: Text('Zug'),
