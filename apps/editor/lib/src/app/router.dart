@@ -168,4 +168,4 @@ final router = GoRouter(
   },
 );
 
-const initialLocation = '/dev/2';
+const initialLocation = '/';

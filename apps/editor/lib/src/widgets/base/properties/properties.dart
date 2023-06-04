@@ -9,6 +9,21 @@ import '../../../app/theme.dart';
 import '../gaps.dart';
 import '../text_style.dart';
 
+/*
+
+  class _Form extends StatelessObserverWidget {
+    @override
+    Widget build(BuildContext context) {
+      final groups = context.watch<Main>().thing.propertyGroups;
+      return Provider(
+        create: (context) => groups,
+        child: const PropertyGroupsForm(),
+      );
+    }
+  }
+
+ */
+
 part 'error.dart';
 
 part 'field.dart';
