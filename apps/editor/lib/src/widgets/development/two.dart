@@ -6,7 +6,9 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
+import '../../app/theme.dart';
 import '../base/gaps.dart';
+import '../base/text_style.dart';
 import '../loading.dart';
 
 part 'two.g.dart';
@@ -88,27 +90,42 @@ class PropertyGroupForm extends StatelessObserverWidget {
   @override
   Widget build(BuildContext context) {
     final group = context.watch<PropertyGroup>();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(group.name),
-        const Gap(10),
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: withGapsBetween(
-            children: [
-              for (final property in group.properties)
-                Expanded(
-                  child: ProxyProvider0<Property<dynamic, dynamic>>(
-                    update: (context, value) => property,
-                    child: const PropertyGroupField(),
-                  ),
-                ),
-            ],
-            gap: const Gap(10),
-          ),
+
+    return Container(
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(
+          bottom: BorderSide(color: Grey.grey245),
         ),
-      ],
+      ),
+      padding: const EdgeInsets.all(10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          if (group.name != null) ...[
+            DefaultFluentTextStyle(
+              resolve: (typography) => typography.caption,
+              child: Text(group.name!),
+            ),
+            const Gap(3),
+          ],
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: withGapsBetween(
+              children: [
+                for (final property in group.properties)
+                  Expanded(
+                    child: ProxyProvider0<Property<dynamic, dynamic>>(
+                      update: (context, value) => property,
+                      child: const PropertyGroupField(),
+                    ),
+                  ),
+              ],
+              gap: const Gap(10),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -127,7 +144,13 @@ class PropertyGroupField extends StatelessObserverWidget {
   }
 }
 
-class PropertyTextBoxState = _PropertyTextBoxState with _$PropertyTextBoxState, _$_PropertyTextBoxState;
+abstract class PropertyState with Mountable {
+  String? get error;
+}
+
+class PropertyTextBoxState = _PropertyTextBoxState
+    with _$PropertyTextBoxState, _$_PropertyTextBoxState
+    implements PropertyState;
 
 abstract class _PropertyTextBoxState extends _PropertyState<String> with Store {
   _PropertyTextBoxState({required super.property});
@@ -222,33 +245,56 @@ class PropertyTextBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MountingProvider(
+    return MountingProvider<PropertyState>(
       create: (context) => PropertyTextBoxState(property: context.read()),
       child: Observer(builder: (context) {
-        final state = context.watch<PropertyTextBoxState>();
-        return Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Focus(
-              onFocusChange: (focus) {
-                if (!focus) {
-                  state.onFocusOut();
-                }
-              },
-              child: TextBox(
-                controller: state.controller,
-                placeholder: '',
-                onChanged: state.onChanged,
-                onSubmitted: state.onSubmitted,
-              ),
+        final state = context.watch<PropertyState>() as PropertyTextBoxState;
+        return PropertyError(
+          child: Focus(
+            onFocusChange: (focus) {
+              if (!focus) {
+                state.onFocusOut();
+              }
+            },
+            child: TextBox(
+              controller: state.controller,
+              placeholder: '',
+              onChanged: state.onChanged,
+              onSubmitted: state.onSubmitted,
             ),
-            if (state.error != null) ...[
-              const Gap(5),
-              Text(state.error!),
-            ],
-          ],
+          ),
         );
       }),
+    );
+  }
+}
+
+class PropertyError extends StatelessObserverWidget {
+  const PropertyError({
+    super.key,
+    required this.child,
+  });
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final error = context.watch<PropertyState>().error;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        child,
+        if (error != null) ...[
+          const Gap(3),
+          DefaultFluentTextStyle(
+            resolve: (typography) {
+              final brightness = FluentTheme.of(context).brightness;
+              return typography.caption!.copyWith(color: Colors.red.defaultBrushFor(brightness));
+            },
+            child: Text(error),
+          ),
+        ],
+      ],
     );
   }
 }
@@ -381,11 +427,11 @@ class PropertyGroups {
 
 class PropertyGroup {
   const PropertyGroup({
-    required this.name,
+    this.name,
     required this.properties,
   });
 
-  final String name;
+  final String? name;
   final Iterable<Property<dynamic, dynamic>> properties;
 }
 
@@ -528,143 +574,3 @@ class Property<T, E> {
     return 'Property<$T>{key: $key, value: $value, presentation: $presentation}';
   }
 }
-
-// class ThingContent extends ConsumerWidget {
-//   const ThingContent({super.key});
-//
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return const Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         ThingDescription(),
-//         Gap(10),
-//         ThingForm(),
-//       ],
-//     );
-//   }
-// }
-//
-// class ThingForm extends ConsumerWidget {
-//   const ThingForm({super.key});
-//
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     return PropertiesWidget(
-//       provider: thingModelPropertiesProvider,
-//     );
-//   }
-// }
-//
-// class ThingDescription extends ConsumerWidget {
-//   const ThingDescription({super.key});
-//
-//   @override
-//   Widget build(BuildContext context, WidgetRef ref) {
-//     final thing = ref.watch(thingModelProvider);
-//     // final properties = ref.watch(thingModelPropertiesProvider);
-//     return Column(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Text('Name: ${thing.name}'),
-//         // const Gap(10),
-//         // Text('Properties: $properties'),
-//         const Gap(10),
-//         FilledButton(
-//           child: const Text('Toggle name'),
-//           onPressed: () {
-//             late final String name;
-//             if (thing.name == 'One') {
-//               name = 'Two';
-//             } else {
-//               name = 'One';
-//             }
-//             ref.read(thingModelProvider).updateName(name);
-//           },
-//         ),
-//         const Gap(10),
-//         FilledButton(
-//           child: const Text('Clear name'),
-//           onPressed: () {
-//             ref.read(thingModelProvider).updateName(null);
-//           },
-//         ),
-//         const Gap(10),
-//         FilledButton(
-//           child: const Text('Toggle group disabled'),
-//           onPressed: () {
-//             ref.read(groupDisabledProvider.notifier).toggle();
-//           },
-//         ),
-//       ],
-//     );
-//   }
-// }
-//
-//
-// @Riverpod(dependencies: [firebaseServices])
-// Stream<ThingModel> thingModelStream(ThingModelStreamRef ref) {
-//   final firestore = ref.watch(firebaseServicesProvider.select((value) => value.firestore));
-//   return firestore.doc('development/thing').snapshots(includeMetadataChanges: true).map((event) {
-//     return ThingModel(doc: Doc.fromSnapshot(event, isOptional: true));
-//   });
-// }
-//
-// @Riverpod(dependencies: [thingModelStream])
-// ThingModel thingModel(ThingModelRef ref) {
-//   return ref.watch(thingModelStreamProvider.select((value) => value.requireValue));
-// }
-//
-// @Riverpod(dependencies: [thingModel])
-// Properties thingModelProperties(ThingModelPropertiesRef ref) {
-//   final model = ref.watch(thingModelProvider);
-//   return Properties(groups: [
-//     PropertyGroup(
-//       label: 'Position',
-//       properties: [
-//         Property.integerTextBox(
-//           value: model.x,
-//           update: model.updateX,
-//           validator: positiveInteger,
-//         ),
-//         Property.integerTextBox(
-//           value: model.y,
-//           update: model.updateY,
-//           validator: positiveInteger,
-//         ),
-//       ],
-//     ),
-//     PropertyGroup(
-//       label: 'Name',
-//       properties: [
-//         Property.stringTextBox(
-//           value: model.name,
-//           update: model.updateName,
-//           validator: stringNotEmpty,
-//         ),
-//       ],
-//     ),
-//     PropertyGroup(
-//       label: 'Identifier',
-//       properties: [
-//         Property.stringTextBox(
-//           value: model.identifier,
-//           update: model.updateIdentifier,
-//           validator: stringNotEmpty,
-//         ),
-//       ],
-//     ),
-//   ]);
-// }
-//
-// @Riverpod(dependencies: [])
-// class GroupDisabled extends _$GroupDisabled {
-//   @override
-//   bool build() {
-//     return false;
-//   }
-//
-//   void toggle() {
-//     state = !state;
-//   }
-// }
