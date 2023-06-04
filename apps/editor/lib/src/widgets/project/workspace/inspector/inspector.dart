@@ -48,8 +48,7 @@ class WorkspaceInspectorContent extends StatelessObserverWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workspace = context.watch<Workspace>();
-    final item = workspace.selection.item;
+    final item = context.watch<Workspace>().selection.item;
     final node = item?.node;
 
     final itemProperties = item?.properties;
@@ -70,14 +69,5 @@ class WorkspaceInspectorContent extends StatelessObserverWidget {
           ),
       ],
     );
-
-    // if (hasItem)
-    //   PropertiesWidget(
-    //     provider: selectedWorkspaceItemModelPropertiesProvider,
-    //   ),
-    // if (hasNode)
-    //   PropertiesWidget(
-    //     provider: selectedNodeModelPropertiesProvider,
-    //   ),
   }
 }
