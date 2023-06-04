@@ -3,8 +3,9 @@ part of '../mobx.dart';
 class WorkspaceItem = _WorkspaceItem with _$WorkspaceItem;
 
 abstract class _WorkspaceItem with Store, Mountable implements DocumentModel {
-  _WorkspaceItem(this.itemDoc);
+  _WorkspaceItem({required this.itemDoc, required this.workspace});
 
+  final _Workspace workspace;
   final WorkspaceItemDoc itemDoc;
 
   @override
@@ -12,18 +13,31 @@ abstract class _WorkspaceItem with Store, Mountable implements DocumentModel {
 
   String get id => doc.id;
 
-  int get x => doc['x'] as int;
+  int get x => itemDoc.x;
 
-  int get y => doc['y'] as int;
+  int get y => itemDoc.y;
 
-  int get pixel => doc['pixel'] as int? ?? 1;
+  int get pixel => itemDoc.pixel;
 
-  String get node => doc['node'] as String;
+  String get nodeId => itemDoc.node;
 
   Offset get position => Offset(x.toDouble(), y.toDouble());
 
-  Offset renderedPosition(int workspacePixel) {
-    return position * workspacePixel.toDouble();
+  @computed
+  Offset get renderedPosition {
+    return position * workspace.pixel.toDouble();
+  }
+
+  @action
+  void updatePosition(Offset position) {
+    itemDoc.x = position.dx.toInt();
+    itemDoc.y = position.dy.toInt();
+    itemDoc.doc.save();
+  }
+
+  @computed
+  ProjectNode? get node {
+    return workspace.project.nodes.firstWhereOrNull((node) => node.id == nodeId);
   }
 
   @override

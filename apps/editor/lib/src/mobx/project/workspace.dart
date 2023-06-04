@@ -23,11 +23,11 @@ abstract class _Workspace with Store, Mountable implements Loadable {
   late final ModelsQuery<WorkspaceItem> _items = ModelsQuery(
     name: 'Workspace.__items',
     query: () => project.reference.collection('workspaces').doc(id).collection('items'),
-    create: (doc) => WorkspaceItem(WorkspaceItemDoc(doc)),
+    create: (doc) => WorkspaceItem(itemDoc: WorkspaceItemDoc(doc), workspace: this),
   );
 
   @override
-  bool get isLoaded => project.isLoaded && __doc.isLoaded || _items.isLoaded;
+  bool get isLoaded => project.isLoaded && __doc.isLoaded && _items.isLoaded;
 
   @override
   bool get isMissing => project.isMissing || __doc.isMissing;
@@ -40,8 +40,44 @@ abstract class _Workspace with Store, Mountable implements Loadable {
 
   List<WorkspaceItem> get items => _items.content;
 
+  //
+
+  late final WorkspaceSelection selection = WorkspaceSelection(this);
+
+  //
+
   @override
   String toString() {
     return 'Workspace{id: $id, name: $name, pixel: $pixel}';
+  }
+}
+
+class WorkspaceSelection = _WorkspaceSelection with _$WorkspaceSelection;
+
+abstract class _WorkspaceSelection with Store {
+  _WorkspaceSelection(this._workspace);
+
+  final _Workspace _workspace;
+
+  @observable
+  String? itemId;
+
+  @computed
+  WorkspaceItem? get item {
+    final id = itemId;
+    if (id == null) {
+      return null;
+    }
+    return _workspace.items.firstWhereOrNull((element) => element.id == id);
+  }
+
+  @action
+  void select(WorkspaceItem? item) {
+    itemId = item?.id;
+  }
+
+  @action
+  void clear() {
+    select(null);
   }
 }

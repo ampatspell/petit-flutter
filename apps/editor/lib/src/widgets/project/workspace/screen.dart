@@ -7,6 +7,7 @@ import 'package:zug/zug.dart';
 import '../../../app/router.dart';
 import '../../../mobx/mobx.dart';
 import '../../loading.dart';
+import 'editor/editor.dart';
 
 class WorkspaceScreen extends StatelessWidget {
   const WorkspaceScreen({
@@ -38,25 +39,12 @@ class WorkspaceScreenContent extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return Observer(builder: (context) {
-      final workspace = context.watch<Workspace>();
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(workspace.toString()),
-          Text(workspace.items.toString()),
-          Text(workspace.project.toString()),
-          Text(workspace.project.nodes.toString()),
-        ],
-      );
-    });
-
-    // return const Row(
-    //   crossAxisAlignment: CrossAxisAlignment.start,
-    //   children: [
-    //     Expanded(child: WorkspaceEditor()),
-    //     WorkspaceInspector(),
-    //   ],
-    // );
+    return const Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(child: WorkspaceEditor()),
+        // WorkspaceInspector(),
+      ],
+    );
   }
 }

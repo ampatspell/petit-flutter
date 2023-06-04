@@ -1,6 +1,10 @@
 part of '../mobx.dart';
 
-abstract class ProjectNode implements DocumentModel {}
+abstract class ProjectNode implements DocumentModel {
+  ProjectNodeType get type;
+
+  String get id;
+}
 
 mixin SizedProjectNode {
   int get width;
@@ -14,17 +18,12 @@ mixin SizedProjectNode {
   Size renderedSize(int itemPixel, int workspacePixel) {
     return size * itemPixel.toDouble() * workspacePixel.toDouble();
   }
-
-// void updateWidth(int value);
-//
-// void updateHeight(int value);
 }
 
 class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc> implements ProjectNode;
 
-// TODO: extends atoms
 abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with SizedProjectNode {
-  _BoxProjectNode(super.nodeDoc);
+  _BoxProjectNode(BoxProjectNodeDoc doc) : super(doc, ProjectNodeType.box);
 
   @override
   int get width => doc['width'] as int;
@@ -41,16 +40,15 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
 }
 
 abstract class _ProjectNode<D extends ProjectNodeDoc> with Store, Mountable implements DocumentModel {
-  _ProjectNode(this.nodeDoc);
+  _ProjectNode(this.nodeDoc, this.type);
 
+  final ProjectNodeType type;
   final D nodeDoc;
 
   @override
   Document get doc => nodeDoc.doc;
 
   String get id => doc.id;
-
-  String get type => doc['type'] as String;
 
   @override
   String toString() {
