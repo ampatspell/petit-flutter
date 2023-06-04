@@ -1,6 +1,10 @@
 import 'package:fluent_ui/fluent_ui.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
+import '../../../../mobx/mobx.dart';
 import '../../../base/line.dart';
+import '../../../base/properties/properties.dart';
 
 class WorkspaceInspector extends StatelessWidget {
   const WorkspaceInspector({super.key});
@@ -19,11 +23,22 @@ class WorkspaceInspector extends StatelessWidget {
                 ),
           ),
           HorizontalLine(),
-          // PropertiesWidget(
-          //   provider: workspaceStateModelPropertiesProvider,
-          // ),
+          _Footer(),
         ],
       ),
+    );
+  }
+}
+
+class _Footer extends StatelessObserverWidget {
+  const _Footer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final properties = context.watch<Workspace>().properties;
+    return Provider(
+      create: (context) => properties,
+      child: const PropertyGroupsForm(),
     );
   }
 }

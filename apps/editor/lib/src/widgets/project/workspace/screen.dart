@@ -1,5 +1,4 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
@@ -8,6 +7,7 @@ import '../../../app/router.dart';
 import '../../../mobx/mobx.dart';
 import '../../loading.dart';
 import 'editor/editor.dart';
+import 'inspector/inspector.dart';
 
 class WorkspaceScreen extends StatelessWidget {
   const WorkspaceScreen({
@@ -43,7 +43,7 @@ class WorkspaceScreenContent extends ConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(child: WorkspaceEditor()),
-        // WorkspaceInspector(),
+        WorkspaceInspector(),
       ],
     );
   }

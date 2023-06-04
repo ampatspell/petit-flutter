@@ -44,6 +44,21 @@ abstract class _Workspace with Store, Mountable implements Loadable {
 
   late final WorkspaceSelection selection = WorkspaceSelection(this);
 
+  late final PropertyGroups properties = PropertyGroups([
+    PropertyGroup(
+      name: 'Pixel',
+      properties: [
+        Property<int, String>.documentModel(
+          _doc,
+          key: 'pixel',
+          initial: 1,
+          validator: intIsPositiveValidator,
+          presentation: integerTextBoxPresentation,
+        )
+      ],
+    ),
+  ]);
+
   //
 
   @override

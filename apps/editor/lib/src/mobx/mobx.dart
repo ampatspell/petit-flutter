@@ -10,6 +10,7 @@ import 'package:zug/zug.dart';
 
 import '../app/router.dart';
 import '../widgets/base/order.dart';
+import '../widgets/base/properties/properties.dart';
 import 'projects/reset.dart';
 
 part 'auth.dart';
