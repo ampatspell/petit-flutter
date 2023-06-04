@@ -2,6 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
+import '../../app/router.dart';
 import '../../mobx/mobx.dart';
 import '../base/order.dart';
 import '../loading.dart';
@@ -38,9 +39,7 @@ class ProjectsScreenContent extends StatelessWidget {
             CommandBarButton(
               icon: const Icon(FluentIcons.add),
               label: const Text('New'),
-              onPressed: () {
-                // NewProjectRoute().go(context);
-              },
+              onPressed: () => NewProjectRoute().go(context),
             ),
             CommandBarButton(
               icon: const Icon(FluentIcons.reset),
