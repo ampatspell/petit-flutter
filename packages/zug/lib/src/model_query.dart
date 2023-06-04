@@ -1,35 +1,40 @@
 part of '../zug.dart';
 
-class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T, MapQuerySnapshot> {
+class ModelQuery<T extends DocumentModel> with Mountable, SnapshotSubscribable<T, MapQuerySnapshot, MapQuery> {
   ModelQuery({
     this.name,
     required this.create,
-    MapQuery? query,
+    MapQueryProvider? query,
   }) {
-    this.query = query;
+    this._queryProvider = query;
   }
-
-  final String? name;
 
   @override
   Iterable<Mountable> get mountable => [];
 
+  final String? name;
   final CreateModel<T> create;
-  final Observable<T?> _content = Observable(null);
-  final Observable<MapQuery?> _query = Observable(null);
+
+  //
+
+  final Observable<T?> _content = Observable(null, name: 'ModelQuery.content');
 
   T? get content => _content.value;
 
-  MapQuery? get query {
-    return _query.value;
+  @override
+  bool get isMissing => content == null;
+
+  //
+
+  MapQuery? get query => _streamSource;
+
+  set query(MapQuery? query) => _queryProvider = () => query;
+
+  set _queryProvider(MapQueryProvider provider) {
+    _streamProvider = () => StreamAndSource.fromQueryProvider(provider);
   }
 
-  set query(MapQuery? query) {
-    runInAction(() {
-      _streamProvider = query != null ? () => query.snapshots(includeMetadataChanges: false) : null;
-      _query.value = query;
-    });
-  }
+  //
 
   @override
   void onMounted() {

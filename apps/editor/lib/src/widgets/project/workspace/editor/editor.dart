@@ -1,38 +1,30 @@
-import 'package:collection/collection.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
 
 import '../../../../app/theme.dart';
-import '../../../../models/node.dart';
-import '../../../../providers/project/nodes.dart';
-import '../../../../providers/project/workspace/editor.dart';
-import '../../../../providers/project/workspace/items.dart';
-import '../../../../providers/project/workspace/workspace.dart';
+import '../../../../mobx/mobx.dart';
 
-class WorkspaceEditor extends ConsumerWidget {
+part 'editor.g.dart';
+
+class WorkspaceEditor extends StatelessObserverWidget {
   const WorkspaceEditor({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    void onDeselectItem() {
-      ref.read(workspaceStateModelProvider).updateItem(null);
-    }
-
-    final items = ref.watch(workspaceItemModelsProvider);
+  Widget build(BuildContext context) {
+    final workspace = context.watch<Workspace>();
     return GestureDetector(
-      onTap: onDeselectItem,
+      onTap: () => workspace.selection.clear(),
       child: Container(
         color: Grey.grey221,
         child: Stack(
           fit: StackFit.expand,
           children: [
-            for (final item in items)
-              ProviderScope(
-                overrides: [
-                  workspaceItemModelProvider.overrideWithValue(item),
-                ],
-                child: const WorkspaceItem(),
+            for (final item in workspace.items)
+              ProxyProvider0(
+                update: (context, value) => item,
+                child: const _WorkspaceItem(),
               ),
           ],
         ),
@@ -41,37 +33,37 @@ class WorkspaceEditor extends ConsumerWidget {
   }
 }
 
-class WorkspaceItem extends ConsumerWidget {
-  const WorkspaceItem({super.key});
+class _WorkspaceItem extends StatelessObserverWidget {
+  const _WorkspaceItem();
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
-    final position = ref.watch(workspaceItemModelProvider.select((value) => value.renderedPosition(workspacePixel)));
-    final id = ref.watch(workspaceItemModelProvider.select((value) => value.node));
-    final node = ref.watch(nodeModelsProvider.select((value) {
-      return value.firstWhereOrNull((node) => node.doc.id == id);
-    }));
+  Widget build(BuildContext context) {
+    final item = context.watch<WorkspaceItem>();
+    final position = item.renderedPosition;
+    final node = item.node;
 
     if (node == null) {
-      return const SizedBox.shrink();
+      return Container(
+        color: Colors.red,
+        child: Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Text('Missing node ${item.nodeId}'),
+        ),
+      );
     }
 
     Widget child;
-    if (node.type == 'box') {
-      child = const BoxWorkspaceItem();
-    } else {
-      throw UnsupportedError(node.toString());
+    switch (node.type) {
+      case ProjectNodeType.box:
+        child = const BoxWorkspaceItem();
     }
 
     return Positioned(
       top: position.dy,
       left: position.dx,
-      child: ProviderScope(
-        overrides: [
-          nodeModelProvider.overrideWithValue(node),
-        ],
-        child: WorkspaceItemContainer(
+      child: WorkspaceItemContainer(
+        child: ProxyProvider0(
+          update: (context, value) => node,
           child: child,
         ),
       ),
@@ -79,7 +71,7 @@ class WorkspaceItem extends ConsumerWidget {
   }
 }
 
-class WorkspaceItemContainer extends HookConsumerWidget {
+class WorkspaceItemContainer extends StatelessObserverWidget {
   const WorkspaceItemContainer({
     super.key,
     required this.child,
@@ -88,49 +80,13 @@ class WorkspaceItemContainer extends HookConsumerWidget {
   final Widget child;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isSelected = ref.watch(isWorkspaceItemModelSelectedProvider);
-
-    final dragging = useState<Offset?>(null);
-    final isDragging = dragging.value != null;
+  Widget build(BuildContext context) {
+    final item = context.watch<WorkspaceItem>();
+    final workspace = context.watch<Workspace>();
+    final isSelected = workspace.selection.item == item;
 
     void onSelect() {
-      if (isDragging) {
-        return;
-      }
-      final item = ref.read(workspaceItemModelProvider);
-      ref.read(workspaceStateModelProvider).updateItem(item.doc.id);
-    }
-
-    // void reorder() {
-    //   final item = ref.read(workspaceItemModelProvider);
-    //   final items = [...ref.read(workspaceItemModelsProvider)];
-    //   items.remove(item);
-    //   items.insert(0, item);
-    //   items.forEachIndexed((index, element) => element.updateIndex(index));
-    // }
-
-    void onDragStart() {
-      onSelect();
-      final position = ref.read(workspaceItemModelProvider.select((value) => value.position));
-      dragging.value = position;
-    }
-
-    void updatePosition(Offset delta, bool save) {
-      final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
-      final item = ref.read(workspaceItemModelProvider);
-      final scaled = delta / workspacePixel.toDouble();
-      final absolute = dragging.value! + scaled;
-      item.updatePosition(absolute, save);
-    }
-
-    void onDragUpdate(Offset delta) {
-      updatePosition(delta, false);
-    }
-
-    void onDragEnd(Offset delta) {
-      updatePosition(delta, true);
-      dragging.value = null;
+      workspace.selection.select(item);
     }
 
     return GestureDetector(
@@ -142,66 +98,102 @@ class WorkspaceItemContainer extends HookConsumerWidget {
           ),
           child: child,
         ),
-        onDragStart: onDragStart,
-        onDragUpdate: onDragUpdate,
-        onDragEnd: onDragEnd,
+        onDragStart: onSelect,
       ),
     );
   }
 }
 
-class DraggableWorkspaceItem extends HookConsumerWidget {
+class DraggableWorkspaceItemState = _DraggableWorkspaceItemState with _$DraggableWorkspaceItemState;
+
+abstract class _DraggableWorkspaceItemState with Store {
+  _DraggableWorkspaceItemState(this.workspace, this.item);
+
+  final Workspace workspace;
+  final WorkspaceItem item;
+
+  @observable
+  Offset? offset;
+
+  @observable
+  Offset? absolute;
+
+  @action
+  void onDragStart() {
+    offset = Offset.zero;
+    absolute = item.position;
+  }
+
+  @action
+  void onDragUpdate(Offset delta) {
+    final value = offset!;
+    offset = value + delta;
+  }
+
+  @action
+  void onDragEnd() {
+    final scaled = offset! / workspace.pixel.toDouble();
+    final absolute = this.absolute! + scaled;
+    item.updatePosition(absolute);
+  }
+}
+
+class DraggableWorkspaceItem extends StatelessWidget {
   const DraggableWorkspaceItem({
     super.key,
     required this.child,
     required this.onDragStart,
-    required this.onDragUpdate,
-    required this.onDragEnd,
   });
 
   final Widget child;
   final VoidCallback onDragStart;
-  final ValueChanged<Offset> onDragUpdate;
-  final ValueChanged<Offset> onDragEnd;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final dragging = useState<Offset?>(null);
-    return Draggable(
-      feedback: ProviderScope(
-        parent: ProviderScope.containerOf(context),
-        child: child,
+  Widget build(BuildContext context) {
+    final workspace = context.watch<Workspace>();
+    final workspaceItem = context.watch<WorkspaceItem>();
+    return Provider(
+      create: (context) => DraggableWorkspaceItemState(workspace, workspaceItem),
+      child: Builder(
+        builder: (context) {
+          final state = context.watch<DraggableWorkspaceItemState>();
+          return Draggable(
+            feedback: MultiProvider(
+              providers: [
+                ProxyProvider0(update: (context, value) => workspace),
+                ProxyProvider0(update: (context, value) => workspaceItem),
+              ],
+              child: child,
+            ),
+            childWhenDragging: const SizedBox.shrink(),
+            child: child,
+            onDragStarted: () {
+              state.onDragStart();
+              onDragStart();
+            },
+            onDragUpdate: (details) {
+              final delta = details.delta;
+              state.onDragUpdate(delta);
+            },
+            onDragEnd: (details) {
+              state.onDragEnd();
+            },
+          );
+        },
       ),
-      childWhenDragging: const SizedBox.shrink(),
-      child: child,
-      onDragStarted: () {
-        dragging.value = Offset.zero;
-        onDragStart();
-      },
-      onDragUpdate: (details) {
-        final delta = details.delta;
-        final value = dragging.value!;
-        dragging.value = value + delta;
-        onDragUpdate(dragging.value!);
-      },
-      onDragEnd: (details) {
-        onDragEnd(dragging.value!);
-      },
     );
   }
 }
 
-class BoxWorkspaceItem extends ConsumerWidget {
+class BoxWorkspaceItem extends StatelessObserverWidget {
   const BoxWorkspaceItem({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final itemPixel = ref.watch(workspaceItemModelProvider.select((value) => value.pixel));
-    final workspacePixel = ref.watch(workspaceStateModelProvider.select((value) => value.pixel));
-    final node = ref.watch(nodeModelProvider) as BoxNodeModel;
-
-    final size = node.renderedSize(itemPixel, workspacePixel);
-
+  Widget build(BuildContext context) {
+    final workspace = context.watch<Workspace>();
+    final item = context.watch<WorkspaceItem>();
+    final node = context.watch<ProjectNode>() as BoxProjectNode;
+    final size = node.renderedSize(item.pixel, workspace.pixel);
     return Container(
       color: node.color,
       width: size.width,

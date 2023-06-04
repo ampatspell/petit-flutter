@@ -50,7 +50,9 @@ class Document {
 
   String get id => reference.id;
 
-  final Observable<SnapshotMetadata?> _metadata = Observable(null);
+  //
+
+  final Observable<SnapshotMetadata?> _metadata = Observable(null, name: 'Document.metadata');
 
   SnapshotMetadata? get metadata => _metadata.value;
 
@@ -58,21 +60,36 @@ class Document {
 
   bool? get hasPendingWrites => metadata?.hasPendingWrites;
 
-  final Observable<ObservableMap<String, dynamic>> __data = Observable(ObservableMap.of({}));
+  //
+
+  final Observable<ObservableMap<String, dynamic>> __data = Observable(
+    name: 'Document.data',
+    ObservableMap.of({}, name: 'Document.data.map'),
+  );
 
   ObservableMap<String, dynamic> get _data => __data.value;
 
-  final Observable<bool> _isDirty = Observable(false);
+  FirestoreMap get data => UnmodifiableMapView(_data);
+
+  //
+
+  final Observable<bool> _isDirty = Observable(false, name: 'Document.isDirty');
 
   bool get isDirty => _isDirty.value;
 
-  final Observable<bool> _isNew = Observable(false);
+  //
+
+  final Observable<bool> _isNew = Observable(false, name: 'Document.isNew');
 
   bool get isNew => _isNew.value;
 
-  final Observable<bool> _isDeleted = Observable(false);
+  //
+
+  final Observable<bool> _isDeleted = Observable(false, name: 'Document.isDeleted');
 
   bool get isDeleted => _isDeleted.value;
+
+  //
 
   dynamic operator [](String key) => _data[key];
 
@@ -84,11 +101,13 @@ class Document {
     _isDirty.value = true;
   }
 
+  //
+
   void _onUpdated({
     required FirestoreMap data,
     required SnapshotMetadata metadata,
   }) {
-    __data.value = ObservableMap.of(data);
+    __data.value = ObservableMap.of(data, name: 'Document.data.map');
     _isDirty.value = false;
     _isDeleted.value = false;
     _metadata.value = metadata;
@@ -99,6 +118,8 @@ class Document {
     _isDeleted.value = true;
     _isDirty.value = true;
   }
+
+  //
 
   Future<void>? _scheduledSave;
 
@@ -115,6 +136,11 @@ class Document {
     await reference.delete();
   }
 
+  Future<void> merge(FirestoreMap map) async {
+    _data.addAll(map);
+    await reference.set(map, SetOptions(merge: true));
+  }
+
   void scheduleSave([Duration duration = const Duration(milliseconds: 200)]) {
     late Future<void> future;
     future = Future.delayed(duration, () async {
@@ -125,6 +151,8 @@ class Document {
     });
     _scheduledSave = future;
   }
+
+  //
 
   @override
   String toString() {

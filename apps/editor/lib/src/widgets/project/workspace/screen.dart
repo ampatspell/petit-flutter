@@ -1,15 +1,14 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:provider/provider.dart';
+import 'package:zug/zug.dart';
 
-import '../../../providers/project/nodes.dart';
-import '../../../providers/project/project.dart';
-import '../../../providers/project/workspace/items.dart';
-import '../../../providers/project/workspace/workspace.dart';
-import '../../base/async_values_loader.dart';
+import '../../../app/router.dart';
+import '../../../mobx/mobx.dart';
+import '../../loading.dart';
 import 'editor/editor.dart';
 import 'inspector/inspector.dart';
 
-class WorkspaceScreen extends ConsumerWidget {
+class WorkspaceScreen extends StatelessWidget {
   const WorkspaceScreen({
     super.key,
     required this.projectId,
@@ -20,32 +19,25 @@ class WorkspaceScreen extends ConsumerWidget {
   final String workspaceId;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return ProviderScope(
-      overrides: [
-        projectIdProvider.overrideWithValue(projectId),
-        workspaceIdProvider.overrideWithValue(workspaceId),
-      ],
-      child: AsyncValuesLoader(
-        providers: [
-          projectModelStreamProvider,
-          projectStateModelStreamProvider,
-          workspaceModelStreamProvider,
-          workspaceStateModelStreamProvider,
-          nodeModelsStreamProvider,
-          workspaceItemModelsStreamProvider,
-        ],
-        child: const WorkspaceScreenContent(),
+  Widget build(BuildContext context) {
+    return MountingProvider(
+      create: (context) => Project(id: projectId),
+      child: MountingProvider(
+        create: (context) => Workspace(project: context.read<Project>(), id: workspaceId),
+        child: Load<Workspace>(
+          onMissing: (context) => ProjectRoute(projectId: projectId).go(context),
+          child: const WorkspaceScreenContent(),
+        ),
       ),
     );
   }
 }
 
-class WorkspaceScreenContent extends ConsumerWidget {
+class WorkspaceScreenContent extends StatelessWidget {
   const WorkspaceScreenContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return const Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

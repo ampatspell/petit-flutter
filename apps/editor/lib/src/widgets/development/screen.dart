@@ -1,9 +1,9 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart' hide Store;
 import 'package:gap/gap.dart';
+
 import '../../app/router.dart';
 
-class DevelopmentScreen extends HookWidget {
+class DevelopmentScreen extends StatelessWidget {
   const DevelopmentScreen({super.key});
 
   List<Widget> _buildItems(BuildContext context) {

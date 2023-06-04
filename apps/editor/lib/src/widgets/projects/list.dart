@@ -1,33 +1,35 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
-import '../../models/project.dart';
-import '../../providers/projects/projects.dart';
+import '../../app/router.dart';
+import '../../mobx/mobx.dart';
 import '../base/models_list_view.dart';
 
-class ProjectsList extends ConsumerWidget {
+class ProjectsList extends StatelessWidget {
   const ProjectsList({
     super.key,
-    required this.onSelect,
   });
 
-  final ValueChanged<ProjectModel> onSelect;
-
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final projects = ref.watch(projectModelsProvider);
-    return ModelsListView(
-      models: projects,
+  Widget build(BuildContext context) {
+    print('$this');
+    return ModelsListView<Projects, ProjectDoc>(
+      models: (model) => model.docs,
       placeholder: const Text('No projects created yet'),
-      itemBuilder: (context, project) {
+      item: Observer(builder: (context) {
+        print('$this item');
+        final doc = context.watch<ProjectDoc>();
         return ListTile.selectable(
           title: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: Text(project.name),
+            child: Text(doc.name),
           ),
-          onPressed: () => onSelect(project),
+          onPressed: () {
+            ProjectRoute(projectId: doc.id).go(context);
+          },
         );
-      },
+      }),
     );
   }
 }

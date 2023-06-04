@@ -1,55 +1,71 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:provider/provider.dart';
 
-import '../../../../providers/project/workspace/editor.dart';
-import '../../../../providers/project/workspace/workspace.dart';
+import '../../../../mobx/mobx.dart';
 import '../../../base/line.dart';
-import '../../../base/properties.dart';
+import '../../../base/properties/properties.dart';
 
-class WorkspaceInspector extends ConsumerWidget {
+class WorkspaceInspector extends StatelessWidget {
   const WorkspaceInspector({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Container(
       width: 250,
       color: Colors.white,
-      child: Column(
+      child: const Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Expanded(
+          Expanded(
             child: SingleChildScrollView(
               child: WorkspaceInspectorContent(),
             ),
           ),
-          const HorizontalLine(),
-          PropertiesWidget(
-            provider: workspaceStateModelPropertiesProvider,
-          ),
+          HorizontalLine(),
+          _Footer(),
         ],
       ),
     );
   }
 }
 
-class WorkspaceInspectorContent extends ConsumerWidget {
+class _Footer extends StatelessObserverWidget {
+  const _Footer();
+
+  @override
+  Widget build(BuildContext context) {
+    final properties = context.watch<Workspace>().properties;
+    return Provider(
+      create: (context) => properties,
+      child: const PropertyGroupsForm(),
+    );
+  }
+}
+
+class WorkspaceInspectorContent extends StatelessObserverWidget {
   const WorkspaceInspectorContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final hasItem = ref.watch(selectedWorkspaceItemModelProvider.select((value) => value != null));
-    final hasNode = ref.watch(selectedNodeModelProvider.select((value) => value != null));
+  Widget build(BuildContext context) {
+    final item = context.watch<Workspace>().selection.item;
+    final node = item?.node;
+
+    final itemProperties = item?.properties;
+    final nodeProperties = node?.properties;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (hasItem)
-          PropertiesWidget(
-            provider: selectedWorkspaceItemModelPropertiesProvider,
+        if (itemProperties != null)
+          ProxyProvider0(
+            update: (context, value) => itemProperties,
+            child: const PropertyGroupsForm(),
           ),
-        if (hasNode)
-          PropertiesWidget(
-            provider: selectedNodeModelPropertiesProvider,
+        if (nodeProperties != null)
+          ProxyProvider0(
+            update: (context, value) => nodeProperties,
+            child: const PropertyGroupsForm(),
           ),
       ],
     );

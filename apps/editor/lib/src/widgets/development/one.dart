@@ -1,15 +1,18 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
+import 'package:mobx/mobx.dart';
 
 import '../base/measurable.dart';
 
-class DevelopmentOneScreen extends HookWidget {
+Observable<bool> show = Observable(false);
+Observable<Size?> size = Observable(null);
+
+class DevelopmentOneScreen extends StatelessObserverWidget {
   const DevelopmentOneScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final show = useState(false);
     return ScaffoldPage.withPadding(
       header: const PageHeader(
         title: Text('Measurable'),
@@ -20,7 +23,9 @@ class DevelopmentOneScreen extends HookWidget {
           FilledButton(
             child: const Text('Toggle'),
             onPressed: () {
-              show.value = !show.value;
+              runInAction(() {
+                show.value = !show.value;
+              });
             },
           ),
           if (show.value) ...[
@@ -39,7 +44,7 @@ class DevelopmentOneScreen extends HookWidget {
   }
 }
 
-class ToolsWidget extends HookWidget {
+class ToolsWidget extends StatelessWidget {
   const ToolsWidget({
     super.key,
     required this.child,
@@ -49,12 +54,10 @@ class ToolsWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = useState<Size?>(null);
-
     final measurable = MeasurableWidget(
-      onSize: (measuredSize) {
+      onSize: (measuredSize) => runInAction(() {
         size.value = measuredSize;
-      },
+      }),
       child: child,
     );
 

@@ -1,206 +1,190 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:mobx/mobx.dart';
+import 'package:provider/provider.dart';
+import 'package:zug/zug.dart';
 
-import '../../models/doc.dart';
-import '../../models/properties.dart';
-import '../../providers/base.dart';
-import '../base/async_values_loader.dart';
-import '../base/properties.dart';
-
-part 'two.freezed.dart';
+import '../base/properties/properties.dart';
+import '../loading.dart';
 
 part 'two.g.dart';
 
-class DevelopmentTwoScreen extends HookConsumerWidget {
+class DevelopmentTwoScreen extends StatelessWidget {
   const DevelopmentTwoScreen({super.key});
 
+  FirebaseFirestore get _firestore => it.get();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return ScaffoldPage.withPadding(
       header: const PageHeader(
         title: Text('Two'),
       ),
-      content: AsyncValuesLoader(
-        providers: [
-          thingModelStreamProvider,
-        ],
-        child: const ThingContent(),
+      content: MountingProvider<Main>(
+        create: (context) => Main(reference: _firestore.doc('development/thing')),
+        child: const Load<Main>(
+          child: DevelopmentTwoScreenContent(),
+        ),
       ),
     );
   }
 }
 
-class ThingContent extends ConsumerWidget {
-  const ThingContent({super.key});
+Observable<bool> show = Observable(true);
+
+class DevelopmentTwoScreenContent extends StatelessObserverWidget {
+  const DevelopmentTwoScreenContent({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        ThingDescription(),
-        Gap(10),
-        ThingForm(),
-      ],
-    );
-  }
-}
-
-class ThingForm extends ConsumerWidget {
-  const ThingForm({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return PropertiesWidget(
-      provider: thingModelPropertiesProvider,
-    );
-  }
-}
-
-class ThingDescription extends ConsumerWidget {
-  const ThingDescription({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final thing = ref.watch(thingModelProvider);
-    // final properties = ref.watch(thingModelPropertiesProvider);
+  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Name: ${thing.name}'),
-        // const Gap(10),
-        // Text('Properties: $properties'),
+        _Description(),
+        const Gap(10),
+        FilledButton(
+          child: const Text('Toggle form'),
+          onPressed: () {
+            runInAction(() {
+              show.value = !show.value;
+            });
+          },
+        ),
+        const Gap(10),
+        if (show.value) _Form(),
+      ],
+    );
+  }
+}
+
+class _Form extends StatelessObserverWidget {
+  @override
+  Widget build(BuildContext context) {
+    final groups = context.watch<Main>().thing.propertyGroups;
+    return Provider(
+      create: (context) => groups,
+      child: const PropertyGroupsForm(),
+    );
+  }
+}
+
+class _Description extends StatelessObserverWidget {
+  @override
+  Widget build(BuildContext context) {
+    final main = context.watch<Main>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(main.thing.toString()),
         const Gap(10),
         FilledButton(
           child: const Text('Toggle name'),
-          onPressed: () {
-            late final String name;
-            if (thing.name == 'One') {
-              name = 'Two';
-            } else {
-              name = 'One';
-            }
-            ref.read(thingModelProvider).updateName(name);
-          },
-        ),
-        const Gap(10),
-        FilledButton(
-          child: const Text('Clear name'),
-          onPressed: () {
-            ref.read(thingModelProvider).updateName(null);
-          },
-        ),
-        const Gap(10),
-        FilledButton(
-          child: const Text('Toggle group disabled'),
-          onPressed: () {
-            ref.read(groupDisabledProvider.notifier).toggle();
-          },
+          onPressed: main.toggleName,
         ),
       ],
     );
   }
 }
 
-@freezed
-class ThingModel with _$ThingModel implements HasDoc {
-  const factory ThingModel({
-    required Doc doc,
-  }) = _ThingModel;
+class Main = _Main with _$Main;
 
-  const ThingModel._();
-
-  String get name => doc['name'] as String? ?? '';
-
-  String get identifier => doc['identifier'] as String? ?? '';
-
-  int get x => doc['x'] as int? ?? 0;
-
-  int get y => doc['y'] as int? ?? 0;
-
-  Future<void> updateName(String? name) async {
-    await doc.merge({'name': name});
-  }
-
-  Future<void> updateIdentifier(String? identifier) async {
-    await doc.merge({'identifier': identifier});
-  }
-
-  void updateX(int value) async {
-    await doc.merge({'x': value});
-  }
-
-  void updateY(int value) async {
-    await doc.merge({'y': value});
-  }
-}
-
-@Riverpod(dependencies: [firebaseServices])
-Stream<ThingModel> thingModelStream(ThingModelStreamRef ref) {
-  final firestore = ref.watch(firebaseServicesProvider.select((value) => value.firestore));
-  return firestore.doc('development/thing').snapshots(includeMetadataChanges: true).map((event) {
-    return ThingModel(doc: Doc.fromSnapshot(event, isOptional: true));
+abstract class _Main with Store, Mountable implements Loadable {
+  _Main({
+    required this.reference,
   });
+
+  @override
+  Iterable<Mountable> get mountable => [_thing];
+
+  final MapDocumentReference reference;
+
+  late final ModelReference<Thing> _thing = ModelReference(
+    reference: () => reference,
+    create: Thing.new,
+  );
+
+  @override
+  bool get isLoaded => _thing.isLoaded;
+
+  @override
+  bool get isMissing => _thing.isMissing;
+
+  Thing get thing => _thing.content!;
+
+  @action
+  void toggleName() {
+    if (thing.name.value == 'Hello') {
+      thing.name.setEditorValue('Zeeba');
+    } else {
+      thing.name.setEditorValue('Hello');
+    }
+  }
+
+  @override
+  String toString() {
+    return 'Main{thing: ${_thing.content}}';
+  }
 }
 
-@Riverpod(dependencies: [thingModelStream])
-ThingModel thingModel(ThingModelRef ref) {
-  return ref.watch(thingModelStreamProvider.select((value) => value.requireValue));
-}
+class Thing = _Thing with _$Thing;
 
-@Riverpod(dependencies: [thingModel])
-Properties thingModelProperties(ThingModelPropertiesRef ref) {
-  final model = ref.watch(thingModelProvider);
-  return Properties(groups: [
+abstract class _Thing with Store, Mountable implements DocumentModel {
+  _Thing(this.doc);
+
+  @override
+  final Document doc;
+
+  late final Property<String, String> name = Property.documentModel(
+    this,
+    key: 'name',
+    initial: '',
+    validator: stringNotBlankValidator,
+    presentation: stringTextBoxPresentation,
+  );
+
+  late final Property<String, String> identifier = Property.documentModel(
+    this,
+    key: 'identifier',
+    initial: '',
+    validator: stringNotBlankValidator,
+    presentation: stringTextBoxPresentation,
+  );
+
+  late final Property<int, String> x = Property.documentModel(
+    this,
+    key: 'x',
+    initial: 0,
+    validator: intIsPositiveValidator,
+    presentation: integerTextBoxPresentation,
+  );
+
+  late final Property<int, String> y = Property.documentModel(
+    this,
+    key: 'y',
+    initial: 0,
+    validator: intIsPositiveValidator,
+    presentation: integerTextBoxPresentation,
+  );
+
+  late final PropertyGroups propertyGroups = PropertyGroups([
     PropertyGroup(
-      label: 'Position',
-      properties: [
-        Property.integerTextBox(
-          value: model.x,
-          update: model.updateX,
-          validator: positiveInteger,
-        ),
-        Property.integerTextBox(
-          value: model.y,
-          update: model.updateY,
-          validator: positiveInteger,
-        ),
-      ],
+      name: 'Name',
+      properties: [name],
     ),
     PropertyGroup(
-      label: 'Name',
-      properties: [
-        Property.stringTextBox(
-          value: model.name,
-          update: model.updateName,
-          validator: stringNotEmpty,
-        ),
-      ],
+      name: 'Identifier',
+      properties: [identifier],
     ),
     PropertyGroup(
-      label: 'Identifier',
-      properties: [
-        Property.stringTextBox(
-          value: model.identifier,
-          update: model.updateIdentifier,
-          validator: stringNotEmpty,
-        ),
-      ],
+      name: 'Position',
+      properties: [x, y],
     ),
   ]);
-}
 
-@Riverpod(dependencies: [])
-class GroupDisabled extends _$GroupDisabled {
   @override
-  bool build() {
-    return false;
-  }
-
-  void toggle() {
-    state = !state;
+  String toString() {
+    return 'Thing{name: $name, identifier: $identifier, x: $x, y: $y}';
   }
 }

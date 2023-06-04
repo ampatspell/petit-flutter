@@ -1,39 +1,36 @@
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:mobx/mobx.dart';
 
-import 'src/app/provider_logging_observer.dart';
 import 'src/app/router.dart';
 import 'src/app/theme.dart';
-import 'src/providers/base.dart';
+import 'src/get.dart';
+import 'src/mobx/mobx.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final firebaseServices = await initializeFirebase();
-  final loggingObserver = ProviderLoggingObserver(
-    enabled: false,
+  mainContext.config = mainContext.config.clone(
+    isSpyEnabled: false,
+    readPolicy: ReactiveReadPolicy.always,
+    writePolicy: ReactiveWritePolicy.always,
   );
-  runApp(ProviderScope(
-    overrides: [
-      loggingObserverProvider.overrideWithValue(loggingObserver),
-      firebaseServicesProvider.overrideWithValue(firebaseServices),
-    ],
-    observers: [
-      loggingObserver,
-    ],
-    child: const EditorApp(),
-  ));
+  mainContext.spy((event) => debugPrint(event.toString()));
+  await registerEditor();
+  runApp(const EditorApp());
 }
 
-class EditorApp extends ConsumerWidget {
+class EditorApp extends StatelessObserverWidget {
   const EditorApp({super.key});
 
+  Auth get _auth => it.get();
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final isLoaded = ref.watch(appStateProvider.select((value) => value.isLoaded));
+  Widget build(BuildContext context) {
+    final isLoaded = _auth.isLoaded;
     if (isLoaded) {
       return FluentApp.router(
         debugShowCheckedModeBanner: false,
-        routerConfig: ref.read(routerProvider),
+        routerConfig: router,
         theme: theme,
       );
     } else {

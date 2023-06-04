@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:fluent_ui/fluent_ui.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:go_router/go_router.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:mobx/mobx.dart';
 
-import '../providers/base.dart';
+import '../get.dart';
+import '../mobx/mobx.dart';
 import '../widgets/base/fluent_screen.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';
@@ -19,8 +19,8 @@ import '../widgets/projects/screen.dart';
 
 part 'router.g.dart';
 
-final GlobalKey<NavigatorState> _rootKey = GlobalKey<NavigatorState>();
-final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>();
 
 @TypedShellRoute<FluentRoute>(
   routes: <TypedRoute<RouteData>>[
@@ -52,13 +52,13 @@ final GlobalKey<NavigatorState> _shellKey = GlobalKey<NavigatorState>();
 class FluentRoute extends ShellRouteData {
   const FluentRoute();
 
-  static final GlobalKey<NavigatorState> $navigatorKey = _shellKey;
+  static final GlobalKey<NavigatorState> $navigatorKey = shellNavigatorKey;
 
   @override
   Widget builder(BuildContext context, GoRouterState state, Widget navigator) {
     return FluentScreen(
       content: navigator,
-      shellContext: _shellKey.currentContext,
+      shellContext: shellNavigatorKey.currentContext,
     );
   }
 }
@@ -144,99 +144,28 @@ class ProjectWorkspaceRoute extends GoRouteData {
 // // Without this static key, the dialog will not cover the navigation rail.
 // static final GlobalKey<NavigatorState> $parentNavigatorKey = rootNavigatorKey;
 
-class Route {
-  const Route({
-    required this.location,
-    required this.icon,
-    required this.title,
-    required this.go,
-  });
-
-  final String location;
-  final IconData icon;
-  final String title;
-  final void Function(BuildContext context) go;
-}
-
-final home = Route(
-  location: HomeRoute().location,
-  icon: FluentIcons.calories,
-  title: 'Home',
-  go: (context) => HomeRoute().go(context),
-);
-
-final loggedIn = [
-  Route(
-    location: ProjectsRoute().location,
-    icon: FluentIcons.project_collection,
-    title: 'Projects',
-    go: (context) => ProjectsRoute().go(context),
-  ),
-  Route(
-    location: DevelopmentRoute().location,
-    icon: FluentIcons.code,
-    title: 'Development',
-    go: (context) => DevelopmentRoute().go(context),
-  ),
-];
-
-@Riverpod(keepAlive: true, dependencies: [appState])
-List<Route> routes(RoutesRef ref) {
-  final hasUser = ref.watch(appStateProvider.select((value) => value.user != null));
-  if (hasUser) {
-    return loggedIn;
-  }
-  return [
-    home,
-  ];
-}
-
-@Riverpod(keepAlive: true, dependencies: [appState])
-Raw<GoRouter> router(RouterRef ref) {
-  return GoRouter(
-    debugLogDiagnostics: true,
-    initialLocation: initialLocation,
-    routes: $appRoutes,
-    navigatorKey: _rootKey,
-    redirect: (context, state) async {
+final router = GoRouter(
+  debugLogDiagnostics: true,
+  initialLocation: initialLocation,
+  routes: $appRoutes,
+  navigatorKey: rootNavigatorKey,
+  redirect: (context, state) {
+    return runInAction(() {
+      final auth = it.get<Auth>();
+      final user = auth.user;
       final location = state.location;
       if (location != '/') {
-        final signedOut = ref.read(appStateProvider.select((value) => value.user == null));
-        if (signedOut) {
+        if (user == null) {
           return '/';
         }
       } else if (location == '/') {
-        final signedIn = ref.read(appStateProvider.select((value) => value.user != null));
-        if (signedIn) {
+        if (user != null) {
           return '/projects';
         }
       }
       return null;
-    },
-  );
-}
-
-class OnRouteChange {
-  @override
-  String toString() {
-    return 'OnRouteChange{}';
-  }
-}
-
-@Riverpod(keepAlive: true, dependencies: [router])
-Stream<OnRouteChange> routerOnRouteChange(RouterOnRouteChangeRef ref) {
-  final controller = StreamController<OnRouteChange>();
-  void listener() {
-    SchedulerBinding.instance.addPostFrameCallback((Duration duration) {
-      controller.add(OnRouteChange());
     });
-  }
+  },
+);
 
-  final router = ref.read(routerProvider);
-  router.addListener(listener);
-  ref.onDispose(() => router.removeListener(listener));
-
-  return controller.stream;
-}
-
-const initialLocation = '/';
+const initialLocation = '/projects/abt7O112E2iF6eyB0p9H/workspaces/7AiH1k1j1V5UANJUwPLr';

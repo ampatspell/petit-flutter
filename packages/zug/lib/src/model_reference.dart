@@ -1,34 +1,46 @@
 part of '../zug.dart';
 
-class ModelReference<T extends DocumentModel> with Mountable, SnapshotSubscribable<T, MapDocumentSnapshot> {
+class ModelReference<T extends DocumentModel>
+    with Mountable, SnapshotSubscribable<T, MapDocumentSnapshot, MapDocumentReference> {
   ModelReference({
     this.name,
     required this.create,
-    MapDocumentReference? reference,
+    MapDocumentReferenceProvider reference,
   }) {
-    this.reference = reference;
+    this._referenceProvider = reference;
   }
-
-  final String? name;
 
   @override
   Iterable<Mountable> get mountable => [];
 
+  final String? name;
   final CreateModel<T> create;
-  final Observable<MapDocumentReference?> _reference = Observable(null);
-  final Observable<T?> _content = Observable(null);
+
+  //
+
+  final Observable<T?> _content = Observable(null, name: 'ModelReference.content');
 
   T? get content => _content.value;
 
-  MapDocumentReference? get reference {
-    return _reference.value;
+  @override
+  bool get isMissing {
+    final content = this.content;
+    if (content == null) {
+      return true;
+    }
+    return content.doc.isDeleted;
   }
 
+  //
+
+  MapDocumentReference? get reference => _streamSource;
+
   set reference(MapDocumentReference? reference) {
-    runInAction(() {
-      _reference.value = reference;
-      _streamProvider = reference != null ? () => reference.snapshots(includeMetadataChanges: false) : null;
-    });
+    _referenceProvider = () => reference;
+  }
+
+  set _referenceProvider(MapDocumentReferenceProvider provider) {
+    _streamProvider = () => StreamAndSource.fromDocumentReferenceProvider(provider);
   }
 
   @override
@@ -50,6 +62,7 @@ class ModelReference<T extends DocumentModel> with Mountable, SnapshotSubscribab
       if (current.doc.reference == snapshot.reference) {
         if (snapshot.exists) {
           current.doc._onUpdated(data: snapshot.data()!, metadata: snapshot.metadata);
+          current.mount();
         } else {
           current.doc._onDeleted(metadata: snapshot.metadata);
           current.unmount();
