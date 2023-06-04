@@ -26,10 +26,10 @@ mixin Mountable {
       if (isMounted) {
         return;
       }
+      _isMounted = true;
       for (final child in mountable) {
         child._mount();
       }
-      _isMounted = true;
       onMounted();
     });
   }

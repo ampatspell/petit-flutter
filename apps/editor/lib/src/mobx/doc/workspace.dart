@@ -13,8 +13,10 @@ abstract class _WorkspaceDoc with Store, Mountable implements DocumentModel {
 
   String get name => doc['name'] as String;
 
+  int get pixel => doc['pixel'] as int? ?? 1;
+
   @override
   String toString() {
-    return 'WorkspaceDoc{id: ${doc.id} data: ${doc.data}';
+    return 'WorkspaceDoc{id: $id, data: ${doc.data}}';
   }
 }

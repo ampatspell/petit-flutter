@@ -136,6 +136,11 @@ class Document {
     await reference.delete();
   }
 
+  Future<void> merge(FirestoreMap map) async {
+    _data.addAll(map);
+    await reference.set(map, SetOptions(merge: true));
+  }
+
   void scheduleSave([Duration duration = const Duration(milliseconds: 200)]) {
     late Future<void> future;
     future = Future.delayed(duration, () async {

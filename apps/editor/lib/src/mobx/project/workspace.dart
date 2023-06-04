@@ -35,12 +35,14 @@ abstract class _Workspace with Store, Mountable implements Loadable {
 
   WorkspaceDoc get _doc => __doc.content!;
 
-  List<WorkspaceItem> get items => _items.content;
+  int get pixel => _doc.pixel;
 
   String get name => _doc.name;
 
+  List<WorkspaceItem> get items => _items.content;
+
   @override
   String toString() {
-    return 'Workspace{project: $project, id: $id}';
+    return 'Workspace{id: $id, name: $name, pixel: $pixel}';
   }
 }

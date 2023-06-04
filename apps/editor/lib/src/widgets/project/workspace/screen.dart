@@ -43,11 +43,10 @@ class WorkspaceScreenContent extends ConsumerWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(workspace.project.name),
-          Text(workspace.name),
+          Text(workspace.toString()),
+          Text(workspace.items.toString()),
           Text(workspace.project.toString()),
           Text(workspace.project.nodes.toString()),
-          Text(workspace.items.toString()),
         ],
       );
     });
