@@ -28,6 +28,7 @@ abstract class _PropertyTextBoxState extends _PropertyState<String> with Store {
   void onEditorValueChanged(String value) {
     if (controller.text != value) {
       controller.text = value;
+      validateEditorValue(value);
     }
   }
 
