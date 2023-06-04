@@ -13,7 +13,7 @@ abstract class _BoxProjectNodeDoc extends _ProjectNodeDoc<BoxProjectNodeDoc> wit
   }
 }
 
-abstract class _ProjectNodeDoc<T extends DocumentModel> with Store, Mountable implements ProjectNodeDoc {
+abstract class _ProjectNodeDoc<T> with Store, Mountable implements ProjectNodeDoc {
   _ProjectNodeDoc(this.doc);
 
   @override
