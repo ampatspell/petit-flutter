@@ -2,7 +2,6 @@ part of '../mobx.dart';
 
 class Project = _Project with _$Project;
 
-@StoreConfig(hasToString: false)
 abstract class _Project with Store, Mountable implements Loadable {
   _Project({
     required this.id,

@@ -2,7 +2,6 @@ part of '../mobx.dart';
 
 class ProjectDoc = _ProjectDoc with _$ProjectDoc;
 
-@StoreConfig(hasToString: false)
 abstract class _ProjectDoc with Store, Mountable implements DocumentModel {
   _ProjectDoc(this.doc);
 

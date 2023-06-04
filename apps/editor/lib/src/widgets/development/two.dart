@@ -6,6 +6,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 import 'package:zug/zug.dart';
 
+import '../base/gaps.dart';
 import '../loading.dart';
 
 part 'two.g.dart';
@@ -47,20 +48,87 @@ class DevelopmentTwoScreenContent extends StatelessWidget {
   }
 }
 
-class _Form extends StatelessWidget {
+class _Form extends StatelessObserverWidget {
   @override
   Widget build(BuildContext context) {
     final main = context.watch<Main>();
-    return Provider<Property<dynamic, dynamic>>(
-      create: (context) => main.thing.name,
-      child: const PropertyTextBox(),
+    return Provider(
+      create: (context) => main.thing.propertyGroups,
+      child: const PropertyGroupsForm(),
+    );
+    // return Provider<Property<dynamic, dynamic>>(
+    //   create: (context) => main.thing.name,
+    //   child: const PropertyTextBox(),
+    // );
+  }
+}
+
+class PropertyGroupsForm extends StatelessObserverWidget {
+  const PropertyGroupsForm({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final groups = context.watch<PropertyGroups>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        for (final group in groups.all)
+          ProxyProvider0(
+            update: (context, value) => group,
+            child: const PropertyGroupForm(),
+          ),
+      ],
     );
   }
 }
 
-class PropertyTextBoxState = _PropertyTextBoxState with _$PropertyTextBoxState;
+class PropertyGroupForm extends StatelessObserverWidget {
+  const PropertyGroupForm({super.key});
 
-@StoreConfig(hasToString: false)
+  @override
+  Widget build(BuildContext context) {
+    final group = context.watch<PropertyGroup>();
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(group.name),
+        const Gap(10),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: withGapsBetween(
+            children: [
+              for (final property in group.properties)
+                Expanded(
+                  child: ProxyProvider0<Property<dynamic, dynamic>>(
+                    update: (context, value) => property,
+                    child: const PropertyGroupField(),
+                  ),
+                ),
+            ],
+            gap: const Gap(10),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class PropertyGroupField extends StatelessObserverWidget {
+  const PropertyGroupField({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final property = context.watch<Property<dynamic, dynamic>>();
+    final type = property.presentation.type;
+    switch (type) {
+      case PropertyPresentationType.textBox:
+        return const PropertyTextBox();
+    }
+  }
+}
+
+class PropertyTextBoxState = _PropertyTextBoxState with _$PropertyTextBoxState, _$_PropertyTextBoxState;
+
 abstract class _PropertyTextBoxState extends _PropertyState<String> with Store {
   _PropertyTextBoxState({required super.property});
 
@@ -88,26 +156,20 @@ abstract class _PropertyTextBoxState extends _PropertyState<String> with Store {
     }
   }
 
-  @observable
-  String? error;
-
-  void validate(String value) {
-    error = property.validateEditorValue(value);
+  @action
+  void onChanged(String value) {
+    validateEditorValue(value);
   }
 
   @action
-  void onChanged(String value) {
-    validate(value);
-  }
-
   void reset() {
-    controller.text = property.editorValue;
     error = null;
+    controller.text = property.editorValue;
   }
 
   @action
   Future<void> onSubmitted(String value) async {
-    validate(value);
+    validateEditorValue(value);
     if (error != null) {
       reset();
     } else {
@@ -121,7 +183,6 @@ abstract class _PropertyTextBoxState extends _PropertyState<String> with Store {
   }
 }
 
-@StoreConfig(hasToString: false)
 abstract class _PropertyState<E> with Store, Mountable {
   _PropertyState({
     required Property<dynamic, dynamic> property,
@@ -145,6 +206,14 @@ abstract class _PropertyState<E> with Store, Mountable {
     print('onUnmounted');
     _cancelReaction!();
     _cancelReaction = null;
+  }
+
+  @observable
+  String? error;
+
+  @action
+  void validateEditorValue(E value) {
+    error = property.validateEditorValue(value);
   }
 }
 
@@ -245,7 +314,6 @@ abstract class _Main with Store, Mountable implements Loadable {
 
 class Thing = _Thing with _$Thing;
 
-@StoreConfig(hasToString: false)
 abstract class _Thing with Store, Mountable implements DocumentModel {
   _Thing(this.doc);
 

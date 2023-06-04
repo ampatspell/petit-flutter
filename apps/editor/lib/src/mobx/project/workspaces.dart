@@ -2,7 +2,6 @@ part of '../mobx.dart';
 
 class Workspaces = _Workspaces with _$Workspaces;
 
-@StoreConfig(hasToString: false)
 abstract class _Workspaces with Store, Mountable implements Loadable {
   _Workspaces({
     required this.project,

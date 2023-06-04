@@ -22,6 +22,7 @@ mixin SizedProjectNode {
 
 class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc> implements ProjectNode;
 
+// TODO: extends atoms
 abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with SizedProjectNode {
   _BoxProjectNode(super.nodeDoc);
 
@@ -39,7 +40,6 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
   }
 }
 
-@StoreConfig(hasToString: false)
 abstract class _ProjectNode<D extends ProjectNodeDoc> with Store, Mountable implements DocumentModel {
   _ProjectNode(this.nodeDoc);
 

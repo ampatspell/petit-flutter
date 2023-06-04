@@ -1,0 +1,10 @@
+targets:
+  $default:
+    builders:
+      source_gen|combining_builder:
+        options:
+          preamble: |
+            // ignore_for_file:
+      mobx_codegen|mobx_generator:
+        options:
+          hasToString: false

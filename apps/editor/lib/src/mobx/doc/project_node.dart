@@ -2,21 +2,20 @@ part of '../mobx.dart';
 
 abstract class ProjectNodeDoc implements DocumentModel {}
 
-class BoxProjectNodeDoc = _BoxProjectNodeDoc with _$BoxProjectNodeDoc implements ProjectNodeDoc;
+class BoxProjectNodeDoc = _BoxProjectNodeDoc with _$BoxProjectNodeDoc, _$_BoxProjectNodeDoc<BoxProjectNodeDoc>;
 
-abstract class _BoxProjectNodeDoc extends _ProjectNodeDoc {
+abstract class _BoxProjectNodeDoc extends _ProjectNodeDoc<BoxProjectNodeDoc> with Store {
   _BoxProjectNodeDoc(super.doc);
-}
-
-@StoreConfig(hasToString: false)
-abstract class _ProjectNodeDoc with Store, Mountable implements DocumentModel {
-  _ProjectNodeDoc(this.doc);
-
-  @override
-  final Document doc;
 
   @override
   String toString() {
     return '$runtimeType{id: ${doc.id}, data: ${doc.data}';
   }
+}
+
+abstract class _ProjectNodeDoc<T extends DocumentModel> with Store, Mountable implements ProjectNodeDoc {
+  _ProjectNodeDoc(this.doc);
+
+  @override
+  final Document doc;
 }

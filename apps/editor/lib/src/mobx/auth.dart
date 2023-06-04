@@ -2,7 +2,6 @@ part of 'mobx.dart';
 
 class Auth = _Auth with _$Auth;
 
-@StoreConfig(hasToString: false)
 abstract class _Auth with Store implements Loadable {
   _Auth() {
     _subscribe();

@@ -38,7 +38,6 @@ final loggedIn = [
 
 class RouterHelper = _RouterHelper with _$RouterHelper;
 
-@StoreConfig(hasToString: false)
 abstract class _RouterHelper with Store {
   _RouterHelper() {
     _subscribe();

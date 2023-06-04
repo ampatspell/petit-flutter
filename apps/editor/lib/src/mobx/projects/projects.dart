@@ -2,7 +2,6 @@ part of '../mobx.dart';
 
 class Projects = _Projects with _$Projects;
 
-@StoreConfig(hasToString: false)
 abstract class _Projects with Store, Mountable implements Loadable {
   @override
   Iterable<Mountable> get mountable => [_docs];
