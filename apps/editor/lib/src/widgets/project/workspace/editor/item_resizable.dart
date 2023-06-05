@@ -75,55 +75,50 @@ abstract class __ResizableState with Store {
     }
   }
 
-  Rect? screen;
+  Rect initial = Rect.zero;
+  Offset delta = Offset.zero;
 
   @action
   void onDragStart(Alignment alignment) {
     dragging = alignment;
-    final position = item.renderedPosition;
-    final size = this.size!;
-    screen = Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
+    final position = item.position;
+    final size = sizedNode!.size;
+    initial = Rect.fromLTWH(position.dx, position.dy, size.width, size.height);
+    delta = Offset.zero;
   }
 
   @action
   void onDragUpdate(Alignment handle, DragUpdateDetails details) {
-    final delta = details.delta;
-    final screen = this.screen!;
+    delta = delta + details.delta;
 
-    var left = screen.left;
-    var top = screen.top;
-    var right = screen.right;
-    var bottom = screen.bottom;
+    final itemPixel = item.pixel;
+    final workspacePixel = item.workspace.pixel;
+
+    final dx = (delta.dx / itemPixel / workspacePixel).floorToDouble();
+    final dy = (delta.dy / itemPixel / workspacePixel).floorToDouble();
+
+    var left = initial.left;
+    var top = initial.top;
+    var width = initial.width;
+    var height = initial.height;
 
     if (handle.containsTop) {
-      top = top + delta.dy;
-    }
-    if (handle.containsBottom) {
-      bottom = bottom + delta.dy;
+      top += dy * workspacePixel;
+      height -= dy;
     }
     if (handle.containsLeft) {
-      left = left + delta.dx;
+      left += dx * workspacePixel;
+      width -= dx;
     }
     if (handle.containsRight) {
-      right = right + delta.dx;
+      width += dx;
+    }
+    if (handle.containsBottom) {
+      height += dy;
     }
 
-    this.screen = Rect.fromLTRB(left, top, right, bottom);
-
-    final itemPixel = item.pixel.toDouble();
-    final workspacePixel = item.workspace.pixel.toDouble();
-
-    double r(double value, double px) => (value / px).ceilToDouble();
-
-    final rect = Rect.fromLTWH(
-      r(screen.left, workspacePixel),
-      r(screen.top, workspacePixel),
-      r(screen.width, itemPixel * workspacePixel),
-      r(screen.height, itemPixel * workspacePixel),
-    );
-
-    item.updatePosition(Offset(rect.left, rect.top));
-    sizedNode!.updateSize(Size(rect.width, rect.height));
+    item.updatePosition(Offset(left, top));
+    sizedNode!.updateSize(Size(width, height));
   }
 
   @action
