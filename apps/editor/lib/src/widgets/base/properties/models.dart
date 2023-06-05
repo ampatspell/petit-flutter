@@ -36,6 +36,25 @@ String? intIsPositiveValidator(int value) {
   return null;
 }
 
+String? noopValidator<T>(T value) {
+  return null;
+}
+
+String? Function(int value) intIsInRangeValidator(int min, int? max) {
+  return (int value) {
+    if (max == null) {
+      if (value < min) {
+        return 'Must be at least $min';
+      }
+      return null;
+    }
+    if (value < min || value > max) {
+      return 'Must be in range from $min to $max';
+    }
+    return null;
+  };
+}
+
 enum PropertyPresentationType {
   textBox,
 }

@@ -45,14 +45,14 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
         model: () => this,
         key: 'width',
         initial: 1,
-        validator: intIsPositiveValidator,
+        validator: intIsInRangeValidator(1, null),
         presentation: integerTextBoxPresentation,
       ),
       Property<int, String>.documentModel(
         model: () => this,
         key: 'height',
         initial: 1,
-        validator: intIsPositiveValidator,
+        validator: intIsInRangeValidator(1, null),
         presentation: integerTextBoxPresentation,
       )
     ]),

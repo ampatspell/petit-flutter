@@ -52,7 +52,7 @@ abstract class _Workspace with Store, Mountable implements Loadable {
           model: () => _doc,
           key: 'pixel',
           initial: 1,
-          validator: intIsPositiveValidator,
+          validator: intIsInRangeValidator(1, 16),
           presentation: integerTextBoxPresentation,
         )
       ],
