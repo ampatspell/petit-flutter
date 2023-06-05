@@ -171,41 +171,31 @@ class _Debug extends StatelessWidget {
         dismissWithEsc: true,
         barrierDismissible: true,
         context: context,
-        builder: (context) {
-          return Observer(
-            builder: (context) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Container(
-                  color: Colors.white,
-                  child: ListView.separated(
-                    itemCount: mounted.length,
-                    separatorBuilder: (context, index) => const HorizontalLine(),
-                    itemBuilder: (context, index) {
-                      return Observer(
-                        builder: (context) {
-                          return ListTile(
-                            title: Text(mounted[index].toString()),
-                          );
-                        },
-                      );
-                    },
-                  ),
-                ),
-              );
-            },
+        builder: (context) => Observer(builder: (context) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 10),
+            child: Container(
+              color: Colors.white,
+              child: ListView.separated(
+                itemCount: mounted.length,
+                separatorBuilder: (context, index) => const HorizontalLine(),
+                itemBuilder: (context, index) => Observer(builder: (context) {
+                  return ListTile(
+                    title: Text(mounted[index].toString()),
+                  );
+                }),
+              ),
+            ),
           );
-        },
+        }),
       );
     }
 
     return CommandBarButton(
       icon: const Icon(FluentIcons.code),
-      label: Observer(
-        builder: (context) {
-          return Text('${mounted.length} / ${subscriptions.length}');
-        },
-      ),
+      label: Observer(builder: (context) {
+        return Text('${mounted.length} / ${subscriptions.length}');
+      }),
       onPressed: show,
     ).build(
       context,
