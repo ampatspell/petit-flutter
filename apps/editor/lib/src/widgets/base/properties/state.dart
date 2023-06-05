@@ -17,7 +17,11 @@ abstract class _PropertyState<E> with Store, Mountable {
   @override
   void onMounted() {
     super.onMounted();
-    _cancelReaction = reaction((reaction) => property.editorValue, onEditorValueChanged);
+    _cancelReaction = reaction(
+      (reaction) => property.editorValue,
+      onEditorValueChanged,
+      name: '_PropertyState.editorValue.reaction',
+    );
   }
 
   @override
