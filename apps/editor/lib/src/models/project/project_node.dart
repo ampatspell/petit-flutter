@@ -1,5 +1,9 @@
 part of '../models.dart';
 
+enum ProjectNodeType {
+  box,
+}
+
 abstract class ProjectNode implements DocumentModel {
   ProjectNodeType get type;
 
@@ -30,7 +34,7 @@ mixin SizedProjectNode {
   Future<void> save();
 }
 
-class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc> implements ProjectNode;
+class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc>;
 
 abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with SizedProjectNode {
   _BoxProjectNode(BoxProjectNodeDoc doc) : super(doc, ProjectNodeType.box);
@@ -54,6 +58,7 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
     await doc.save();
   }
 
+  @override
   late final PropertyGroups properties = PropertyGroups([
     PropertyGroup(name: 'Size', properties: [
       Property<int, String>.documentModel(
@@ -79,15 +84,18 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
   }
 }
 
-abstract class _ProjectNode<D extends ProjectNodeDoc> with Store, Mountable implements DocumentModel {
+abstract class _ProjectNode<D extends ProjectNodeDoc> with Store, Mountable implements DocumentModel, ProjectNode {
   _ProjectNode(this.nodeDoc, this.type);
 
+  @override
   final ProjectNodeType type;
+
   final D nodeDoc;
 
   @override
   Document get doc => nodeDoc.doc;
 
+  @override
   String get id => doc.id;
 
   @override

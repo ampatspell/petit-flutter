@@ -39,6 +39,4 @@ part 'projects/projects.dart';
 
 part 'router.dart';
 
-part 'nodes.dart';
-
 part 'references.dart';
