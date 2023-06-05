@@ -43,6 +43,7 @@ abstract class _Workspace with Store, Mountable implements Loadable {
   //
 
   late final WorkspaceSelection selection = WorkspaceSelection(this);
+  late final WorkspaceTools tools = WorkspaceTools(this);
 
   late final PropertyGroups properties = PropertyGroups([
     PropertyGroup(
@@ -95,4 +96,34 @@ abstract class _WorkspaceSelection with Store {
   void clear() {
     select(null);
   }
+
+  @override
+  String toString() {
+    return 'WorkspaceSelection{}';
+  }
 }
+
+class WorkspaceTools = _WorkspaceTools with _$WorkspaceTools;
+
+abstract class _WorkspaceTools with Store {
+  _WorkspaceTools(this.workspace);
+
+  final _Workspace workspace;
+
+  @computed
+  WorkspaceItem? get _selectedItem => workspace.selection.item;
+
+  @computed
+  ProjectNode? get _selectedNode => _selectedItem?.node;
+
+  List<WorkspaceTool> all = [WorkspaceTool()];
+
+  @override
+  String toString() {
+    return 'WorkspaceTools{}';
+  }
+}
+
+class WorkspaceTool = _WorkspaceTool with _$WorkspaceTool;
+
+abstract class _WorkspaceTool with Store {}
