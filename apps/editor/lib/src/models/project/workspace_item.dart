@@ -32,7 +32,11 @@ abstract class _WorkspaceItem with Store, Mountable implements DocumentModel {
   void updatePosition(Offset position) {
     itemDoc.x = position.dx.toInt();
     itemDoc.y = position.dy.toInt();
-    itemDoc.doc.save();
+  }
+
+  @action
+  Future<void> save() async {
+    await itemDoc.doc.save();
   }
 
   @computed
