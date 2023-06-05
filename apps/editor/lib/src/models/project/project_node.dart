@@ -24,6 +24,10 @@ mixin SizedProjectNode {
   Size renderedSizeForItem(WorkspaceItem item) {
     return renderedSize(item.pixel, item.workspace.pixel);
   }
+
+  Future<void> updateSize(Size size);
+
+  Future<void> save();
 }
 
 class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc> implements ProjectNode;
@@ -38,6 +42,17 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
   int get height => doc['height'] as int;
 
   Color get color => Color(doc['color'] as int);
+
+  @override
+  Future<void> updateSize(Size size) async {
+    doc['width'] = size.width.toInt();
+    doc['height'] = size.height.toInt();
+  }
+
+  @override
+  Future<void> save() async {
+    await doc.save();
+  }
 
   late final PropertyGroups properties = PropertyGroups([
     PropertyGroup(name: 'Size', properties: [

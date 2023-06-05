@@ -29,7 +29,7 @@ abstract class _Project with Store, Mountable implements Loadable {
       final string = doc['type'] as String;
       final type = ProjectNodeType.values.firstWhereOrNull((type) => type.name == string);
       if (type == null) {
-        throw UnsupportedError('Project._nodes: $string');
+        throw UnsupportedError('Project._nodes: ${doc.path} ${doc.data}');
       }
       switch (type) {
         case ProjectNodeType.box:

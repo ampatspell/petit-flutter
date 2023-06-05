@@ -6,15 +6,17 @@ import 'package:provider/provider.dart';
 import '../../../../app/theme.dart';
 import '../../../../models/models.dart';
 
-part 'editor.g.dart';
-
 part 'box_item.dart';
+
+part 'editor.g.dart';
 
 part 'item.dart';
 
 part 'item_container.dart';
 
 part 'item_draggable.dart';
+
+part 'item_resizable.dart';
 
 class WorkspaceEditor extends StatelessObserverWidget {
   const WorkspaceEditor({super.key});

@@ -57,10 +57,15 @@ class _DraggableWorkspaceItem extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final state = context.watch<_DraggableWorkspaceItemState>();
+
+          final resizable = _ResizableWorkspaceItem(
+            child: child,
+          );
+
           return Draggable(
             feedback: const SizedBox.shrink(),
-            childWhenDragging: child,
-            child: child,
+            childWhenDragging: resizable,
+            child: resizable,
             onDragStarted: () {
               state.onDragStart();
               onDragStart();
