@@ -21,7 +21,7 @@ abstract class _Workspace with Store, Mountable implements Loadable {
   );
 
   late final ModelsQuery<WorkspaceItem> _items = ModelsQuery(
-    name: 'Workspace.__items',
+    name: 'Workspace._items',
     query: () => project.reference.collection('workspaces').doc(id).collection('items'),
     create: (doc) => WorkspaceItem(itemDoc: WorkspaceItemDoc(doc), workspace: this),
   );
