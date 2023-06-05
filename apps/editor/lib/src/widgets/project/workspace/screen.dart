@@ -42,15 +42,7 @@ class WorkspaceScreenContent extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _Tools(),
-              const Expanded(child: WorkspaceEditor()),
-            ],
-          ),
-        ),
+        const Expanded(child: WorkspaceEditor()),
         Container(
           decoration: const BoxDecoration(
             border: Border(
@@ -62,19 +54,6 @@ class WorkspaceScreenContent extends StatelessWidget {
           child: const WorkspaceInspector(),
         ),
       ],
-    );
-  }
-}
-
-class _Tools extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Colors.red.withAlpha(20),
-      constraints: const BoxConstraints.expand(height: 40),
-      alignment: Alignment.centerLeft,
-      padding: const EdgeInsets.symmetric(horizontal: 10),
-      child: const Text('Tools'),
     );
   }
 }
