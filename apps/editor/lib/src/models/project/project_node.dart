@@ -17,6 +17,8 @@ mixin SizedProjectNode {
 
   int get height;
 
+  Size get resizeStep;
+
   Size get size {
     return Size(width.toDouble(), height.toDouble());
   }
@@ -38,6 +40,9 @@ class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc>
 
 abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with SizedProjectNode {
   _BoxProjectNode(BoxProjectNodeDoc doc) : super(doc, ProjectNodeType.box);
+
+  @override
+  final Size resizeStep = const Size(8, 8);
 
   @override
   int get width => doc['width'] as int;

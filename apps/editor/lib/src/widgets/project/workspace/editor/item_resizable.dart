@@ -32,7 +32,7 @@ abstract class __ResizableState with Store {
   __ResizableState({required this.item});
 
   final WorkspaceItem item;
-  final handle = 10.0;
+  final double handle = 10.0;
 
   @computed
   ProjectNode? get node => item.node;
@@ -48,6 +48,9 @@ abstract class __ResizableState with Store {
     }
     return node.renderedSizeForItem(item);
   }
+
+  @computed
+  Size get step => sizedNode!.resizeStep;
 
   @observable
   Alignment? hovering;
@@ -116,6 +119,12 @@ abstract class __ResizableState with Store {
     if (handle.containsBottom) {
       height += dy;
     }
+
+    width = max(step.width, width);
+    height = max(step.height, height);
+
+    width = (width / step.width).roundToDouble() * step.width;
+    height = (height / step.height).roundToDouble() * step.height;
 
     item.updatePosition(Offset(left, top));
     sizedNode!.updateSize(Size(width, height));
