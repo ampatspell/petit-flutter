@@ -1,4 +1,4 @@
-part of '../mobx.dart';
+part of '../models.dart';
 
 class WorkspaceItemDoc = _WorkspaceItemDoc with _$WorkspaceItemDoc;
 

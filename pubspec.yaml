@@ -15,3 +15,4 @@ scripts:
         rps build apps editor
     all: |
       rps build apps all
+  format: dart format --line-length=120 .

@@ -13,6 +13,8 @@ import '../widgets/base/order.dart';
 import '../widgets/base/properties/properties.dart';
 import 'projects/reset.dart';
 
+part 'models.g.dart';
+
 part 'auth.dart';
 
 part 'doc/project.dart';
@@ -22,8 +24,6 @@ part 'doc/project_node.dart';
 part 'doc/workspace.dart';
 
 part 'doc/workspace_item.dart';
-
-part 'mobx.g.dart';
 
 part 'project/project.dart';
 
@@ -40,3 +40,5 @@ part 'projects/projects.dart';
 part 'router.dart';
 
 part 'nodes.dart';
+
+part 'references.dart';

@@ -5,7 +5,7 @@ import 'package:mobx/mobx.dart';
 import 'src/app/router.dart';
 import 'src/app/theme.dart';
 import 'src/get.dart';
-import 'src/mobx/mobx.dart';
+import 'src/models/models.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

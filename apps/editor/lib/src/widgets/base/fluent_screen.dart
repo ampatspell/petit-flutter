@@ -5,7 +5,7 @@ import 'package:gap/gap.dart';
 
 import '../../app/router.dart';
 import '../../get.dart';
-import '../../mobx/mobx.dart';
+import '../../models/models.dart';
 
 class FluentScreen extends StatelessObserverWidget {
   const FluentScreen({

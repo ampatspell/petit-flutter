@@ -4,7 +4,7 @@ import 'package:mobx/mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../../../app/theme.dart';
-import '../../../../mobx/mobx.dart';
+import '../../../../models/models.dart';
 
 part 'editor.g.dart';
 

@@ -1,4 +1,4 @@
-part of 'mobx.dart';
+part of 'models.dart';
 
 class Route {
   const Route({
@@ -82,6 +82,6 @@ abstract class _RouterHelper with Store {
 
   @override
   String toString() {
-    return '_RouterHelper{}';
+    return 'RouterHelper{}';
   }
 }

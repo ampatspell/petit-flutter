@@ -5,8 +5,7 @@ import 'package:get_it/get_it.dart';
 import 'package:zug/zug.dart';
 
 import '../firebase_options.dart';
-import 'mobx/mobx.dart';
-import 'mobx/references.dart';
+import 'models/models.dart';
 
 final it = GetIt.instance;
 

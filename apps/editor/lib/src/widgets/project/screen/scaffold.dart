@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 
-import '../../../mobx/mobx.dart';
+import '../../../models/models.dart';
 import '../../base/confirmation.dart';
 import 'workspaces.dart';
 

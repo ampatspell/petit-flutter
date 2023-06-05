@@ -2,8 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:mobx/mobx.dart';
 import 'package:zug/zug.dart';
 
-import '../mobx.dart';
-import '../references.dart';
+import '../models.dart';
 
 class ProjectsReset {
   FirestoreReferences get references => it.get();

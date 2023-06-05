@@ -1,4 +1,4 @@
-part of '../mobx.dart';
+part of '../models.dart';
 
 class Projects = _Projects with _$Projects;
 

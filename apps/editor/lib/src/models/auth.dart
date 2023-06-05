@@ -1,4 +1,4 @@
-part of 'mobx.dart';
+part of 'models.dart';
 
 class Auth = _Auth with _$Auth;
 

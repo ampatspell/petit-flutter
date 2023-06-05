@@ -4,7 +4,7 @@ import 'package:zug/zug.dart';
 
 import '../../../app/router.dart';
 import '../../../app/theme.dart';
-import '../../../mobx/mobx.dart';
+import '../../../models/models.dart';
 import '../../loading.dart';
 import 'editor/editor.dart';
 import 'inspector/inspector.dart';

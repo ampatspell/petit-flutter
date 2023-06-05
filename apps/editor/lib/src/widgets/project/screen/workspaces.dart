@@ -3,7 +3,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
 import '../../../app/router.dart';
-import '../../../mobx/mobx.dart';
+import '../../../models/models.dart';
 import '../../base/models_list_view.dart';
 
 class ProjectWorkspacesListView extends StatelessWidget {

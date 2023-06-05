@@ -1,4 +1,4 @@
-part of '../mobx.dart';
+part of '../models.dart';
 
 abstract class ProjectNode implements DocumentModel {
   ProjectNodeType get type;

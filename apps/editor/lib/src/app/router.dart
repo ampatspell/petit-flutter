@@ -5,7 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:mobx/mobx.dart';
 
 import '../get.dart';
-import '../mobx/mobx.dart';
+import '../models/models.dart';
 import '../widgets/base/fluent_screen.dart';
 import '../widgets/development/one.dart';
 import '../widgets/development/screen.dart';

@@ -1,5 +1,4 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:zug/zug.dart';
+part of 'models.dart';
 
 class FirestoreReferences {
   FirebaseFirestore get _firestore => it.get();

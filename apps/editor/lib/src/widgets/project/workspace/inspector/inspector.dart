@@ -2,7 +2,7 @@ import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:provider/provider.dart';
 
-import '../../../../mobx/mobx.dart';
+import '../../../../models/models.dart';
 import '../../../base/line.dart';
 import '../../../base/properties/properties.dart';
 

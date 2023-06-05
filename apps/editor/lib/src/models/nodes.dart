@@ -1,4 +1,4 @@
-part of 'mobx.dart';
+part of 'models.dart';
 
 enum ProjectNodeType {
   box,
