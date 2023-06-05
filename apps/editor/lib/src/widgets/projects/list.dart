@@ -13,12 +13,10 @@ class ProjectsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('$this');
     return ModelsListView<Projects, ProjectDoc>(
       models: (model) => model.docs,
       placeholder: const Text('No projects created yet'),
       item: Observer(builder: (context) {
-        print('$this item');
         final doc = context.watch<ProjectDoc>();
         return ListTile.selectable(
           title: Padding(

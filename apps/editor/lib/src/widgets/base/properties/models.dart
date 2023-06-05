@@ -77,8 +77,8 @@ class Property<T, E> {
     required this.presentation,
   });
 
-  factory Property.document(
-    Document Function() doc, {
+  factory Property.document({
+    required Document Function() doc,
     required String key,
     required T initial,
     required PropertyValidator<T> validator,
@@ -94,15 +94,15 @@ class Property<T, E> {
     );
   }
 
-  factory Property.documentModel(
-    DocumentModel model, {
+  factory Property.documentModel({
+    required DocumentModel Function() model,
     required String key,
     required T initial,
     required PropertyValidator<T> validator,
     required PropertyPresentation<T, E> presentation,
   }) {
     return Property.document(
-      () => model.doc,
+      doc: () => model().doc,
       key: key,
       initial: initial,
       validator: validator,

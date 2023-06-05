@@ -137,7 +137,7 @@ abstract class _Thing with Store, Mountable implements DocumentModel {
   final Document doc;
 
   late final Property<String, String> name = Property.documentModel(
-    this,
+    model: () => this,
     key: 'name',
     initial: '',
     validator: stringNotBlankValidator,
@@ -145,7 +145,7 @@ abstract class _Thing with Store, Mountable implements DocumentModel {
   );
 
   late final Property<String, String> identifier = Property.documentModel(
-    this,
+    model: () => this,
     key: 'identifier',
     initial: '',
     validator: stringNotBlankValidator,
@@ -153,7 +153,7 @@ abstract class _Thing with Store, Mountable implements DocumentModel {
   );
 
   late final Property<int, String> x = Property.documentModel(
-    this,
+    model: () => this,
     key: 'x',
     initial: 0,
     validator: intIsPositiveValidator,
@@ -161,7 +161,7 @@ abstract class _Thing with Store, Mountable implements DocumentModel {
   );
 
   late final Property<int, String> y = Property.documentModel(
-    this,
+    model: () => this,
     key: 'y',
     initial: 0,
     validator: intIsPositiveValidator,

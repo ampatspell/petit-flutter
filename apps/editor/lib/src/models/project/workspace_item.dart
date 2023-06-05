@@ -49,14 +49,14 @@ abstract class _WorkspaceItem with Store, Mountable implements DocumentModel {
       name: 'Position',
       properties: [
         Property<int, String>.documentModel(
-          this,
+          model: () => this,
           key: 'x',
           initial: 1,
           validator: intIsPositiveValidator,
           presentation: integerTextBoxPresentation,
         ),
         Property<int, String>.documentModel(
-          this,
+          model: () => this,
           key: 'y',
           initial: 1,
           validator: intIsPositiveValidator,
@@ -68,7 +68,7 @@ abstract class _WorkspaceItem with Store, Mountable implements DocumentModel {
       name: 'Pixel',
       properties: [
         Property<int, String>.documentModel(
-          this,
+          model: () => this,
           key: 'pixel',
           initial: 1,
           validator: intIsPositiveValidator,

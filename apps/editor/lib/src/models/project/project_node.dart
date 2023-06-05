@@ -42,14 +42,14 @@ abstract class _BoxProjectNode extends _ProjectNode<BoxProjectNodeDoc> with Size
   late final PropertyGroups properties = PropertyGroups([
     PropertyGroup(name: 'Size', properties: [
       Property<int, String>.documentModel(
-        this,
+        model: () => this,
         key: 'width',
         initial: 1,
         validator: intIsPositiveValidator,
         presentation: integerTextBoxPresentation,
       ),
       Property<int, String>.documentModel(
-        this,
+        model: () => this,
         key: 'height',
         initial: 1,
         validator: intIsPositiveValidator,
