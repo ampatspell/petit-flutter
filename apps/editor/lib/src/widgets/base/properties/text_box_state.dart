@@ -57,4 +57,9 @@ abstract class _PropertyTextBoxState extends _PropertyState<String> with Store {
   void onFocusOut() {
     reset();
   }
+
+  @override
+  String toString() {
+    return 'PropertyTextBoxState{}';
+  }
 }

@@ -2,10 +2,11 @@ import 'package:collection/collection.dart';
 import 'package:fluent_ui/fluent_ui.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:gap/gap.dart';
+import 'package:zug/zug.dart';
 
 import '../../app/router.dart';
-import '../../get.dart';
 import '../../models/models.dart';
+import 'line.dart';
 
 class FluentScreen extends StatelessObserverWidget {
   const FluentScreen({
@@ -57,7 +58,14 @@ class FluentScreen extends StatelessObserverWidget {
           height: 50,
           child: Padding(
             padding: EdgeInsets.fromLTRB(0, 0, 15, 0),
-            child: _CurrentUser(),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                _Debug(),
+                Gap(15),
+                _CurrentUser(),
+              ],
+            ),
           ),
         ),
       ),
@@ -110,6 +118,7 @@ class _CurrentUser extends StatelessObserverWidget {
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
+      mainAxisSize: MainAxisSize.min,
       children: buildActions(context),
     );
   }
@@ -149,5 +158,58 @@ class _CurrentUser extends StatelessObserverWidget {
         button(icon: FluentIcons.power_button, onPressed: signOut),
       ];
     }
+  }
+}
+
+class _Debug extends StatelessWidget {
+  const _Debug();
+
+  @override
+  Widget build(BuildContext context) {
+    void show() {
+      showDialog(
+        dismissWithEsc: true,
+        barrierDismissible: true,
+        context: context,
+        builder: (context) {
+          return Observer(
+            builder: (context) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Container(
+                  color: Colors.white,
+                  child: ListView.separated(
+                    itemCount: mounted.length,
+                    separatorBuilder: (context, index) => const HorizontalLine(),
+                    itemBuilder: (context, index) {
+                      return Observer(
+                        builder: (context) {
+                          return ListTile(
+                            title: Text(mounted[index].toString()),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      );
+    }
+
+    return CommandBarButton(
+      icon: const Icon(FluentIcons.code),
+      label: Observer(
+        builder: (context) {
+          return Text('${mounted.length} / ${subscriptions.length}');
+        },
+      ),
+      onPressed: show,
+    ).build(
+      context,
+      CommandBarItemDisplayMode.inPrimary,
+    );
   }
 }
