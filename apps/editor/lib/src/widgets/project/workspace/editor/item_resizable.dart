@@ -135,9 +135,7 @@ abstract class __ResizableState with Store {
 }
 
 class _ResizableWorkspaceItem extends StatelessWidget {
-  const _ResizableWorkspaceItem({
-    required this.child,
-  });
+  const _ResizableWorkspaceItem({required this.child});
 
   final Widget child;
 
@@ -154,7 +152,7 @@ class _ResizableWorkspaceItem extends StatelessWidget {
           return SizedBox(
             width: size.width + handle,
             height: size.height + handle,
-            child: ResizableHandles(
+            child: _ResizableHandles(
               child: Padding(
                 padding: EdgeInsets.all(handle / 2),
                 child: child,
@@ -168,36 +166,8 @@ class _ResizableWorkspaceItem extends StatelessWidget {
   }
 }
 
-//
-// abstract class WithRenderedSize extends Widget {
-//   const WithRenderedSize({super.key});
-//
-//   Size get renderedSize;
-// }
-//
-// class ResizeState {
-//   final Rect initial;
-//   Rect previous;
-//
-//   ResizeState._(this.initial, this.previous);
-//
-//   factory ResizeState.create(Rect entity, double pixel) {
-//     final scaled = Rect.fromLTWH(
-//       entity.left * pixel,
-//       entity.top * pixel,
-//       entity.width * pixel,
-//       entity.height * pixel,
-//     );
-//     return ResizeState._(scaled, scaled);
-//   }
-// }
-//
-
-class ResizableHandles extends StatelessWidget {
-  const ResizableHandles({
-    super.key,
-    required this.child,
-  });
+class _ResizableHandles extends StatelessWidget {
+  const _ResizableHandles({required this.child});
 
   final Widget child;
 
@@ -224,31 +194,27 @@ class ResizableHandles extends StatelessWidget {
       Alignment.bottomRight
     ];
     return handles.map((alignment) {
-      return ResizableHandle(alignment: alignment);
+      return _ResizableHandle(alignment: alignment);
     });
   }
 }
 
-class ResizableHandle extends StatelessObserverWidget {
-  const ResizableHandle({
-    super.key,
-    required this.alignment,
-  });
+class _ResizableHandle extends StatelessWidget {
+  const _ResizableHandle({required this.alignment});
 
   final Alignment alignment;
 
   @override
   Widget build(BuildContext context) {
     final state = context.watch<_ResizableState>();
-    final content = buildContent(context);
-
+    final child = _ResizableHandleContent(alignment: alignment);
     return Positioned.fill(
       child: Align(
         alignment: alignment,
         child: Draggable(
           feedback: Container(),
-          childWhenDragging: content,
-          child: content,
+          childWhenDragging: child,
+          child: child,
           onDragStarted: () => state.onDragStart(alignment),
           onDragUpdate: (e) => state.onDragUpdate(alignment, e),
           onDragEnd: (e) => state.onDragEnd(alignment, e),
@@ -256,8 +222,15 @@ class ResizableHandle extends StatelessObserverWidget {
       ),
     );
   }
+}
 
-  MouseRegion buildContent(BuildContext context) {
+class _ResizableHandleContent extends StatelessObserverWidget {
+  const _ResizableHandleContent({required this.alignment});
+
+  final Alignment alignment;
+
+  @override
+  Widget build(BuildContext context) {
     final state = context.watch<_ResizableState>();
     final handle = state.handle;
     final hover = state.isHovering(alignment);
