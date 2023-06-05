@@ -30,7 +30,7 @@ class WorkspaceInspector extends StatelessWidget {
   }
 }
 
-class _Footer extends StatelessObserverWidget {
+class _Footer extends StatelessWidget {
   const _Footer();
 
   @override

@@ -5,10 +5,9 @@ class _BoxWorkspaceItem extends StatelessObserverWidget {
 
   @override
   Widget build(BuildContext context) {
-    final workspace = context.watch<Workspace>();
     final item = context.watch<WorkspaceItem>();
     final node = context.watch<ProjectNode>() as BoxProjectNode;
-    final size = node.renderedSize(item.pixel, workspace.pixel);
+    final size = node.renderedSizeForItem(item);
     return Container(
       color: node.color,
       width: size.width,

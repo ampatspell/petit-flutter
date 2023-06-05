@@ -20,6 +20,10 @@ mixin SizedProjectNode {
   Size renderedSize(int itemPixel, int workspacePixel) {
     return size * itemPixel.toDouble() * workspacePixel.toDouble();
   }
+
+  Size renderedSizeForItem(WorkspaceItem item) {
+    return renderedSize(item.pixel, item.workspace.pixel);
+  }
 }
 
 class BoxProjectNode = _BoxProjectNode with _$_BoxProjectNode<BoxProjectNodeDoc> implements ProjectNode;

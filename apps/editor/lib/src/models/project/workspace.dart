@@ -32,6 +32,8 @@ abstract class _Workspace with Store, Mountable implements Loadable {
   @override
   bool get isMissing => project.isMissing || __doc.isMissing;
 
+  // TODO: not sure why I need computed here.
+  @computed
   WorkspaceDoc get _doc => __doc.content!;
 
   int get pixel => _doc.pixel;
