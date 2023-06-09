@@ -111,19 +111,19 @@ abstract class __ResizableState with Store {
 
     if (handle.containsTop) {
       final h = max(step.height, height - dy);
-      top += (height - h) * workspacePixel;
+      top += (height - h) * itemPixel;
       height = h;
     }
     if (handle.containsLeft) {
       final w = max(step.width, width - dx);
-      left += (width - w) * workspacePixel;
+      left += (width - w) * itemPixel;
       width = w;
     }
     if (handle.containsBottom) {
-      height += dy;
+      height = max(step.height, height + dy);
     }
     if (handle.containsRight) {
-      width += dx;
+      width = max(step.width, width + dx);
     }
 
     item.updatePosition(Offset(left, top));
