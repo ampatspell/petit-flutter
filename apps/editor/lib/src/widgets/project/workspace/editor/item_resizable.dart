@@ -97,8 +97,12 @@ abstract class __ResizableState with Store {
     final itemPixel = item.pixel;
     final workspacePixel = item.workspace.pixel;
 
-    final dx = (delta.dx / itemPixel / workspacePixel).floorToDouble();
-    final dy = (delta.dy / itemPixel / workspacePixel).floorToDouble();
+    double withStep(double d, double step) {
+      return ((d / itemPixel / workspacePixel) / step).roundToDouble() * step;
+    }
+
+    final dx = withStep(delta.dx, step.width);
+    final dy = withStep(delta.dy, step.height);
 
     var left = initial.left;
     var top = initial.top;
@@ -106,12 +110,14 @@ abstract class __ResizableState with Store {
     var height = initial.height;
 
     if (handle.containsTop) {
-      top += dy * workspacePixel;
-      height -= dy;
+      final h = max(step.height, height - dy);
+      top += (height - h) * workspacePixel;
+      height = h;
     }
     if (handle.containsLeft) {
-      left += dx * workspacePixel;
-      width -= dx;
+      final w = max(step.width, width - dx);
+      left += (width - w) * workspacePixel;
+      width = w;
     }
     if (handle.containsRight) {
       width += dx;
@@ -119,12 +125,6 @@ abstract class __ResizableState with Store {
     if (handle.containsBottom) {
       height += dy;
     }
-
-    width = max(step.width, width);
-    height = max(step.height, height);
-
-    width = (width / step.width).roundToDouble() * step.width;
-    height = (height / step.height).roundToDouble() * step.height;
 
     item.updatePosition(Offset(left, top));
     sizedNode!.updateSize(Size(width, height));
