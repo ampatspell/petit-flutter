@@ -27,7 +27,7 @@ final typography = Typography.raw(
   display: lightTheme.typography.display!.copyWith(fontFamily: fontFamily),
 );
 
-final theme = lightTheme.copyWith(
+final theme = FluentThemeData(
   typography: typography,
   navigationPaneTheme: NavigationPaneThemeData(
     itemHeaderTextStyle: typography.bodyStrong,
